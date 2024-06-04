@@ -164,6 +164,8 @@ void MainWindow::_setup_imgui() {
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
+    auto& style = ImGui::GetStyle();
+    style.WindowPadding = ImVec2(0, 0);
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(_window, true);
