@@ -22,12 +22,23 @@
 #include "ui/imgui_vtk_demo.h" // Actor generator for this demo
 #include "util/imgui_util.hpp"
 #include "core/setting.hpp"
-#include "core/moon.hpp"
 
 
 class MainWindow {
 public:
+    MainWindow();
+
     void show();
+private:
+    void _setup();
+    void _setup_gl();
+    void _setup_imgui();
+    void _cleanup();
+
+private:
+    GLFWwindow* _window;
+    const char* _glsl_version = "#version 130";
+    GLuint _out_texture;
 
 };
 
