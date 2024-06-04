@@ -61,7 +61,6 @@ void MainWindow::show() {
 
 #ifndef NDEBUG
         ImGui::ShowDemoWindow();
-        ImGui::ShowStyleEditor();
         ImPlot::ShowDemoWindow();
 #endif
 
