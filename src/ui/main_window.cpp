@@ -28,7 +28,7 @@
 
 
 static void _glfw_error_callback(int error, const char* description) {
-    spdlog::error("Glfw Error {}: {}", error, description);
+    SPDLOG_ERROR("Glfw Error {}: {}", error, description);
 }
 
 MainWindow::MainWindow() {
@@ -130,14 +130,14 @@ void MainWindow::_setup_gl() {
     // Create window with graphics context
     _window = glfwCreateWindow(1280, 720, kAppName.c_str(), NULL, NULL);
     if (_window == NULL) {
-        spdlog::error("Failed to create GLFW window");
+        SPDLOG_ERROR("Failed to create GLFW window");
         return;
     }
     glfwMakeContextCurrent(_window);
     glfwSwapInterval(1); // Enable vsync
 
     if (gl3wInit() != 0) {
-        spdlog::error("Failed to initialize OpenGL loader!");
+        SPDLOG_ERROR("Failed to initialize OpenGL loader!");
         return;
     }
 }

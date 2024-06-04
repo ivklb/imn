@@ -58,7 +58,7 @@ inline ThreadPool::ThreadPool(size_t threads)
                     try {
                         task();
                     } catch (const std::exception& e) {
-                        spdlog::error("Exception caught in ThreadPool task: {}", e.what());
+                        SPDLOG_ERROR("Exception caught in ThreadPool task: {}", e.what());
                     }
                 }
             }
