@@ -1,7 +1,10 @@
 {
-    "name": "ct",
+    "name": "moon",
     "version": "1.0.0",
     "dependencies": [
+        { "name": "nlohmann-json" },
+        { "name": "gl3w" },
+        { "name": "glfw3" },
         {
             "name": "imgui",
             "features": [
@@ -10,16 +13,9 @@
                 "opengl3-binding"
             ]
         },
-        {
-            "name": "gl3w"
-        },
-        {
-            "name": "glfw3"
-        },
-        {
-            "name": "vtk"
-        }
+        { "name": "implot" },
+        { "name": "spdlog" },
+        { "name": "vtk" }
     ],
-    "builtin-baseline": "de176433e9a8769eed0e43d61758f4cdc1dc6e20",
     "overrides": []
 }
