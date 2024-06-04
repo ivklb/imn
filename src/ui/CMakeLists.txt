@@ -1,8 +1,10 @@
 
 add_library(ui
-    # main_window.cpp
+    main_window.cpp
     vtk_viewer.cpp
 )
+
+target_include_directories(ui PUBLIC ${SRC_ROOT})
 
 target_link_libraries(ui
     OpenGL::GL

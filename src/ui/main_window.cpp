@@ -1,4 +1,6 @@
 
+#include "main_window.hpp"
+
 // Standard Library
 #include <iostream>
 
@@ -6,34 +8,41 @@
 #include <vtkSmartPointer.h>
 #include <vtkActor.h>
 // OpenGL Loader
-// This can be replaced with another loader, e.g. glad, but
-// remember to also change the corresponding initialize call!
-#include <GL/gl3w.h>            // GL3w, initialized with gl3wInit() below
-
-// Include glfw3.h after our OpenGL definitions
+#include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
 // ImGui + imgui-vtk
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <implot.h>
 
 // File-Specific Includes
 #include "ui/imgui_vtk_demo.h" // Actor generator for this demo
 #include "util/imgui_util.hpp"
+#include "core/setting.hpp"
+#include "core/moon.hpp"
 
 
 static void glfw_error_callback(int error, const char* description) {
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
-int main(int argc, char* argv[]) {
+void MainWindow::show() {
+    auto& g_setting = global_setting();
+    Moon moon;
+    moon.init();
+#ifdef NDEBUG
+    // disable warning window in release mode
     vtkObject::GlobalWarningDisplayOff();
+#endif
+    // Setup pipeline
+    auto actor = SetupDemoPipeline();
 
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit()) {
-        return 1;
+        return;
     }
 
     // Use GL 3.2 (All Platforms)
@@ -42,10 +51,19 @@ int main(int argc, char* argv[]) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
+    // Decide GLSL version
+#ifdef __APPLE__
+  // GLSL 150
+    const char* glsl_version = "#version 150";
+#else
+  // GLSL 130
+    const char* glsl_version = "#version 130";
+#endif
+
     // Create window with graphics context
     GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui VTKViewer Example", NULL, NULL);
     if (window == NULL) {
-        return 1;
+        return;
     }
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
@@ -53,30 +71,35 @@ int main(int argc, char* argv[]) {
     // Initialize OpenGL loader
     if (gl3wInit() != 0) {
         fprintf(stderr, "Failed to initialize OpenGL loader!\n");
-        return 1;
+        return;
     }
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
+    auto ctx = ImGui::CreateContext();
+    ImPlot::CreateContext();
+    // ImPlot::SetCurrentContext();
+    // ImPlot::SetImGuiContext(ctx);
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows'
 
-
-
-    io.Fonts->AddFontFromFileTTF("asset/font/DroidSans.ttf", 24, nullptr, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
-    io.Fonts->AddFontFromFileTTF("asset/font/DroidSans.ttf", 24, nullptr, GetGlyphRangesGreek());
+    auto font_file = g_setting.font_file.c_str();
+    auto font_size = g_setting.font_size;
+    auto tex = "This is some useful text.你好 μm 你好";
+    ImFontConfig config;
+    config.MergeMode = true;
+    io.Fonts->AddFontFromFileTTF(font_file, font_size, nullptr, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+    io.Fonts->AddFontFromFileTTF(font_file, font_size, &config, GetGlyphRangesGreek());
+    io.Fonts->Build();
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    const char* glsl_version = "#version 130";
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    auto actor = SetupDemoPipeline();
     // Initialize VtkViewer objects
     VtkViewer vtkViewer1;
     vtkViewer1.addActor(actor);
@@ -90,6 +113,11 @@ int main(int argc, char* argv[]) {
     bool show_another_window = false;
     bool vtk_2_open = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    double f = 0.5;
+    GLuint out_texture;
+    int out_width;
+    int out_height;
+    LoadTextureFromFile("asset/image/moon.jpeg", &out_texture, &out_width, &out_height);
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
@@ -110,6 +138,24 @@ int main(int argc, char* argv[]) {
             ImGui::ShowDemoWindow(&show_demo_window);
         }
         ImGui::ShowStyleEditor();
+        ImPlot::ShowDemoWindow();
+
+        {
+            ImGui::Begin("image plot");
+            if (ImPlot::BeginPlot("##lines_my",ImVec2(0,0))) {
+                static ImVec2 bmin(0,0);
+                static ImVec2 bmax(1,1);
+                static ImVec2 uv0(0,0);
+                static ImVec2 uv1(1,1);
+                static ImVec4 tint(1,1,1,1);
+                ImPlot::SetupAxesLimits(0,1,0,1);
+                // ImPlot::PlotImage("my image",ImGui::GetIO().Fonts->TexID, bmin, bmax, uv0, uv1, tint);
+                ImPlot::PlotImage("my image", (void*)out_texture, bmin, bmax, uv0, uv1, tint);
+                ImPlot::DragLineY(120482,&f,ImVec4(1,0.5f,1,1),1);
+                ImPlot::EndPlot();
+            }
+            ImGui::End();
+        }
 
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
@@ -118,7 +164,8 @@ int main(int argc, char* argv[]) {
             static int counter = 0;
 
             ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-            ImGui::Text("This is some useful text.你好 μm 你好");               // Display some text (you can use a format strings too)
+            // ImGui::Text((char*)"This is some useful text.你好 μm 你好");               // Display some text (you can use a format strings too)
+            ImGui::Text(tex);               // Display some text (you can use a format strings too)
             ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
             ImGui::Checkbox("Another Window", &show_another_window);
             ImGui::Checkbox("VTK Viewer #2", &vtk_2_open);
@@ -214,6 +261,4 @@ int main(int argc, char* argv[]) {
 
     glfwDestroyWindow(window);
     glfwTerminate();
-
-    return 0;
 }
