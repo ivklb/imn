@@ -33,6 +33,7 @@ private:
     void _setup();
     void _setup_gl();
     void _setup_imgui();
+    void _create_dock_space_and_menubar();
     void _cleanup();
 
 private:
