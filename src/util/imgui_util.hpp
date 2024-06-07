@@ -11,10 +11,7 @@
 
 const ImWchar* GetGlyphRangesGreek();
 
-GLuint load_texture_2d(cv::Mat* img);
-GLuint load_texture_2d(const char* filename);
-
-bool ImageButtonWithText(ImTextureID texture, const std::string &text, float x, float y, float w, float h);
+GLuint load_texture_2d(const cv::Mat* img);
 
 
 #endif

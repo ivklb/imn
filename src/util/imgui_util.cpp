@@ -21,7 +21,7 @@ const ImWchar* GetGlyphRangesGreek() {
     return &ranges[0];
 }
 
-GLuint load_texture_2d(cv::Mat* img) {
+GLuint load_texture_2d(const cv::Mat* img) {
     GLuint image_texture;
     glGenTextures(1, &image_texture);
     glBindTexture(GL_TEXTURE_2D, image_texture);
@@ -48,18 +48,4 @@ GLuint load_texture_2d(cv::Mat* img) {
         SPDLOG_ERROR("unsupported image type {}", img->type());
     }
     return image_texture;
-}
-
-GLuint load_texture_2d(const char* filename) {
-    auto img = cv::imread(filename, cv::IMREAD_UNCHANGED);
-    return load_texture_2d(&img);
-}
-
-bool ImageButtonWithText(ImTextureID texture, const std::string& text, float x, float y, float w, float h) {
-    ImGui::SetCursorPos({ x, y });
-    bool clicked = ImGui::ImageButton(("Button_" + text).c_str(), texture, { w, h });
-    ImVec2 text_size = ImGui::CalcTextSize(text.c_str());
-    ImGui::SetCursorPos({ x + (w - text_size.x) * 0.5f, y + (h - text_size.y) * 0.5f });
-    ImGui::Text(text.c_str());
-    return clicked;
 }

@@ -3,6 +3,7 @@ add_library(ui
     main_window.cpp
     vtk_viewer.cpp
 )
+add_subdirectory(widget)
 
 target_include_directories(ui PUBLIC ${SRC_ROOT})
 

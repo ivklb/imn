@@ -63,10 +63,34 @@ void MainWindow::show() {
 #endif
 
         {
+            ImGui::SetNextWindowSize(ImVec2(360, 240), ImGuiCond_FirstUseEver);
+            ImGui::Begin("Vtk Viewer 1", nullptr, VtkViewer::NoScrollFlags());
+            vtkViewer1.render();
+            ImGui::End();
+        }
+        {
             ImGui::Begin("unicode 中文 μm");
             auto region = ImGui::GetContentRegionAvail();
-            // if (ImPlot::BeginPlot("##lines_my", ImVec2(800, 800), ImPlotFlags_CanvasOnly)) {
-            if (ImPlot::BeginPlot("##lines_my", region, ImPlotFlags_CanvasOnly)) {
+            {
+                ImGuiWindowFlags window_flags =
+                    ImGuiWindowFlags_HorizontalScrollbar
+                    | ImGuiWindowFlags_NoScrollbar
+                    ;
+                // ImGui::BeginChild("ChildL", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false, window_flags);
+                ImGui::BeginChild("ChildL", ImVec2(60, 260), false, window_flags);
+                ImGui::Button("Banana");
+                ImGui::Button("Banana");
+                ImGui::Button("Banana");
+                ImGui::Button("Banana");
+                ImGui::Button("Banana");
+                ImGui::Button("Banana");
+                ImGui::Button("Banana");
+                ImGui::Button("Banana");
+                ImGui::Button("Banana");
+                ImGui::EndChild();
+            }
+            ImGui::SameLine();
+            if (ImPlot::BeginPlot("##lines_my", ImVec2(0, 0), ImPlotFlags_CanvasOnly)) {
                 static ImVec2 bmin(0, 0);
                 static ImVec2 bmax(1, 1);
                 static ImVec2 uv0(0, 0);
@@ -81,12 +105,6 @@ void MainWindow::show() {
             }
             ImGui::End();
         }
-
-        ImGui::SetNextWindowSize(ImVec2(360, 240), ImGuiCond_FirstUseEver);
-        ImGui::Begin("Vtk Viewer 1", nullptr, VtkViewer::NoScrollFlags());
-        // default render size = ImGui::GetContentRegionAvail()
-        vtkViewer1.render();
-        ImGui::End();
 
         ///////////////////////////////////////////////////
         // Render dear imgui into screen
@@ -177,7 +195,8 @@ void MainWindow::_setup_imgui() {
     // Our state
     int out_width;
     int out_height;
-    _out_texture = load_texture_2d("asset/image/moon.jpeg");
+    auto img = cv::imread("asset/image/moon.jpeg", cv::IMREAD_UNCHANGED);
+    _out_texture = load_texture_2d(&img);
 }
 
 void MainWindow::_create_dock_space_and_menubar() {
