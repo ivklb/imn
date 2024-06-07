@@ -8,12 +8,8 @@
 #include <GLFW/glfw3.h>
 #include <opencv2/opencv.hpp>
 
-#include "ext/stb/stb_image.h"
-
 
 const ImWchar* GetGlyphRangesGreek();
-
-bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 
 GLuint load_texture_2d(cv::Mat* img);
 GLuint load_texture_2d(const char* filename);

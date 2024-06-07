@@ -177,7 +177,6 @@ void MainWindow::_setup_imgui() {
     // Our state
     int out_width;
     int out_height;
-    // LoadTextureFromFile("asset/image/moon.jpeg", &_out_texture, &out_width, &out_height);
     _out_texture = load_texture_2d("asset/image/moon.jpeg");
 }
 
