@@ -4,11 +4,16 @@ add_subdirectory(core)
 add_subdirectory(ui)
 add_subdirectory(util)
 
-target_link_libraries(${PROJECT_NAME} OpenGL::GL)
-target_link_libraries(${PROJECT_NAME} unofficial::gl3w::gl3w)
-target_link_libraries(${PROJECT_NAME} glfw)
-target_link_libraries(${PROJECT_NAME} imgui::imgui)
-target_link_libraries(${PROJECT_NAME} implot::implot)
+target_link_libraries(${PROJECT_NAME}
+    OpenGL::GL
+    unofficial::gl3w::gl3w
+    glfw
+    imgui::imgui
+    implot::implot
+    OpenMP::OpenMP_CXX
+    opencv_core
+    opencv_imgcodecs
+)
 
 target_link_libraries(${PROJECT_NAME} core)
 target_link_libraries(${PROJECT_NAME} ui)

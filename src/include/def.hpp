@@ -3,6 +3,8 @@
 #define INCLUDE__DEF_HPP
 
 #include <string>
+#include <memory>
+#include <eigen3/Eigen/Dense>
 
 #ifdef MOON_EXPORT
 #  define MOON_API extern "C" __declspec(dllexport)
@@ -19,6 +21,8 @@ const std::string kAsciiLogo = R"(
  | |\/| |  / _ \   / _ \  | '_ \
  | |  | | | (_) | | (_) | | | | |
  |_|  |_|  \___/   \___/  |_| |_|)";
+
+typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Dtype;
 
 
 #endif

@@ -36,10 +36,6 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::show() {
-#ifdef NDEBUG
-    // disable warning window in release mode
-    vtkObject::GlobalWarningDisplayOff();
-#endif
     // Setup pipeline
     auto actor = SetupDemoPipeline();
     VtkViewer vtkViewer1;
@@ -68,7 +64,9 @@ void MainWindow::show() {
 
         {
             ImGui::Begin("unicode 中文 μm");
-            if (ImPlot::BeginPlot("##lines_my", ImVec2(0, 0))) {
+            auto region = ImGui::GetContentRegionAvail();
+            // if (ImPlot::BeginPlot("##lines_my", ImVec2(800, 800), ImPlotFlags_CanvasOnly)) {
+            if (ImPlot::BeginPlot("##lines_my", region, ImPlotFlags_CanvasOnly)) {
                 static ImVec2 bmin(0, 0);
                 static ImVec2 bmax(1, 1);
                 static ImVec2 uv0(0, 0);
@@ -76,6 +74,7 @@ void MainWindow::show() {
                 static ImVec4 tint(1, 1, 1, 1);
                 static double f = 0.5;
                 ImPlot::SetupAxesLimits(0, 1, 0, 1);
+                ImPlot::SetupAxes("", "", ImPlotAxisFlags_NoDecorations);
                 ImPlot::PlotImage("my image", (void*)_out_texture, bmin, bmax, uv0, uv1, tint);
                 ImPlot::DragLineY(120482, &f, ImVec4(1, 0.5f, 1, 1), 1);
                 ImPlot::EndPlot();
@@ -111,6 +110,10 @@ void MainWindow::show() {
 }
 
 void MainWindow::_setup() {
+#ifdef NDEBUG
+    // disable warning window in release mode
+    vtkObject::GlobalWarningDisplayOff();
+#endif
     _setup_gl();
     _setup_imgui();
 }
@@ -174,7 +177,8 @@ void MainWindow::_setup_imgui() {
     // Our state
     int out_width;
     int out_height;
-    LoadTextureFromFile("asset/image/moon.jpeg", &_out_texture, &out_width, &out_height);
+    // LoadTextureFromFile("asset/image/moon.jpeg", &_out_texture, &out_width, &out_height);
+    _out_texture = load_texture_2d("asset/image/moon.jpeg");
 }
 
 void MainWindow::_create_dock_space_and_menubar() {
