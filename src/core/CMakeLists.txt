@@ -1,6 +1,6 @@
 
 add_library(core
-    moon.cpp
+    app.cpp
     setting.cpp
 )
 

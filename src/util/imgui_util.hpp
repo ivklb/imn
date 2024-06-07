@@ -11,6 +11,7 @@
 
 const ImWchar* GetGlyphRangesGreek();
 
+GLuint load_texture_2d(const std::string& img);
 GLuint load_texture_2d(const cv::Mat* img);
 
 

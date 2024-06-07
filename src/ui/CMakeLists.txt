@@ -13,6 +13,7 @@ target_link_libraries(ui
     glfw
     imgui::imgui
     ${VTK_LIBRARIES}
+    common_widgets
 )
 
 vtk_module_autoinit(

@@ -36,6 +36,7 @@
 #include <map>
 #include <string>
 
+namespace Moon {
 
 namespace Lambda {
 // https://stackoverflow.com/questions/59897767/c-storing-callbacks-with-variadic-arguments
@@ -99,5 +100,6 @@ std::any call(const std::string& key, Args... arg) {
 }
 
 }  // end namespace Lambda
+}  // end namespace Moon
 
 #endif

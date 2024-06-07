@@ -1,5 +1,5 @@
 
-#include "moon.hpp"
+#include "app.hpp"
 
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 #include <spdlog/spdlog.h>
@@ -7,8 +7,10 @@
 
 #include "include/def.hpp"
 
+using namespace Moon;
 
-void Moon::init() {
+
+void App::init() {
     // https://github.com/gabime/spdlog/wiki/3.-Custom-formatting
     spdlog::set_pattern("%L %m-%d %T.%e %s:%# %! %v");
     spdlog::flush_every(std::chrono::seconds(1));

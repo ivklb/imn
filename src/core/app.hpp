@@ -5,10 +5,13 @@
 #include <memory>
 
 
-class Moon {
+namespace Moon {
+
+class App {
 public:
     void init();
     void destroy();
 };
+}
 
 #endif

@@ -22,9 +22,10 @@
 // File-Specific Includes
 #include "include/def.hpp"
 #include "ui/imgui_vtk_demo.h" // Actor generator for this demo
+#include "ui/widget/common_widgets.hpp"
 #include "util/imgui_util.hpp"
 #include "core/setting.hpp"
-#include "core/moon.hpp"
+#include "core/app.hpp"
 
 
 static void _glfw_error_callback(int error, const char* description) {
@@ -78,15 +79,16 @@ void MainWindow::show() {
                     ;
                 // ImGui::BeginChild("ChildL", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false, window_flags);
                 ImGui::BeginChild("ChildL", ImVec2(60, 260), false, window_flags);
-                ImGui::Button("Banana");
-                ImGui::Button("Banana");
-                ImGui::Button("Banana");
-                ImGui::Button("Banana");
-                ImGui::Button("Banana");
-                ImGui::Button("Banana");
-                ImGui::Button("Banana");
-                ImGui::Button("Banana");
-                ImGui::Button("Banana");
+                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
                 ImGui::EndChild();
             }
             ImGui::SameLine();

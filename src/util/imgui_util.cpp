@@ -3,11 +3,13 @@
 
 #include <fstream>
 #include <imgui.h>
-
 #include <spdlog/spdlog.h>
-
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
+
+#include "core/cache.hpp"
+
+using namespace Moon;
 
 
 const ImWchar* GetGlyphRangesGreek() {
@@ -19,6 +21,17 @@ const ImWchar* GetGlyphRangesGreek() {
         0,
     };
     return &ranges[0];
+}
+
+GLuint load_texture_2d(const std::string& img) {
+    if (Cache::has(img)) {
+        return Cache::get<GLuint>(img);
+    }
+
+    auto mat = cv::imread(img, cv::IMREAD_UNCHANGED);
+    auto rv = load_texture_2d(&mat);
+    Cache::add(img, rv);
+    return rv;
 }
 
 GLuint load_texture_2d(const cv::Mat* img) {

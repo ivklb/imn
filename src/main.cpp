@@ -1,12 +1,12 @@
 
 
 #include "ui/main_window.hpp"
-#include "core/moon.hpp"
+#include "core/app.hpp"
 
 
 int main(int argc, char* argv[]) {
-    Moon moon;
-    moon.init();
+    Moon::App app;
+    app.init();
 
     MainWindow window;
     window.show();
