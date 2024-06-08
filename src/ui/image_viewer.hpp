@@ -3,7 +3,9 @@
 #define UI__IMAGE_VIEWER_HPP
 
 #include <memory>
+#include <tuple>
 
+#include <imgui.h>
 #include <opencv2/opencv.hpp>
 #include "base_window.hpp"
 
@@ -16,9 +18,10 @@ public:
 private:
     void _show_toolbar();
     void _show_image();
+    std::tuple<ImVec2, ImVec2> _calc_paint_region(double image_width, double image_height, double canvas_width, double canvas_height);
 
     std::shared_ptr<cv::Mat> _image;
-    void* _tex_id;
+    ImTextureID _tex_id;
 };
 
 #endif

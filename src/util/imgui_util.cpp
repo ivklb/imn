@@ -23,9 +23,9 @@ const ImWchar* GetGlyphRangesGreek() {
     return &ranges[0];
 }
 
-GLuint load_texture_2d(const std::string& img) {
+ImTextureID load_texture_2d(const std::string& img) {
     if (Cache::has(img)) {
-        return Cache::get<GLuint>(img);
+        return Cache::get<ImTextureID>(img);
     }
 
     auto mat = cv::imread(img, cv::IMREAD_UNCHANGED);
@@ -34,7 +34,7 @@ GLuint load_texture_2d(const std::string& img) {
     return rv;
 }
 
-GLuint load_texture_2d(const cv::Mat* img) {
+ImTextureID load_texture_2d(const cv::Mat* img) {
     GLuint image_texture;
     glGenTextures(1, &image_texture);
     glBindTexture(GL_TEXTURE_2D, image_texture);
@@ -60,5 +60,5 @@ GLuint load_texture_2d(const cv::Mat* img) {
     } else {
         SPDLOG_ERROR("unsupported image type {}", img->type());
     }
-    return image_texture;
+    return (ImTextureID)image_texture;
 }

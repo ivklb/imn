@@ -12,7 +12,7 @@ using namespace Moon;
 
 void App::init() {
     // https://github.com/gabime/spdlog/wiki/3.-Custom-formatting
-    spdlog::set_pattern("%L %m-%d %T.%e %s:%# %! %v");
+    spdlog::set_pattern("%L %m-%d %T.%e %s:%# %v");
     spdlog::flush_every(std::chrono::seconds(1));
     auto max_size = 50 * 1024 * 1024;  // 50MB
     auto max_files = 10;
