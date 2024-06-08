@@ -70,7 +70,6 @@ void ImageViewer::_show_image() {
 }
 
 std::tuple<ImVec2, ImVec2> ImageViewer::_calc_paint_region(double image_width, double image_height, double canvas_width, double canvas_height) {
-    SPDLOG_INFO("image_width: {}, image_height: {}, canvas_width: {}, canvas_height: {}", image_width, image_height, canvas_width, canvas_height);
     double image_ratio = image_width / image_height;
     double canvas_ratio = canvas_width / canvas_height;
     ImVec2 p1, p2;
@@ -95,6 +94,5 @@ std::tuple<ImVec2, ImVec2> ImageViewer::_calc_paint_region(double image_width, d
         p1 = ImVec2((canvas_width - paint_width) / 2, 0);
         p2 = ImVec2((canvas_width + paint_width) / 2, canvas_height);
     }
-    SPDLOG_INFO("({}, {}) ({}, {})", p1.x, p1.y, p2.x, p2.y);
     return { p1, p2 };
 }
