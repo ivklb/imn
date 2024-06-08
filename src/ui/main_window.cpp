@@ -23,6 +23,7 @@
 #include "include/def.hpp"
 #include "ui/imgui_vtk_demo.h" // Actor generator for this demo
 #include "ui/widget/common_widgets.hpp"
+#include "ui/image_viewer.hpp"
 #include "util/imgui_util.hpp"
 #include "core/setting.hpp"
 #include "core/app.hpp"
@@ -69,44 +70,7 @@ void MainWindow::show() {
             vtkViewer1.render();
             ImGui::End();
         }
-        {
-            ImGui::Begin("unicode 中文 μm");
-            auto region = ImGui::GetContentRegionAvail();
-            {
-                ImGuiWindowFlags window_flags =
-                    ImGuiWindowFlags_HorizontalScrollbar
-                    | ImGuiWindowFlags_NoScrollbar
-                    ;
-                // ImGui::BeginChild("ChildL", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false, window_flags);
-                ImGui::BeginChild("ChildL", ImVec2(60, 260), false, window_flags);
-                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-                ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-                ImGui::EndChild();
-            }
-            ImGui::SameLine();
-            if (ImPlot::BeginPlot("##lines_my", ImVec2(0, 0), ImPlotFlags_CanvasOnly)) {
-                static ImVec2 bmin(0, 0);
-                static ImVec2 bmax(1, 1);
-                static ImVec2 uv0(0, 0);
-                static ImVec2 uv1(1, 1);
-                static ImVec4 tint(1, 1, 1, 1);
-                static double f = 0.5;
-                ImPlot::SetupAxesLimits(0, 1, 0, 1);
-                ImPlot::SetupAxes("", "", ImPlotAxisFlags_NoDecorations);
-                ImPlot::PlotImage("my image", (void*)_out_texture, bmin, bmax, uv0, uv1, tint);
-                ImPlot::DragLineY(120482, &f, ImVec4(1, 0.5f, 1, 1), 1);
-                ImPlot::EndPlot();
-            }
-            ImGui::End();
-        }
+        _image_viewer.show();
 
         ///////////////////////////////////////////////////
         // Render dear imgui into screen
@@ -189,6 +153,7 @@ void MainWindow::_setup_imgui() {
     ImGui::StyleColorsDark();
     auto& style = ImGui::GetStyle();
     style.WindowPadding = ImVec2(0, 0);
+    style.FramePadding = ImVec2(4, 4);
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(_window, true);
@@ -198,7 +163,7 @@ void MainWindow::_setup_imgui() {
     int out_width;
     int out_height;
     auto img = cv::imread("asset/image/moon.jpeg", cv::IMREAD_UNCHANGED);
-    _out_texture = load_texture_2d(&img);
+    _image_viewer.set_image(std::make_shared<cv::Mat>(std::move(img)));
 }
 
 void MainWindow::_create_dock_space_and_menubar() {

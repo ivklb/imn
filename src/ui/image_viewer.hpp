@@ -4,19 +4,20 @@
 
 #include <memory>
 
+#include <opencv2/opencv.hpp>
 #include "base_window.hpp"
-
-class Dtype;
 
 
 class ImageViewer : public BaseWindow {
 public:
-    void set_image(std::shared_ptr<Dtype> image);
+    void set_image(std::shared_ptr<cv::Mat> image);
     void show() override;
+
 private:
     void _create_toolbar();
 
-    std::shared_ptr<Dtype> _image;
+    std::shared_ptr<cv::Mat> _image;
+    void* _tex_id;
 };
 
 #endif

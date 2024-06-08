@@ -2,24 +2,19 @@
 #ifndef UI__MAIN_WINDOW_HPP
 #define UI__MAIN_WINDOW_HPP
 
-// Standard Library
 #include <iostream>
-
-#include "ui/vtk_viewer.hpp"
 #include <vtkSmartPointer.h>
 #include <vtkActor.h>
-// OpenGL Loader
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
-
-// ImGui + imgui-vtk
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <implot.h>
 
-// File-Specific Includes
-#include "ui/imgui_vtk_demo.h" // Actor generator for this demo
+#include "ui/vtk_viewer.hpp"
+#include "ui/imgui_vtk_demo.h"
+#include "ui/image_viewer.hpp"
 #include "util/imgui_util.hpp"
 #include "core/setting.hpp"
 
@@ -40,6 +35,7 @@ private:
     GLFWwindow* _window;
     const char* _glsl_version = "#version 130";
     GLuint _out_texture;
+    ImageViewer _image_viewer;;
 
 };
 
