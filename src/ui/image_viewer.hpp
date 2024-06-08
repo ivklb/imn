@@ -14,7 +14,8 @@ public:
     void show() override;
 
 private:
-    void _create_toolbar();
+    void _show_toolbar();
+    void _show_image();
 
     std::shared_ptr<cv::Mat> _image;
     void* _tex_id;

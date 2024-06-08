@@ -16,27 +16,34 @@ void ImageViewer::set_image(std::shared_ptr<cv::Mat> image) {
 
 void ImageViewer::show() {
     ImGui::Begin("unicode 中文 μm");
-    auto region = ImGui::GetContentRegionAvail();
-    {
-        ImGuiWindowFlags window_flags =
-            ImGuiWindowFlags_HorizontalScrollbar
-            | ImGuiWindowFlags_NoScrollbar
-            ;
-        // ImGui::BeginChild("ChildL", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false, window_flags);
-        ImGui::BeginChild("ChildL", ImVec2(70, 260), false, window_flags);
-        ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-        ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-        ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-        ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-        ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-        ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-        ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-        ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-        ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-        ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
-        ImGui::EndChild();
-    }
+    _show_toolbar();
     ImGui::SameLine();
+    _show_image();
+    ImGui::End();
+}
+
+void ImageViewer::_show_toolbar() {
+    auto region = ImGui::GetContentRegionAvail();
+    ImGuiWindowFlags window_flags =
+        ImGuiWindowFlags_HorizontalScrollbar
+        | ImGuiWindowFlags_NoScrollbar
+        ;
+    // ImGui::BeginChild("ChildL", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f, 260), false, window_flags);
+    ImGui::BeginChild("ChildL", ImVec2(70, 260), false, window_flags);
+    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(60, 60));
+    ImGui::EndChild();
+}
+
+void ImageViewer::_show_image() {
     if (ImPlot::BeginPlot("##lines_my", ImVec2(0, 0), ImPlotFlags_CanvasOnly)) {
         static ImVec2 bmin(0, 0);
         static ImVec2 bmax(1, 1);
@@ -50,9 +57,4 @@ void ImageViewer::show() {
         ImPlot::DragLineY(120482, &f, ImVec4(1, 0.5f, 1, 1), 1);
         ImPlot::EndPlot();
     }
-    ImGui::End();
-}
-
-void ImageViewer::_create_toolbar() {
-
 }
