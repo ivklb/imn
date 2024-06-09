@@ -23,23 +23,28 @@ const ImWchar* GetGlyphRangesGreek() {
     return &ranges[0];
 }
 
-ImTextureID load_texture_2d(const std::string& img) {
+ImTextureID load_texture_2d(const std::string& img, bool nearest_sample) {
     if (Cache::has(img)) {
         return Cache::get<ImTextureID>(img);
     }
 
     auto mat = cv::imread(img, cv::IMREAD_UNCHANGED);
-    auto rv = load_texture_2d(&mat);
+    auto rv = load_texture_2d(&mat, nearest_sample);
     Cache::add(img, rv);
     return rv;
 }
 
-ImTextureID load_texture_2d(const cv::Mat* img) {
+ImTextureID load_texture_2d(const cv::Mat* img, bool nearest_sample) {
     GLuint image_texture;
     glGenTextures(1, &image_texture);
     glBindTexture(GL_TEXTURE_2D, image_texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    if (nearest_sample) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    } else {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -50,7 +55,10 @@ ImTextureID load_texture_2d(const cv::Mat* img) {
         // TODO: review me
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, img->cols, img->rows, 0, GL_RED, GL_UNSIGNED_BYTE, img->data);
     } else if (img->type() == CV_8UC3) {
+        // jpeg
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->cols, img->rows, 0, GL_BGR, GL_UNSIGNED_BYTE, img->data);
+    } else if (img->type() == CV_8UC4) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->cols, img->rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, img->data);
     } else if (img->type() == CV_16UC1) {
         // TODO: review me
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, img->cols, img->rows, 0, GL_RED, GL_UNSIGNED_SHORT, img->data);

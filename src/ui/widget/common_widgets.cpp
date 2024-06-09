@@ -5,7 +5,7 @@
 
 
 bool ImageButton(const char* str_id, const std::string& image_file, const ImVec2& image_size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& bg_col, const ImVec4& tint_col) {
-    auto tex_id = load_texture_2d(image_file);
+    auto tex_id = load_texture_2d(image_file, false);
     return ImGui::ImageButton(str_id, tex_id, image_size, uv0, uv1, bg_col, tint_col);
 }
 

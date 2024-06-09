@@ -10,6 +10,11 @@
 #include <opencv2/opencv.hpp>
 #include "base_window.hpp"
 
+enum MouseMode {
+    kNone = 0,
+    kRuler,
+    kRect,
+};
 
 class ImageViewer : public BaseWindow {
 public:
@@ -29,8 +34,9 @@ private:
     double _scale;
     double _drag_x;
     double _drag_y;
+
+    MouseMode _mouse_mode = kNone;
     double _ruler_points[4];  // {start_x, end_x, start_y, end_y}
-    double _ruler_length;
     bool _show_horizontal_line;
 };
 

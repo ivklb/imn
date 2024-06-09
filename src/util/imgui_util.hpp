@@ -11,8 +11,8 @@
 
 const ImWchar* GetGlyphRangesGreek();
 
-ImTextureID load_texture_2d(const std::string& img);
-ImTextureID load_texture_2d(const cv::Mat* img);
+ImTextureID load_texture_2d(const std::string& img, bool nearest_sample = true);
+ImTextureID load_texture_2d(const cv::Mat* img, bool nearest_sample = true);
 
 
 #endif

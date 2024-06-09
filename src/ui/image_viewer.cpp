@@ -36,22 +36,25 @@ void ImageViewer::_show_toolbar() {
         | ImGuiWindowFlags_NoScrollbar
         ;
     ImGui::BeginChild("ChildL", ImVec2(toolbar_width, toolbar_height), false, window_flags);
-    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(button_size, button_size));
-    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(button_size, button_size));
-    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(button_size, button_size));
-    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(button_size, button_size));
-    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(button_size, button_size));
-    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(button_size, button_size));
-    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(button_size, button_size));
-    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(button_size, button_size));
-    ImageButton("##button", "asset/image/moon.jpeg", ImVec2(button_size, button_size));
+    if (ImageButton("##button_cursor", "asset/image/cursor.png", ImVec2(button_size, button_size))) {
+        SPDLOG_DEBUG("mouse mode: cursor");
+        _mouse_mode = kNone;
+    }
+    if (ImageButton("##button_ruler", "asset/image/line.png", ImVec2(button_size, button_size))) {
+        SPDLOG_DEBUG("mouse mode: ruler");
+        _mouse_mode = kRuler;
+    }
+    if (ImageButton("##button_rect", "asset/image/rectangle.png", ImVec2(button_size, button_size))) {
+        SPDLOG_DEBUG("mouse mode: rect");
+        _mouse_mode = kRect;
+    }
     ImGui::EndChild();
 }
 
 void ImageViewer::_show_image() {
     ImPlot::PushStyleVar(ImPlotStyleVar_PlotPadding, ImVec2(0, 0));
     auto region = ImGui::GetContentRegionAvail();
-    if (ImPlot::BeginPlot("##lines_my", region, ImPlotFlags_CanvasOnly)) {
+    if (ImPlot::BeginPlot("##image_viewer", region, ImPlotFlags_CanvasOnly)) {
         if (ImGui::BeginPopupContextItem()) {
             if (ImGui::Selectable("reset")) {
                 // TODO:
@@ -85,10 +88,12 @@ void ImageViewer::_show_image() {
         if (_show_horizontal_line) {
             ImPlot::DragLineY(120482, &_drag_y, ImVec4(1, 1, 1, 1), 1);
         }
-        ImPlot::DragPoint(120483, &_ruler_points[0], &_ruler_points[2], kColorRed, 5);
-        ImPlot::DragPoint(120484, &_ruler_points[1], &_ruler_points[3], kColorRed, 5);
-        ImPlot::SetNextLineStyle(kColorRed);
-        ImPlot::PlotLine("##ruler", &_ruler_points[0], &_ruler_points[2], 2, 0, sizeof(double));
+        if (_mouse_mode == kRuler) {
+            ImPlot::DragPoint(120483, &_ruler_points[0], &_ruler_points[2], kColorYellow, 5);
+            ImPlot::DragPoint(120484, &_ruler_points[1], &_ruler_points[3], kColorYellow, 5);
+            ImPlot::SetNextLineStyle(kColorYellow);
+            ImPlot::PlotLine("##ruler", &_ruler_points[0], &_ruler_points[2], 2, 0, sizeof(double));
+        }
         ImPlot::EndPlot();
     }
     ImPlot::PopStyleVar();
