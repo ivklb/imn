@@ -6,6 +6,7 @@
 #include <tuple>
 
 #include <imgui.h>
+#include <implot.h>
 #include <opencv2/opencv.hpp>
 #include "base_window.hpp"
 
@@ -28,6 +29,9 @@ private:
     double _scale;
     double _drag_x;
     double _drag_y;
+    double _ruler_points[4];  // {start_x, end_x, start_y, end_y}
+    double _ruler_length;
+    bool _show_horizontal_line;
 };
 
 #endif

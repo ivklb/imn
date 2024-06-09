@@ -3,8 +3,9 @@
 #define INCLUDE__DEF_HPP
 
 #include <string>
-#include <memory>
 #include <eigen3/Eigen/Dense>
+#include <imgui.h>
+#include <memory>
 
 #ifdef MOON_EXPORT
 #  define MOON_API extern "C" __declspec(dllexport)
@@ -12,6 +13,8 @@
 #  define MOON_API extern "C" __declspec(dllimport)
 #endif
 
+
+typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Dtype;
 
 const std::string kAppName = "moon";
 const std::string kAsciiLogo = R"(
@@ -22,7 +25,12 @@ const std::string kAsciiLogo = R"(
  | |  | | | (_) | | (_) | | | | |
  |_|  |_|  \___/   \___/  |_| |_|)";
 
-typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Dtype;
+const ImVec4 kColorWhite = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+const ImVec4 kColorBlack = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+const ImVec4 kColorRed = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
+const ImVec4 kColorGreen = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+const ImVec4 kColorBlue = ImVec4(0.0f, 0.0f, 1.0f, 1.0f);
+const ImVec4 kColorYellow = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
 
 
 #endif

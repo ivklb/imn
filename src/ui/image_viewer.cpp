@@ -5,6 +5,7 @@
 #include <implot.h>
 #include <spdlog/spdlog.h>
 
+#include "include/def.hpp"
 #include "util/imgui_util.hpp"
 #include "ui/widget/common_widgets.hpp"
 
@@ -53,7 +54,11 @@ void ImageViewer::_show_image() {
     if (ImPlot::BeginPlot("##lines_my", region, ImPlotFlags_CanvasOnly)) {
         if (ImGui::BeginPopupContextItem()) {
             if (ImGui::Selectable("reset")) {
+                // TODO:
                 SPDLOG_DEBUG("reset");
+            }
+            if (ImGui::Selectable("toggle horizontal line", _show_horizontal_line)) {
+                _show_horizontal_line = !_show_horizontal_line;
             }
             ImGui::EndPopup();
         }
@@ -65,14 +70,25 @@ void ImageViewer::_show_image() {
             _bounds_max = p2;
             _drag_y = region.y / 2;
             ImPlot::SetupAxesLimits(0, region.x, 0, region.y, ImPlotCond_Always);
+
+            _ruler_points[0] = region.x * 0.25;
+            _ruler_points[1] = region.x * 0.75;
+            _ruler_points[2] = region.y * 0.5;
+            _ruler_points[3] = region.y * 0.5;
         } else {
         }
-        ImPlot::SetupAxes(NULL, NULL,
-            ImPlotAxisFlags_NoDecorations,
-            ImPlotAxisFlags_NoDecorations
-        );
+        // ImPlot::SetupAxes(NULL, NULL,
+        //     ImPlotAxisFlags_NoDecorations,
+        //     ImPlotAxisFlags_NoDecorations
+        // );
         ImPlot::PlotImage("##image", _tex_id, _bounds_min, _bounds_max);
-        ImPlot::DragLineY(120482, &_drag_y, ImVec4(1, 1, 1, 1), 1);
+        if (_show_horizontal_line) {
+            ImPlot::DragLineY(120482, &_drag_y, ImVec4(1, 1, 1, 1), 1);
+        }
+        ImPlot::DragPoint(120483, &_ruler_points[0], &_ruler_points[2], kColorRed, 5);
+        ImPlot::DragPoint(120484, &_ruler_points[1], &_ruler_points[3], kColorRed, 5);
+        ImPlot::SetNextLineStyle(kColorRed);
+        ImPlot::PlotLine("##ruler", &_ruler_points[0], &_ruler_points[2], 2, 0, sizeof(double));
         ImPlot::EndPlot();
     }
     ImPlot::PopStyleVar();
