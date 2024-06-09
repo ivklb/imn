@@ -49,32 +49,39 @@ void ImageViewer::_show_toolbar() {
 
 void ImageViewer::_show_image() {
     ImPlot::PushStyleVar(ImPlotStyleVar_PlotPadding, ImVec2(0, 0));
+    static ImVec2 last_region;
     auto region = ImGui::GetContentRegionAvail();
     if (ImPlot::BeginPlot("##lines_my", region, ImPlotFlags_CanvasOnly)) {
-        auto [p1, p2] = _calc_paint_region(_image->cols, _image->rows, region.x, region.y);
         static ImVec2 bmin;
         static ImVec2 bmax;
         static double f = region.y / 2;
-        bmin = p1;
-        bmax = p2;
-        ImPlot::SetupAxesLimits(0, region.x, 0, region.y, ImPlotCond_Always);
+        if (last_region.x != region.x || last_region.y != region.y) {
+            SPDLOG_DEBUG("region changed: {} {}", region.x, region.y);
+            last_region = region;
+            auto [p1, p2] = _calc_paint_region(_image->cols, _image->rows, region.x, region.y);
+            bmin = p1;
+            bmax = p2;
+            ImPlot::SetupAxesLimits(0, region.x, 0, region.y, ImPlotCond_Always);
+        } else {
+        }
         ImPlot::SetupAxes(NULL, NULL,
             ImPlotAxisFlags_NoDecorations,
             ImPlotAxisFlags_NoDecorations
         );
         ImPlot::PlotImage("##image", _tex_id, bmin, bmax);
-        ImPlot::DragLineY(120482, &f, ImVec4(1, 0.5f, 1, 1), 1);
+        ImPlot::DragLineY(120482, &f, ImVec4(1, 1, 1, 1), 1);
         ImPlot::EndPlot();
     }
     ImPlot::PopStyleVar();
 }
 
 std::tuple<ImVec2, ImVec2> ImageViewer::_calc_paint_region(double image_width, double image_height, double canvas_width, double canvas_height) {
+    SPDLOG_DEBUG("image_width: {}, image_height: {}, canvas_width: {}, canvas_height: {}", image_width, image_height, canvas_width, canvas_height);
     double image_ratio = image_width / image_height;
     double canvas_ratio = canvas_width / canvas_height;
     ImVec2 p1, p2;
     if (image_ratio > canvas_ratio) {
-        //       +-----------------------+ (canvas_width, canvas_height)
+        //       +-----------------------+ (canvas_width,canvas_height)
         //       |        <blank>        |
         //       +-----------------------+
         //       |         image         |
@@ -85,7 +92,7 @@ std::tuple<ImVec2, ImVec2> ImageViewer::_calc_paint_region(double image_width, d
         p1 = ImVec2(0, (canvas_height - paint_height) / 2);
         p2 = ImVec2(canvas_width, (canvas_height + paint_height) / 2);
     } else {
-        //       +-------+-------+-------+ (canvas_width, canvas_height)
+        //       +-------+-------+-------+ (canvas_width,canvas_height)
         //       |       |       |       |
         //       |<blank>| image |<blank>|
         //       |       |       |       |
@@ -94,5 +101,6 @@ std::tuple<ImVec2, ImVec2> ImageViewer::_calc_paint_region(double image_width, d
         p1 = ImVec2((canvas_width - paint_width) / 2, 0);
         p2 = ImVec2((canvas_width + paint_width) / 2, canvas_height);
     }
+    SPDLOG_DEBUG("p1: {}, {} p2: {}, {}", p1.x, p1.y, p2.x, p2.y);
     return { p1, p2 };
 }
