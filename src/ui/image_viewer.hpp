@@ -21,8 +21,13 @@ private:
     std::tuple<ImVec2, ImVec2> _calc_paint_region(double image_width, double image_height, double canvas_width, double canvas_height);
 
     std::shared_ptr<cv::Mat> _image;
-    double _scale;
     ImTextureID _tex_id;
+    ImVec2 _last_canvas_size;  // used to check if resize event happened
+    ImVec2 _bounds_min;
+    ImVec2 _bounds_max;
+    double _scale;
+    double _drag_x;
+    double _drag_y;
 };
 
 #endif

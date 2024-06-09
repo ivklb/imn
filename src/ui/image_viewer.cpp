@@ -49,18 +49,21 @@ void ImageViewer::_show_toolbar() {
 
 void ImageViewer::_show_image() {
     ImPlot::PushStyleVar(ImPlotStyleVar_PlotPadding, ImVec2(0, 0));
-    static ImVec2 last_region;
     auto region = ImGui::GetContentRegionAvail();
     if (ImPlot::BeginPlot("##lines_my", region, ImPlotFlags_CanvasOnly)) {
-        static ImVec2 bmin;
-        static ImVec2 bmax;
-        static double f = region.y / 2;
-        if (last_region.x != region.x || last_region.y != region.y) {
+        if (ImGui::BeginPopupContextItem()) {
+            if (ImGui::Selectable("reset")) {
+                SPDLOG_DEBUG("reset");
+            }
+            ImGui::EndPopup();
+        }
+        if (_last_canvas_size.x != region.x || _last_canvas_size.y != region.y) {
             SPDLOG_DEBUG("region changed: {} {}", region.x, region.y);
-            last_region = region;
+            _last_canvas_size = region;
             auto [p1, p2] = _calc_paint_region(_image->cols, _image->rows, region.x, region.y);
-            bmin = p1;
-            bmax = p2;
+            _bounds_min = p1;
+            _bounds_max = p2;
+            _drag_y = region.y / 2;
             ImPlot::SetupAxesLimits(0, region.x, 0, region.y, ImPlotCond_Always);
         } else {
         }
@@ -68,8 +71,8 @@ void ImageViewer::_show_image() {
             ImPlotAxisFlags_NoDecorations,
             ImPlotAxisFlags_NoDecorations
         );
-        ImPlot::PlotImage("##image", _tex_id, bmin, bmax);
-        ImPlot::DragLineY(120482, &f, ImVec4(1, 1, 1, 1), 1);
+        ImPlot::PlotImage("##image", _tex_id, _bounds_min, _bounds_max);
+        ImPlot::DragLineY(120482, &_drag_y, ImVec4(1, 1, 1, 1), 1);
         ImPlot::EndPlot();
     }
     ImPlot::PopStyleVar();
