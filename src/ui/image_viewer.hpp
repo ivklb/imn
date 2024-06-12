@@ -37,6 +37,7 @@ private:
 
     MouseMode _mouse_mode = kNone;
     double _ruler_points[4];  // {start_x, end_x, start_y, end_y}
+    double _rect[4];  // {x_min, y_min, x_max, y_max}
     bool _show_horizontal_line;
 };
 

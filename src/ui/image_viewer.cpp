@@ -79,6 +79,11 @@ void ImageViewer::_show_image() {
             _ruler_points[1] = region.x * 0.75;
             _ruler_points[2] = region.y * 0.5;
             _ruler_points[3] = region.y * 0.5;
+
+            _rect[0] = region.x * 0.25;
+            _rect[1] = region.y * 0.25;
+            _rect[2] = region.x * 0.75;
+            _rect[3] = region.y * 0.75;
         } else {
         }
         // ImPlot::SetupAxes(NULL, NULL,
@@ -94,6 +99,9 @@ void ImageViewer::_show_image() {
             ImPlot::DragPoint(120484, &_ruler_points[1], &_ruler_points[3], kColorYellow, 5);
             ImPlot::SetNextLineStyle(kColorYellow);
             ImPlot::PlotLine("##ruler", &_ruler_points[0], &_ruler_points[2], 2, 0, sizeof(double));
+        }
+        if (_mouse_mode == kRect) {
+            ImPlot::DragRect(120485, &_rect[0], &_rect[1], &_rect[2], &_rect[3], kColorYellow);
         }
         ImPlot::EndPlot();
     }
