@@ -27,6 +27,7 @@ void ImageViewer::show() {
 
 void ImageViewer::_show_toolbar() {
     int button_size = 60;
+    ImVec2 icon_size = ImVec2(button_size, button_size);
     auto region = ImGui::GetContentRegionAvail();
     auto toolbar_width = button_size + ImGui::GetStyle().FramePadding.x * 2;
     auto toolbar_height = region.y;
@@ -36,15 +37,15 @@ void ImageViewer::_show_toolbar() {
         | ImGuiWindowFlags_NoScrollbar
         ;
     ImGui::BeginChild("ChildL", ImVec2(toolbar_width, toolbar_height), false, window_flags);
-    if (ImageButton("##button_cursor", "asset/image/cursor.png", ImVec2(button_size, button_size))) {
-        SPDLOG_DEBUG("mouse mode: cursor");
+    if (ImageButton("##button_none", "asset/image/cursor.png", _mouse_mode == kNone, icon_size)) {
+        SPDLOG_DEBUG("mouse mode: none");
         _mouse_mode = kNone;
     }
-    if (ImageButton("##button_ruler", "asset/image/line.png", ImVec2(button_size, button_size))) {
+    if (ImageButton("##button_ruler", "asset/image/line.png", _mouse_mode == kRuler, icon_size)) {
         SPDLOG_DEBUG("mouse mode: ruler");
         _mouse_mode = kRuler;
     }
-    if (ImageButton("##button_rect", "asset/image/rectangle.png", ImVec2(button_size, button_size))) {
+    if (ImageButton("##button_rect", "asset/image/rectangle.png", _mouse_mode == kRect, icon_size)) {
         SPDLOG_DEBUG("mouse mode: rect");
         _mouse_mode = kRect;
     }

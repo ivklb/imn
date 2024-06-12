@@ -58,6 +58,7 @@ ImTextureID load_texture_2d(const cv::Mat* img, bool nearest_sample) {
         // jpeg
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->cols, img->rows, 0, GL_BGR, GL_UNSIGNED_BYTE, img->data);
     } else if (img->type() == CV_8UC4) {
+        // png
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->cols, img->rows, 0, GL_BGRA, GL_UNSIGNED_BYTE, img->data);
     } else if (img->type() == CV_16UC1) {
         // TODO: review me
