@@ -5,6 +5,7 @@
 #include <implot.h>
 #include <spdlog/spdlog.h>
 
+#include "core/setting.hpp"
 #include "include/def.hpp"
 #include "util/imgui_util.hpp"
 #include "ui/widget/common_widgets.hpp"
@@ -20,7 +21,17 @@ void ImageViewer::show() {
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
     _show_toolbar();
     ImGui::SameLine();
-    _show_image();
+
+    {
+        ImGui::BeginChild("image");
+        auto region = ImGui::GetContentRegionAvail();
+        _show_image(ImVec2(region.x, region.y - get_input_box_height()));
+        static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
+        static int slider_i = 50;
+        ImGui::SetNextItemWidth(region.x);
+        ImGui::SliderInt("##slider", &slider_i, 0, 100, "%d", flags);
+        ImGui::EndChild();
+    }
     ImGui::PopStyleVar();
     ImGui::End();
 }
@@ -52,9 +63,9 @@ void ImageViewer::_show_toolbar() {
     ImGui::EndChild();
 }
 
-void ImageViewer::_show_image() {
+void ImageViewer::_show_image(ImVec2 region) {
     ImPlot::PushStyleVar(ImPlotStyleVar_PlotPadding, ImVec2(0, 0));
-    auto region = ImGui::GetContentRegionAvail();
+
     if (ImPlot::BeginPlot("##image_viewer", region, ImPlotFlags_CanvasOnly)) {
         if (ImGui::BeginPopupContextItem()) {
             if (ImGui::Selectable("reset")) {
@@ -105,6 +116,7 @@ void ImageViewer::_show_image() {
         }
         ImPlot::EndPlot();
     }
+
     ImPlot::PopStyleVar();
 }
 

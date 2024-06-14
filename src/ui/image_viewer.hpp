@@ -23,7 +23,7 @@ public:
 
 private:
     void _show_toolbar();
-    void _show_image();
+    void _show_image(ImVec2 region);
     std::tuple<ImVec2, ImVec2> _calc_paint_region(double image_width, double image_height, double canvas_width, double canvas_height);
 
     std::shared_ptr<cv::Mat> _image;

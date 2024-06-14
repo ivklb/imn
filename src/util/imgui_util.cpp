@@ -8,6 +8,7 @@
 #include <opencv2/imgcodecs.hpp>
 
 #include "core/cache.hpp"
+#include "core/setting.hpp"
 
 using namespace Moon;
 
@@ -21,6 +22,11 @@ const ImWchar* GetGlyphRangesGreek() {
         0,
     };
     return &ranges[0];
+}
+
+float get_input_box_height() {
+    // https://github.com/ocornut/imgui/issues/4511#issuecomment-913381339
+    return global_setting().font_size + ImGui::GetStyle().FramePadding.y * 2;
 }
 
 ImTextureID load_texture_2d(const std::string& img, bool nearest_sample) {
