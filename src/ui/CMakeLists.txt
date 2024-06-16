@@ -5,6 +5,7 @@ add_library(ui
     vtk_viewer.cpp
 )
 add_subdirectory(widget)
+add_subdirectory(dialog)
 
 target_include_directories(ui PUBLIC ${SRC_ROOT})
 
@@ -15,6 +16,7 @@ target_link_libraries(ui
     imgui::imgui
     ${VTK_LIBRARIES}
     common_widgets
+    dialogs
 )
 
 vtk_module_autoinit(

@@ -24,6 +24,7 @@
 #include "ui/imgui_vtk_demo.h" // Actor generator for this demo
 #include "ui/widget/common_widgets.hpp"
 #include "ui/image_viewer.hpp"
+#include "ui/dialog/ImGuiFileDialog.h"
 #include "util/imgui_util.hpp"
 #include "core/setting.hpp"
 #include "core/app.hpp"
@@ -206,13 +207,17 @@ void MainWindow::_create_dock_space_and_menubar() {
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Open", "Ctrl+O")) {
-                SPDLOG_INFO("Open file");
+                IGFD::FileDialogConfig config;
+                config.path = ".";
+                config.flags = ImGuiFileDialogFlags_Modal;
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".cpp,.h,.hpp", config);
             }
-            if (ImGui::MenuItem("Save", "Ctrl+S")) {
-                SPDLOG_INFO("Save file");
-            }
-            if (ImGui::MenuItem("Save As", "Ctrl+Shift+S")) {
-                SPDLOG_INFO("Save file as");
+            if (ImGui::MenuItem("Open Image Sequence")) {
+                IGFD::FileDialogConfig config;
+                config.path = ".";
+                config.countSelectionMax = 0;
+                config.flags = ImGuiFileDialogFlags_Modal;
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".cpp,.h,.hpp", config);
             }
             if (ImGui::MenuItem("Exit", "Ctrl+Q")) {
                 SPDLOG_INFO("Exit");
@@ -220,6 +225,23 @@ void MainWindow::_create_dock_space_and_menubar() {
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
+        // display
+        if (ImGuiFileDialog::Instance()->Display(
+            "ChooseFileDlgKey",
+            ImGuiWindowFlags_NoCollapse,
+            ImVec2(650, 300))) {
+            if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+                std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+                auto rv = ImGuiFileDialog::Instance()->GetSelection();
+                for (auto const& [key,v] : rv) {
+                    SPDLOG_INFO("Selected file: {} {}", key, v);
+                }
+                // action
+                SPDLOG_DEBUG("Selected file: {} {}", filePathName, filePath);
+            }
+            ImGuiFileDialog::Instance()->Close();
+        }
     }
     ImGui::End();
 }

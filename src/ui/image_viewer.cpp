@@ -26,6 +26,7 @@ void ImageViewer::show() {
         ImGui::BeginChild("image");
         auto region = ImGui::GetContentRegionAvail();
         _show_image(ImVec2(region.x, region.y - get_input_box_height()));
+
         static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
         static int slider_i = 50;
         ImGui::SetNextItemWidth(region.x);
@@ -47,7 +48,7 @@ void ImageViewer::_show_toolbar() {
         ImGuiWindowFlags_HorizontalScrollbar
         | ImGuiWindowFlags_NoScrollbar
         ;
-    ImGui::BeginChild("ChildL", ImVec2(toolbar_width, toolbar_height), false, window_flags);
+    ImGui::BeginChild("toolbar", ImVec2(toolbar_width, toolbar_height), false, window_flags);
     if (ImageButton("##button_none", "asset/image/cursor.png", _mouse_mode == kNone, icon_size)) {
         SPDLOG_DEBUG("mouse mode: none");
         _mouse_mode = kNone;
