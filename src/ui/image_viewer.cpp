@@ -7,9 +7,14 @@
 
 #include "core/setting.hpp"
 #include "include/def.hpp"
+#include "util/common.hpp"
 #include "util/imgui_util.hpp"
 #include "ui/widget/common_widgets.hpp"
 
+
+ImageViewer::ImageViewer() {
+    _id = get_unique_id();
+}
 
 void ImageViewer::set_image(std::shared_ptr<cv::Mat> image) {
     _image = image;
@@ -17,7 +22,7 @@ void ImageViewer::set_image(std::shared_ptr<cv::Mat> image) {
 }
 
 void ImageViewer::show() {
-    ImGui::Begin("unicode 中文 μm");
+    ImGui::Begin(("image##"+_id).c_str());
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
     _show_toolbar();
     ImGui::SameLine();

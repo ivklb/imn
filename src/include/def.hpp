@@ -25,12 +25,17 @@ const std::string kAsciiLogo = R"(
  | |  | | | (_) | | (_) | | | | |
  |_|  |_|  \___/   \___/  |_| |_|)";
 
+const std::string kDialogChooseFile = "dialog_import_file";
+const std::string kDialogImportFile = "dialog_choose_file";
+
 const ImVec4 kColorWhite = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 const ImVec4 kColorBlack = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 const ImVec4 kColorRed = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
 const ImVec4 kColorGreen = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
 const ImVec4 kColorBlue = ImVec4(0.0f, 0.0f, 1.0f, 1.0f);
 const ImVec4 kColorYellow = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
+
+
 
 
 #endif

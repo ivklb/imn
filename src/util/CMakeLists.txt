@@ -1,7 +1,9 @@
-
 # set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-add_library(util STATIC imgui_util.cpp)
+add_library(util STATIC
+    common.cpp
+    imgui_util.cpp
+)
 
 target_include_directories(util PUBLIC ${SRC_ROOT})
 

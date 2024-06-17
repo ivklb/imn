@@ -25,6 +25,7 @@
 #include "ui/widget/common_widgets.hpp"
 #include "ui/image_viewer.hpp"
 #include "ui/dialog/ImGuiFileDialog.h"
+#include "ui/dialog/import_dialog.hpp"
 #include "util/imgui_util.hpp"
 #include "core/setting.hpp"
 #include "core/app.hpp"
@@ -59,6 +60,7 @@ void MainWindow::show() {
         ImGui::NewFrame();
 
         _create_dock_space_and_menubar();
+        _show_dialog();
 
 #ifndef NDEBUG
         ImGui::ShowDemoWindow();
@@ -72,6 +74,9 @@ void MainWindow::show() {
             ImGui::End();
         }
         _image_viewer.show();
+        for (auto& viewer : _windows) {
+            viewer->show();
+        }
 
         ///////////////////////////////////////////////////
         // Render dear imgui into screen
@@ -225,25 +230,37 @@ void MainWindow::_create_dock_space_and_menubar() {
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
-        // display
-        if (ImGuiFileDialog::Instance()->Display(
-            "ChooseFileDlgKey",
-            ImGuiWindowFlags_NoCollapse,
-            ImVec2(650, 300))) {
-            if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-                std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-                std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-                auto rv = ImGuiFileDialog::Instance()->GetSelection();
-                for (auto const& [key,v] : rv) {
-                    SPDLOG_INFO("Selected file: {} {}", key, v);
-                }
-                // action
-                SPDLOG_DEBUG("Selected file: {} {}", filePathName, filePath);
-            }
-            ImGuiFileDialog::Instance()->Close();
-        }
     }
+
     ImGui::End();
+}
+
+void MainWindow::_show_dialog() {
+    // display
+    ImGuiFileDialog::Instance()->SetFileStyle(IGFD_FileStyleByTypeDir, nullptr, ImVec4(0.5f, 1.0f, 0.9f, 0.9f));
+    if (ImGuiFileDialog::Instance()->Display(
+        "ChooseFileDlgKey",
+        ImGuiWindowFlags_NoCollapse,
+        ImVec2(650, 300))) {
+        if (ImGuiFileDialog::Instance()->IsOk()) {
+            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+            std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+            auto rv = ImGuiFileDialog::Instance()->GetSelection();
+            _files_to_open.clear();
+            for (auto const& [filename, fullpath] : rv) {
+                _files_to_open.push_back(fullpath);
+            }
+            ImGui::OpenPopup("ImportFile");
+        }
+        ImGuiFileDialog::Instance()->Close();
+    }
+    auto [ok, config] = show_import_dialog(_files_to_open);
+    if (ok) {
+        auto img = cv::imread("asset/image/moon.jpeg", cv::IMREAD_UNCHANGED);
+        auto image_viewer = std::make_shared<ImageViewer>();
+        image_viewer->set_image(std::make_shared<cv::Mat>(std::move(img)));
+        _windows.push_back(image_viewer);
+    }
 }
 
 void MainWindow::_cleanup() {
