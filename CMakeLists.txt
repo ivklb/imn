@@ -4,14 +4,14 @@ if(NOT(DEFINED ENV{CMAKE_TOOLCHAIN_FILE}))
     message(FATAL_ERROR "ERROR: environment variable 'CMAKE_TOOLCHAIN_FILE' not found")
 endif()
 
-project(moon)
+project(iMoon)
 
 set(CMAKE_CXX_STANDARD 20)
 set(APP_VERSION_MAJOR 1)
 set(APP_VERSION_MINOR 0)
 set(SRC_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# find_package( REQUIRED)
+find_package(folly REQUIRED)
 find_package(gl3w REQUIRED)
 find_package(imgui REQUIRED)
 find_package(implot REQUIRED)
@@ -23,5 +23,8 @@ find_package(spdlog REQUIRED)
 find_package(VTK REQUIRED)
 
 add_compile_definitions(SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE)
+# disable glog in folly libaray
+add_definitions(-DGLOG_USE_GLOG_EXPORT)
+add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 
 add_subdirectory(src)

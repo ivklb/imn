@@ -8,6 +8,7 @@
 #include <vtkActor.h>
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
+#include <folly/Synchronized.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>

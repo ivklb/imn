@@ -16,14 +16,13 @@
 
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Dtype;
 
-const std::string kAppName = "moon";
+const std::string kAppName = "iMoon";
 const std::string kAsciiLogo = R"(
-  __  __
- |  \/  |
- | \  / |   ___     ___    _ __
- | |\/| |  / _ \   / _ \  | '_ \
- | |  | | | (_) | | (_) | | | | |
- |_|  |_|  \___/   \___/  |_| |_|)";
+ _ __  __
+(_)  \/  | ___   ___  _ __
+| | |\/| |/ _ \ / _ \| '_ \
+| | |  | | (_) | (_) | | | |
+|_|_|  |_|\___/ \___/|_| |_|)";
 
 const std::string kDialogChooseFile = "dialog_import_file";
 const std::string kDialogImportFile = "dialog_choose_file";

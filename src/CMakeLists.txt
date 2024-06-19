@@ -5,14 +5,15 @@ add_subdirectory(ui)
 add_subdirectory(util)
 
 target_link_libraries(${PROJECT_NAME}
+    Folly::folly
     OpenGL::GL
-    unofficial::gl3w::gl3w
+    OpenMP::OpenMP_CXX
     glfw
     imgui::imgui
     implot::implot
-    OpenMP::OpenMP_CXX
     opencv_core
     opencv_imgcodecs
+    unofficial::gl3w::gl3w
 )
 
 target_link_libraries(${PROJECT_NAME} core)

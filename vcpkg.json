@@ -1,7 +1,8 @@
 {
-    "name": "moon",
+    "name": "imoon",
     "version": "1.0.0",
     "dependencies": [
+        { "name": "folly" },
         { "name": "gl3w" },
         { "name": "glfw3" },
         {
