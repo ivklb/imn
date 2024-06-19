@@ -16,13 +16,34 @@ ImageViewer::ImageViewer() {
     _id = get_unique_id();
 }
 
+ImageViewer::~ImageViewer() {
+    for (auto& [img_idx, tex_id] : _tex_id_map) {
+        try {
+            glDeleteTextures(1, (GLuint*)&tex_id);
+        } catch (const std::exception& e) {
+            SPDLOG_DEBUG("{}", e.what());
+        }
+    }
+    _tex_id_map.clear();
+}
+
 void ImageViewer::set_image(std::shared_ptr<cv::Mat> image) {
-    _image = image;
-    _tex_id = load_texture_2d(image.get());
+    _images.clear();
+    _images.push_back(image);
+    _img_idx = 0;
+}
+
+void ImageViewer::set_images(std::vector<std::shared_ptr<cv::Mat>> images) {
+    _images = images;
+    _img_idx = 0;
 }
 
 void ImageViewer::show() {
-    ImGui::Begin(("image##"+_id).c_str());
+    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(800, 800), ImGuiCond_Once);
+
+    ImGui::Begin(("中文 μm image##" + _id).c_str());
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
     _show_toolbar();
     ImGui::SameLine();
@@ -35,7 +56,7 @@ void ImageViewer::show() {
         static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
         static int slider_i = 50;
         ImGui::SetNextItemWidth(region.x);
-        ImGui::SliderInt("##slider", &slider_i, 0, 100, "%d", flags);
+        ImGui::SliderInt("##slider", &_img_idx, 0, _images.size() - 1, "%d", flags);
         ImGui::EndChild();
     }
     ImGui::PopStyleVar();
@@ -86,7 +107,7 @@ void ImageViewer::_show_image(ImVec2 region) {
         if (_last_canvas_size.x != region.x || _last_canvas_size.y != region.y) {
             SPDLOG_DEBUG("region changed: {} {}", region.x, region.y);
             _last_canvas_size = region;
-            auto [p1, p2] = _calc_paint_region(_image->cols, _image->rows, region.x, region.y);
+            auto [p1, p2] = _calc_paint_region(_images[0]->cols, _images[0]->rows, region.x, region.y);
             _bounds_min = p1;
             _bounds_max = p2;
             _drag_y = region.y / 2;
@@ -107,18 +128,31 @@ void ImageViewer::_show_image(ImVec2 region) {
         //     ImPlotAxisFlags_NoDecorations,
         //     ImPlotAxisFlags_NoDecorations
         // );
-        ImPlot::PlotImage("##image", _tex_id, _bounds_min, _bounds_max);
+        // if (!_tex_id_map.contains(_img_idx)) {
+        //     _tex_id_map[_img_idx] = load_texture_2d(_images[_img_idx].get());
+        // } else {
+            // TODO: remove me, test only
+            try {
+
+                SPDLOG_INFO("delete texture");
+            glDeleteTextures(1, (GLuint*)&_tex_id_map[_img_idx]);
+            } catch (const std::exception& e) {
+                SPDLOG_ERROR("{}", e.what());
+            }
+            _tex_id_map[_img_idx] = load_texture_2d(_images[_img_idx].get());
+        // }
+        ImPlot::PlotImage("##image", _tex_id_map[_img_idx], _bounds_min, _bounds_max);
         if (_show_horizontal_line) {
-            ImPlot::DragLineY(120482, &_drag_y, ImVec4(1, 1, 1, 1), 1);
+            ImPlot::DragLineY(1, &_drag_y, ImVec4(1, 1, 1, 1), 1);
         }
         if (_mouse_mode == kRuler) {
-            ImPlot::DragPoint(120483, &_ruler_points[0], &_ruler_points[2], kColorYellow, 5);
-            ImPlot::DragPoint(120484, &_ruler_points[1], &_ruler_points[3], kColorYellow, 5);
+            ImPlot::DragPoint(2, &_ruler_points[0], &_ruler_points[2], kColorYellow, 5);
+            ImPlot::DragPoint(3, &_ruler_points[1], &_ruler_points[3], kColorYellow, 5);
             ImPlot::SetNextLineStyle(kColorYellow);
             ImPlot::PlotLine("##ruler", &_ruler_points[0], &_ruler_points[2], 2, 0, sizeof(double));
         }
         if (_mouse_mode == kRect) {
-            ImPlot::DragRect(120485, &_rect[0], &_rect[1], &_rect[2], &_rect[3], kColorYellow);
+            ImPlot::DragRect(4, &_rect[0], &_rect[1], &_rect[2], &_rect[3], kColorYellow);
         }
         ImPlot::EndPlot();
     }

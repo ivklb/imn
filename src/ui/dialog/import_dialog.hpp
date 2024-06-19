@@ -28,6 +28,7 @@ inline std::tuple<bool, ImportConfig> show_import_dialog(std::vector<std::string
     static int item_current = 0;
     bool ok = false;
 
+    ImGui::OpenPopup("ImportFile");
     if (ImGui::BeginPopupModal("ImportFile")) {
         ImGui::Combo("image type", &item_current, items, IM_ARRAYSIZE(items));
         ImGui::InputInt("width", &rv.width);

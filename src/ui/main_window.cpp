@@ -2,6 +2,7 @@
 #include "main_window.hpp"
 
 // Standard Library
+#include <algorithm>
 #include <iostream>
 
 #include "ui/vtk_viewer.hpp"
@@ -211,18 +212,18 @@ void MainWindow::_create_dock_space_and_menubar() {
 
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("Open", "Ctrl+O")) {
+            if (ImGui::MenuItem("Open Image(s)", "Ctrl+O")) {
                 IGFD::FileDialogConfig config;
                 config.path = ".";
                 config.flags = ImGuiFileDialogFlags_Modal;
-                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".cpp,.h,.hpp", config);
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
             }
-            if (ImGui::MenuItem("Open Image Sequence")) {
+            if (ImGui::MenuItem("Open Volume")) {
                 IGFD::FileDialogConfig config;
                 config.path = ".";
                 config.countSelectionMax = 0;
                 config.flags = ImGuiFileDialogFlags_Modal;
-                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".cpp,.h,.hpp", config);
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
             }
             if (ImGui::MenuItem("Exit", "Ctrl+Q")) {
                 SPDLOG_INFO("Exit");
@@ -236,7 +237,7 @@ void MainWindow::_create_dock_space_and_menubar() {
 }
 
 void MainWindow::_show_dialog() {
-    // display
+    // file dialog
     ImGuiFileDialog::Instance()->SetFileStyle(IGFD_FileStyleByTypeDir, nullptr, ImVec4(0.5f, 1.0f, 0.9f, 0.9f));
     if (ImGuiFileDialog::Instance()->Display(
         "ChooseFileDlgKey",
@@ -250,17 +251,37 @@ void MainWindow::_show_dialog() {
             for (auto const& [filename, fullpath] : rv) {
                 _files_to_open.push_back(fullpath);
             }
-            ImGui::OpenPopup("ImportFile");
         }
         ImGuiFileDialog::Instance()->Close();
     }
-    auto [ok, config] = show_import_dialog(_files_to_open);
-    if (ok) {
-        auto img = cv::imread("asset/image/moon.jpeg", cv::IMREAD_UNCHANGED);
-        auto image_viewer = std::make_shared<ImageViewer>();
-        image_viewer->set_image(std::make_shared<cv::Mat>(std::move(img)));
-        _windows.push_back(image_viewer);
+
+    // import dialog
+    if (_files_to_open.size() > 0) {
+        auto filename = _files_to_open[0];
+        std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+        if (filename.ends_with(".jpg") || filename.ends_with(".png") || filename.ends_with(".bmp")) {
+            // load image file using opencv
+            std::vector<std::shared_ptr<cv::Mat>> images;
+            for (auto const& filename : _files_to_open) {
+                auto img = cv::imread(filename, cv::IMREAD_UNCHANGED);
+                images.push_back(std::make_shared<cv::Mat>(std::move(img)));
+            }
+            auto image_viewer = std::make_shared<ImageViewer>();
+            image_viewer->set_images(images);
+            _windows.push_back(image_viewer);
+        } else {
+            auto [ok, config] = show_import_dialog(_files_to_open);
+            if (ok) {
+                auto img = cv::imread("asset/image/moon.jpeg", cv::IMREAD_UNCHANGED);
+                auto image_viewer = std::make_shared<ImageViewer>();
+                image_viewer->set_image(std::make_shared<cv::Mat>(std::move(img)));
+                _windows.push_back(image_viewer);
+            }
+        }
+        _files_to_open.clear();
     }
+
+    // progress dialog
 }
 
 void MainWindow::_cleanup() {

@@ -2,8 +2,10 @@
 #ifndef UI__IMAGE_VIEWER_HPP
 #define UI__IMAGE_VIEWER_HPP
 
+#include <map>
 #include <memory>
 #include <tuple>
+#include <vector>
 
 #include <imgui.h>
 #include <implot.h>
@@ -19,7 +21,9 @@ enum MouseMode {
 class ImageViewer : public BaseWindow {
 public:
     ImageViewer();
+    ~ImageViewer();
     void set_image(std::shared_ptr<cv::Mat> image);
+    void set_images(std::vector<std::shared_ptr<cv::Mat>> images);
     void show() override;
 
 private:
@@ -28,8 +32,11 @@ private:
     std::tuple<ImVec2, ImVec2> _calc_paint_region(double image_width, double image_height, double canvas_width, double canvas_height);
 
     std::string _id;
-    std::shared_ptr<cv::Mat> _image;
-    ImTextureID _tex_id;
+
+    std::vector<std::shared_ptr<cv::Mat>> _images;
+    std::map<int, ImTextureID> _tex_id_map;
+    int _img_idx;
+
     ImVec2 _last_canvas_size;  // used to check if resize event happened
     ImVec2 _bounds_min;
     ImVec2 _bounds_max;
