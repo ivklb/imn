@@ -27,6 +27,7 @@
 #include "ui/image_viewer.hpp"
 #include "ui/dialog/ImGuiFileDialog.h"
 #include "ui/dialog/import_dialog.hpp"
+#include "ui/widget/imgui_notify.h"
 #include "util/imgui_util.hpp"
 #include "core/setting.hpp"
 #include "core/app.hpp"
@@ -154,6 +155,7 @@ void MainWindow::_setup_imgui() {
     config.MergeMode = true;
     io.Fonts->AddFontFromFileTTF(font_file, font_size, nullptr, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
     io.Fonts->AddFontFromFileTTF(font_file, font_size, &config, GetGlyphRangesGreek());
+    ImGui::MergeIconsWithLatestFont(font_size - 6, false);
     io.Fonts->Build();
 
     // Setup Dear ImGui style
@@ -219,11 +221,18 @@ void MainWindow::_create_dock_space_and_menubar() {
                 ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
             }
             if (ImGui::MenuItem("Open Volume")) {
-                IGFD::FileDialogConfig config;
-                config.path = ".";
-                config.countSelectionMax = 0;
-                config.flags = ImGuiFileDialogFlags_Modal;
-                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
+
+                ImGui::InsertNotification({ ImGuiToastType_Success, 3000, "Hello World! This is a success! %s", "We can also format here:)" });
+                ImGui::InsertNotification({ ImGuiToastType_Warning, 3000, "Hello World! This is a warning! %d", 0x1337 });
+                ImGui::InsertNotification({ ImGuiToastType_Error, 3000, "Hello World! This is an error! 0x%X", 0xDEADBEEF });
+                ImGui::InsertNotification({ ImGuiToastType_Info, 3000, "Hello World! This is an info!" });
+                ImGui::InsertNotification({ ImGuiToastType_Info, 3000, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation" });
+
+                // IGFD::FileDialogConfig config;
+                // config.path = ".";
+                // config.countSelectionMax = 0;
+                // config.flags = ImGuiFileDialogFlags_Modal;
+                // ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
             }
             if (ImGui::MenuItem("Exit", "Ctrl+Q")) {
                 SPDLOG_INFO("Exit");
@@ -267,6 +276,7 @@ void MainWindow::_show_dialog() {
                 auto img = cv::imread(filename, cv::IMREAD_UNCHANGED);
                 images.push_back(std::make_shared<cv::Mat>(std::move(img)));
             }
+            // TODO: add notify
             auto image_viewer = std::make_shared<ImageViewer>();
             image_viewer->set_images(images);
             _windows.push_back(image_viewer);
@@ -285,6 +295,14 @@ void MainWindow::_show_dialog() {
 
     // progress dialog
 
+    // show notification
+    // Render toasts on top of everything, at the end of your code!
+    // You should push style vars here
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.f);
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(43.f / 255.f, 43.f / 255.f, 43.f / 255.f, 100.f / 255.f));
+    ImGui::RenderNotifications();
+    ImGui::PopStyleVar(1); // Don't forget to Pop()
+    ImGui::PopStyleColor(1);
 }
 
 void MainWindow::_cleanup() {

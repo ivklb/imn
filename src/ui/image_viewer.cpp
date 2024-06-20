@@ -41,7 +41,7 @@ void ImageViewer::set_images(std::vector<std::shared_ptr<cv::Mat>> images) {
 void ImageViewer::show() {
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
-    ImGui::SetNextWindowSize(ImVec2(800, 800), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
 
     ImGui::Begin(("中文 μm image##" + _id).c_str());
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
