@@ -12,7 +12,7 @@ void ProgressDialog::cancel() {
     _cancel_callback();
 }
 
-void ProgressDialog::show() {
+void ProgressDialog::render() {
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
     ImGui::SetNextWindowSize(ImVec2(400, 60), ImGuiCond_Once);

@@ -1,6 +1,7 @@
 
 add_library(core
     app.cpp
+    io.cpp
     setting.cpp
 )
 

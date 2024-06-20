@@ -44,6 +44,7 @@ private:
     std::vector<std::shared_ptr<BaseWindow>> _windows;
 
     std::vector<std::string> _files_to_open;
+    bool _load_as_volume;
 };
 
 #endif

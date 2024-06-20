@@ -23,7 +23,7 @@ public:
     void set_current(int current) { _current = current; }
     void set_cancel_callback(std::function<void()> callback) { _cancel_callback = callback; }
     void cancel();
-    void show();
+    void render();
 
 private:
     bool _show;

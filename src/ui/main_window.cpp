@@ -215,24 +215,19 @@ void MainWindow::_create_dock_space_and_menubar() {
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Open Image(s)", "Ctrl+O")) {
+                _load_as_volume = false;
                 IGFD::FileDialogConfig config;
                 config.path = ".";
                 config.flags = ImGuiFileDialogFlags_Modal;
                 ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
             }
             if (ImGui::MenuItem("Open Volume")) {
-
-                ImGui::InsertNotification({ ImGuiToastType_Success, 3000, "Hello World! This is a success! %s", "We can also format here:)" });
-                ImGui::InsertNotification({ ImGuiToastType_Warning, 3000, "Hello World! This is a warning! %d", 0x1337 });
-                ImGui::InsertNotification({ ImGuiToastType_Error, 3000, "Hello World! This is an error! 0x%X", 0xDEADBEEF });
-                ImGui::InsertNotification({ ImGuiToastType_Info, 3000, "Hello World! This is an info!" });
-                ImGui::InsertNotification({ ImGuiToastType_Info, 3000, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation" });
-
-                // IGFD::FileDialogConfig config;
-                // config.path = ".";
+                _load_as_volume = true;
+                IGFD::FileDialogConfig config;
+                config.path = ".";
                 // config.countSelectionMax = 0;
-                // config.flags = ImGuiFileDialogFlags_Modal;
-                // ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
+                config.flags = ImGuiFileDialogFlags_Modal;
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
             }
             if (ImGui::MenuItem("Exit", "Ctrl+Q")) {
                 SPDLOG_INFO("Exit");
@@ -268,29 +263,36 @@ void MainWindow::_show_dialog() {
     if (_files_to_open.size() > 0) {
         auto filename = _files_to_open[0];
         std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
-        if (filename.ends_with(".jpg") || filename.ends_with(".png") || filename.ends_with(".bmp")) {
-            // load image file using opencv
-            // TODO: use progress bar
-            std::vector<std::shared_ptr<cv::Mat>> images;
-            for (auto const& filename : _files_to_open) {
-                auto img = cv::imread(filename, cv::IMREAD_UNCHANGED);
-                images.push_back(std::make_shared<cv::Mat>(std::move(img)));
-            }
-            // TODO: add notify
-            auto image_viewer = std::make_shared<ImageViewer>();
-            image_viewer->set_images(images);
-            _windows.push_back(image_viewer);
-            _files_to_open.clear();
+        bool is_common_image_file =
+            filename.ends_with(".jpg") ||
+            filename.ends_with(".png") ||
+            filename.ends_with(".bmp");
+        Moon::IO::ImportConfig config = { 0 };
+        if (is_common_image_file) {
+            config.common_image = true;
         } else {
-            auto [ok, config] = show_import_dialog(_files_to_open);
+            auto [ok, conf] = show_import_dialog(_files_to_open);
             if (ok) {
-                auto img = cv::imread("asset/image/moon.jpeg", cv::IMREAD_UNCHANGED);
-                auto image_viewer = std::make_shared<ImageViewer>();
-                image_viewer->set_image(std::make_shared<cv::Mat>(std::move(img)));
-                _windows.push_back(image_viewer);
-                _files_to_open.clear();
+                config = conf;
+                // TODO: handle cancelled action
             }
         }
+
+        // TODO: use progress bar
+        if (_load_as_volume) {
+            // TODO: implement me
+            _files_to_open.clear();
+        } else {
+            // TODO: run in thread
+            auto image_stack = Moon::IO::load_image_stack(_files_to_open, config);
+            auto image_viewer = std::make_shared<ImageViewer>();
+            image_viewer->set_images(image_stack);
+            _windows.push_back(image_viewer);
+            ImGui::InsertNotification({ ImGuiToastType_Info, 3000, "! %s", "We can also format here:)" });
+            _files_to_open.clear();
+        }
+    } else {
+
     }
 
     // progress dialog

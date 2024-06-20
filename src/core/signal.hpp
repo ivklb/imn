@@ -5,7 +5,6 @@
 #include <utility>
 #include <boost/any.hpp>
 #include <boost/signals2.hpp>
-#include "app/matrix.hpp"
 
 
 enum EventType {
@@ -39,8 +38,5 @@ struct AppEvent {
 typedef boost::signals2::signal<void(long long elapsed_ms)> TickSignal;
 
 typedef boost::signals2::signal<void(AppEvent)> AppSignal;
-
-// detector id, sequential id, image data
-typedef boost::signals2::signal<void(int, int, MatPtr)> NewProjSignal;
 
 #endif
