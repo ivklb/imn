@@ -261,6 +261,7 @@ void MainWindow::_show_dialog() {
         std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
         if (filename.ends_with(".jpg") || filename.ends_with(".png") || filename.ends_with(".bmp")) {
             // load image file using opencv
+            // TODO: use progress bar
             std::vector<std::shared_ptr<cv::Mat>> images;
             for (auto const& filename : _files_to_open) {
                 auto img = cv::imread(filename, cv::IMREAD_UNCHANGED);
@@ -269,6 +270,7 @@ void MainWindow::_show_dialog() {
             auto image_viewer = std::make_shared<ImageViewer>();
             image_viewer->set_images(images);
             _windows.push_back(image_viewer);
+            _files_to_open.clear();
         } else {
             auto [ok, config] = show_import_dialog(_files_to_open);
             if (ok) {
@@ -276,24 +278,13 @@ void MainWindow::_show_dialog() {
                 auto image_viewer = std::make_shared<ImageViewer>();
                 image_viewer->set_image(std::make_shared<cv::Mat>(std::move(img)));
                 _windows.push_back(image_viewer);
+                _files_to_open.clear();
             }
         }
-        _files_to_open.clear();
     }
 
     // progress dialog
-    // ImGui::OpenPopup("ImportFile");
-    // if (ImGui::BeginPopupModal("ImportFile")) {
-    //     float progress_saturated = IM_CLAMP(progress, 0.0f, 1.0f);
-    //     char buf[32];
-    //     sprintf(buf, "%d/%d", (int)(progress_saturated * 1753), 1753);
-    //     ImGui::ProgressBar(progress, ImVec2(0.f, 0.f), buf);
-    //     if (ImGui::Button("OK", ImVec2(120, 0))) {
-    //         ok = true;
-    //         ImGui::CloseCurrentPopup();
-    //     }
-    //     ImGui::EndPopup();
-    // }
+
 }
 
 void MainWindow::_cleanup() {

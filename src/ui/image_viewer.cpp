@@ -134,7 +134,6 @@ void ImageViewer::_show_image(ImVec2 region) {
             // TODO: remove me, test only
             try {
 
-                SPDLOG_INFO("delete texture");
             glDeleteTextures(1, (GLuint*)&_tex_id_map[_img_idx]);
             } catch (const std::exception& e) {
                 SPDLOG_ERROR("{}", e.what());

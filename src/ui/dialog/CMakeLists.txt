@@ -1,6 +1,7 @@
 
 add_library(dialogs STATIC
     ImGuiFileDialog.cpp
+    progress_dialog.cpp
 )
 
 target_include_directories(dialogs PUBLIC ${SRC_ROOT})
