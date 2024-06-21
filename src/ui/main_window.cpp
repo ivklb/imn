@@ -283,7 +283,7 @@ void MainWindow::_show_dialog() {
             // TODO: implement me
             _files_to_open.clear();
         } else {
-            // TODO: run in thread
+            // TODO: run in thread, add cancel logic
             auto image_stack = Moon::IO::load_image_stack(_files_to_open, config);
             auto image_viewer = std::make_shared<ImageViewer>();
             image_viewer->set_images(image_stack);
