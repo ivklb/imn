@@ -275,6 +275,10 @@ void MainWindow::_show_dialog() {
             if (ok) {
                 config = conf;
                 // TODO: handle cancelled action
+                // https://github.com/bshoshany/thread-pool/blob/master/include/BS_thread_pool_utils.hpp
+                // https://github.com/bshoshany/thread-pool/blob/master/include/BS_thread_pool.hpp
+                // https://github.com/bshoshany/thread-pool
+                // https://github.com/progschj/ThreadPool
             }
         }
 

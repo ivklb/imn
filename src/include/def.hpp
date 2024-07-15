@@ -34,7 +34,4 @@ const ImVec4 kColorGreen = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
 const ImVec4 kColorBlue = ImVec4(0.0f, 0.0f, 1.0f, 1.0f);
 const ImVec4 kColorYellow = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
 
-
-
-
 #endif

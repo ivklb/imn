@@ -19,5 +19,8 @@
         { "name": "spdlog" },
         { "name": "vtk" }
     ],
-    "overrides": []
+    "builtin-baseline": "2b665df62f1ccc5dead7f1c93888bfe30a918363",
+    "overrides": [
+        { "name": "imgui", "version": "1.90.7" }
+    ]
 }
