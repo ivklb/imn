@@ -9,6 +9,7 @@
 
 #include "core/cache.hpp"
 #include "core/setting.hpp"
+#include "util/common.hpp"
 
 using namespace Moon;
 
@@ -24,9 +25,14 @@ const ImWchar* GetGlyphRangesGreek() {
     return &ranges[0];
 }
 
+float get_font_size() {
+    auto [width, height] = get_screen_resolution();
+    return height * 0.02f;
+}
+
 float get_input_box_height() {
     // https://github.com/ocornut/imgui/issues/4511#issuecomment-913381339
-    return global_setting().font_size + ImGui::GetStyle().FramePadding.y * 2;
+    return get_font_size() + ImGui::GetStyle().FramePadding.y * 2;
 }
 
 ImTextureID load_texture_2d(const std::string& img, bool nearest_sample) {

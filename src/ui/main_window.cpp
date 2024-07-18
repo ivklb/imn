@@ -150,7 +150,8 @@ void MainWindow::_setup_imgui() {
 
     // Setup Dear ImGui font
     auto font_file = g_setting.font_file.c_str();
-    auto font_size = g_setting.font_size;
+    // auto font_size = g_setting.font_size;
+    auto font_size = get_font_size();
     ImFontConfig config;
     config.MergeMode = true;
     io.Fonts->AddFontFromFileTTF(font_file, font_size, nullptr, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());

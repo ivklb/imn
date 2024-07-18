@@ -1,11 +1,11 @@
 
 add_executable(${PROJECT_NAME} main.cpp)
 add_subdirectory(core)
+add_subdirectory(ext)
 add_subdirectory(ui)
 add_subdirectory(util)
 
 target_link_libraries(${PROJECT_NAME}
-    Folly::folly
     OpenGL::GL
     OpenMP::OpenMP_CXX
     glfw
@@ -16,9 +16,12 @@ target_link_libraries(${PROJECT_NAME}
     unofficial::gl3w::gl3w
 )
 
-target_link_libraries(${PROJECT_NAME} core)
-target_link_libraries(${PROJECT_NAME} ui)
-target_link_libraries(${PROJECT_NAME} util)
+target_link_libraries(${PROJECT_NAME}
+    core
+    imgui_node_editor
+    ui
+    util
+)
 
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE "/MP")
