@@ -6,3 +6,5 @@
 /imgui_demo.cpp
 /.VSCodeCounter
 /code_ref
+/__pycache__
+/.cache
