@@ -42,10 +42,6 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::show() {
-    // Setup pipeline
-    auto actor = SetupDemoPipeline();
-    VtkViewer vtkViewer1;
-    vtkViewer1.addActor(actor);
 
     // Main loop
     while (!glfwWindowShouldClose(_window)) {
@@ -61,24 +57,7 @@ void MainWindow::show() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        _create_dock_space_and_menubar();
-        _show_dialog();
-
-#ifndef NDEBUG
-        ImGui::ShowDemoWindow();
-        ImPlot::ShowDemoWindow();
-#endif
-
-        {
-            ImGui::SetNextWindowSize(ImVec2(360, 240), ImGuiCond_FirstUseEver);
-            ImGui::Begin("Vtk Viewer 1", nullptr, VtkViewer::NoScrollFlags());
-            vtkViewer1.render();
-            ImGui::End();
-        }
-        _image_viewer.show();
-        for (auto& viewer : _windows) {
-            viewer->show();
-        }
+        _on_frame();
 
         ///////////////////////////////////////////////////
         // Render dear imgui into screen
@@ -145,8 +124,8 @@ void MainWindow::_setup_imgui() {
     auto ctx = ImGui::CreateContext();
     ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    // io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     // Setup Dear ImGui font
     auto font_file = g_setting.font_file.c_str();
@@ -174,6 +153,34 @@ void MainWindow::_setup_imgui() {
     int out_height;
     auto img = cv::imread("asset/image/moon.jpeg", cv::IMREAD_UNCHANGED);
     _image_viewer.set_image(std::make_shared<cv::Mat>(std::move(img)));
+}
+
+void MainWindow::_on_frame() {
+    _create_dock_space_and_menubar();
+    _show_dialog();
+
+#ifndef NDEBUG
+    ImGui::ShowDemoWindow();
+    ImPlot::ShowDemoWindow();
+#endif
+
+    {
+
+        // Setup pipeline
+        static auto actor = SetupDemoPipeline();
+        static VtkViewer vtkViewer1;
+        vtkViewer1.addActor(actor);
+
+        ImGui::SetNextWindowSize(ImVec2(360, 240), ImGuiCond_FirstUseEver);
+        ImGui::Begin("Vtk Viewer 1", nullptr, VtkViewer::NoScrollFlags());
+        vtkViewer1.render();
+        ImGui::End();
+        vtkViewer1.removeActor(actor);
+    }
+    _image_viewer.show();
+    for (auto& viewer : _windows) {
+        viewer->show();
+    }
 }
 
 void MainWindow::_create_dock_space_and_menubar() {

@@ -32,6 +32,7 @@ private:
     void _setup();
     void _setup_gl();
     void _setup_imgui();
+    void _on_frame();
     void _create_dock_space_and_menubar();
     void _show_dialog();
     void _cleanup();
@@ -39,7 +40,6 @@ private:
 private:
     GLFWwindow* _window;
     const char* _glsl_version = "#version 130";
-    GLuint _out_texture;
     ImageViewer _image_viewer;
     std::vector<std::shared_ptr<BaseWindow>> _windows;
 
