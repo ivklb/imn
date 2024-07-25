@@ -28,10 +28,13 @@
 #include "ui/dialog/ImGuiFileDialog.h"
 #include "ui/dialog/import_dialog.hpp"
 #include "ui/widget/imgui_notify.h"
+#include "ui/style.hpp"
 #include "util/imgui_util.hpp"
 #include "core/setting.hpp"
 #include "core/app.hpp"
 
+
+using namespace Moon::ui;
 
 static void _glfw_error_callback(int error, const char* description) {
     SPDLOG_ERROR("Glfw Error {}: {}", error, description);
@@ -129,8 +132,7 @@ void MainWindow::_setup_imgui() {
 
     // Setup Dear ImGui font
     auto font_file = g_setting.font_file.c_str();
-    // auto font_size = g_setting.font_size;
-    auto font_size = get_font_size();
+    auto font_size = get_style().font_size;
     ImFontConfig config;
     config.MergeMode = true;
     io.Fonts->AddFontFromFileTTF(font_file, font_size, nullptr, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());

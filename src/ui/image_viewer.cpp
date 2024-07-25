@@ -10,7 +10,9 @@
 #include "util/common.hpp"
 #include "util/imgui_util.hpp"
 #include "ui/widget/common_widgets.hpp"
+#include "ui/style.hpp"
 
+using namespace Moon::ui;
 
 ImageViewer::ImageViewer() {
     _id = get_unique_id();
@@ -64,10 +66,10 @@ void ImageViewer::show() {
 }
 
 void ImageViewer::_show_toolbar() {
-    int button_size = 60;
-    ImVec2 icon_size = ImVec2(button_size, button_size);
+    ImVec2 icon_size = get_style().image_button_size;
+
     auto region = ImGui::GetContentRegionAvail();
-    auto toolbar_width = button_size + ImGui::GetStyle().FramePadding.x * 2;
+    auto toolbar_width = icon_size.x + ImGui::GetStyle().FramePadding.x * 2;
     auto toolbar_height = region.y;
 
     ImGuiWindowFlags window_flags =

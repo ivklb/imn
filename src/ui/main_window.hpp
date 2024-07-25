@@ -23,6 +23,10 @@
 #include "core/setting.hpp"
 
 
+namespace Moon {
+namespace ui {
+
+
 class MainWindow {
 public:
     MainWindow();
@@ -47,4 +51,6 @@ private:
     bool _load_as_volume;
 };
 
+}
+}
 #endif

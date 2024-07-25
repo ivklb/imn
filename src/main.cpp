@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
     Moon::App app;
     app.init();
 
-    MainWindow window;
+    Moon::ui::MainWindow window;
     window.show();
     return 0;
 }

@@ -12,6 +12,9 @@
 #include <opencv2/opencv.hpp>
 #include "base_window.hpp"
 
+namespace Moon::ui {
+
+
 enum MouseMode {
     kNone = 0,
     kRuler,
@@ -50,4 +53,5 @@ private:
     bool _show_horizontal_line;
 };
 
+}
 #endif

@@ -10,8 +10,6 @@
 
 
 const ImWchar* GetGlyphRangesGreek();
-float get_font_size();
-float get_input_box_height();
 ImTextureID load_texture_2d(const std::string& img, bool nearest_sample = true);
 ImTextureID load_texture_2d(const cv::Mat* img, bool nearest_sample = true);
 
