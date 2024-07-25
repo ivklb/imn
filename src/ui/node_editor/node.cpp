@@ -1,12 +1,8 @@
 
 
-#ifndef UI__NODE_EDITOR__NODE_HPP
-#define UI__NODE_EDITOR__NODE_HPP
 
-#include <string>
-#include <vector>
+#include "node.hpp"
 #include "ui/node_editor/imgui_node_editor/imgui_node_editor.h"
-#include "ui/node_editor/imgui_node_editor/utilities/widgets.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -48,24 +44,25 @@ struct Pin
     }
 };
 
-struct Node
-{
+struct Node {
     ed::NodeId ID;
     std::string Name;
     std::vector<Pin> Inputs;
     std::vector<Pin> Outputs;
     ImColor Color;
+    NodeType Type;
     ImVec2 Size;
 
     std::string State;
     std::string SavedState;
 
     Node(int id, const char* name, ImColor color = ImColor(255, 255, 255)) :
-        ID(id), Name(name), Color(color), Size(0, 0) {
+        ID(id), Name(name), Color(color), Type(NodeType::Blueprint), Size(0, 0) {
     }
 };
 
-struct Link {
+struct Link
+{
     ed::LinkId ID;
 
     ed::PinId StartPinID;
@@ -79,4 +76,3 @@ struct Link {
 };
 
 
-#endif
