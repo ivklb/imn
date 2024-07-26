@@ -167,7 +167,6 @@ void MainWindow::_on_frame() {
 #endif
 
     {
-
         // Setup pipeline
         static auto actor = SetupDemoPipeline();
         static VtkViewer vtkViewer1;
@@ -180,6 +179,8 @@ void MainWindow::_on_frame() {
         vtkViewer1.removeActor(actor);
     }
     _image_viewer.show();
+    _node_window.show();
+
     for (auto& viewer : _windows) {
         viewer->show();
     }

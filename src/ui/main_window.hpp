@@ -19,6 +19,7 @@
 #include "ui/vtk_viewer.hpp"
 #include "ui/imgui_vtk_demo.h"
 #include "ui/image_viewer.hpp"
+#include "ui/node_window.hpp"
 #include "util/imgui_util.hpp"
 #include "core/setting.hpp"
 
@@ -45,6 +46,7 @@ private:
     GLFWwindow* _window;
     const char* _glsl_version = "#version 130";
     ImageViewer _image_viewer;
+    NodeWindow _node_window;
     std::vector<std::shared_ptr<BaseWindow>> _windows;
 
     std::vector<std::string> _files_to_open;

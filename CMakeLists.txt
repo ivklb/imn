@@ -22,6 +22,7 @@ find_package(spdlog REQUIRED)
 find_package(VTK REQUIRED)
 
 add_compile_definitions(SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE)
+add_compile_definitions(IMGUI_DEFINE_MATH_OPERATORS)
 # disable glog in folly libaray
 # add_definitions(-DGLOG_USE_GLOG_EXPORT)
 # add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)

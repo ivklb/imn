@@ -1,5 +1,5 @@
 
-file(GLOB NODE_EDITOR_SRC *.cpp)
+file(GLOB_RECURSE NODE_EDITOR_SRC *.cpp)
 
 add_library(imgui_node_editor ${NODE_EDITOR_SRC})
 
