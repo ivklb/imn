@@ -78,23 +78,16 @@ void NodeWindow::show() {
     drawList->AddRectFilled(
         HeaderMin - ImVec2(padding.x - halfBorderWidth, padding.y - halfBorderWidth),
         ImVec2(HeaderMax2.x - halfBorderWidth, HeaderMax.y),
-        // HeaderMin - ImVec2(padding.x - halfBorderWidth, padding.y - halfBorderWidth),
-        // ImVec2(HeaderMax2.x - halfBorderWidth, HeaderMax.y),
         h_color,
         ed::GetStyle().NodeRounding,
         ImDrawFlags_RoundCornersTop
-
     );
 
-    // ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(1, 1, 1, 1.0f));
-    // ed::PopStyleColor();
-    // ImGui::PopStyleColor();
     if (ImGui::IsItemHovered()) {
         ed::Suspend();
         ImGui::SetTooltip("State: %s", "123");
         ed::Resume();
     }
-
 
     ed::BeginNode(uniqueId++);
     ImGui::Text("Node A");
@@ -107,14 +100,9 @@ void NodeWindow::show() {
     ed::EndPin();
     ed::EndNode();
 
-
     for (auto& linkInfo : m_Links) {
         ed::Link(linkInfo.Id, linkInfo.InputId, linkInfo.OutputId);
-        // m_Context->FindLink(linkInfo.Id);
-        // ed::DeleteLink(linkInfo.Id);
-        // ed::Flow(linkInfo.Id);
     }
-
 
     if (ed::BeginCreate()) {
         ed::PinId inputPinId, outputPinId;
