@@ -32,7 +32,7 @@ void NodeWindow::show() {
     ed::SetCurrentEditor(_context);
     ed::Begin("##MyEditor", ImVec2(0.0, 0.0f));
 
-    int uniqueId = 1;
+    int uniqueId = 10000;
     int uniqueIdAAA = 1000;
     ed::BeginNode(uniqueIdAAA);
 
