@@ -7,11 +7,11 @@
 
 #include "core/setting.hpp"
 #include "include/def.hpp"
+#include "ui/imgui_node_editor/utilities/widgets.h"
+#include "ui/style.hpp"
+#include "ui/widget/common_widgets.hpp"
 #include "util/common.hpp"
 #include "util/imgui_util.hpp"
-#include "ui/widget/common_widgets.hpp"
-#include "ui/style.hpp"
-#include "ui/node_editor/imgui_node_editor/utilities/widgets.h"
 
 using namespace Moon::ui;
 namespace ed = ax::NodeEditor;
@@ -19,16 +19,15 @@ namespace ed = ax::NodeEditor;
 NodeWindow::NodeWindow() {
     ed::Config config;
     config.SettingsFile = "Simple.json";
-    m_Context = ed::CreateEditor(&config);
+    _context = ed::CreateEditor(&config);
 }
 
 NodeWindow::~NodeWindow() {
-    ed::DestroyEditor(m_Context);
+    ed::DestroyEditor(_context);
 }
 
 void NodeWindow::show() {
-
-    ed::SetCurrentEditor(m_Context);
+    ed::SetCurrentEditor(_context);
     ed::Begin("##MyEditor", ImVec2(0.0, 0.0f));
 
     int uniqueId = 1;
@@ -45,7 +44,7 @@ void NodeWindow::show() {
     auto HeaderMax = ImGui::GetItemRectMax();
 
     ed::BeginPin(uniqueId++, ed::PinKind::Input);
-    float icon_size = 24;
+    float icon_size = ui::get_style().font_size;
     auto iconType = ax::Drawing::IconType::Circle;
     bool connected = true;
     auto color = ImColor(230, 42, 82);
@@ -80,8 +79,7 @@ void NodeWindow::show() {
         ImVec2(HeaderMax2.x - halfBorderWidth, HeaderMax.y),
         h_color,
         ed::GetStyle().NodeRounding,
-        ImDrawFlags_RoundCornersTop
-    );
+        ImDrawFlags_RoundCornersTop);
 
     if (ImGui::IsItemHovered()) {
         ed::Suspend();
@@ -100,8 +98,8 @@ void NodeWindow::show() {
     ed::EndPin();
     ed::EndNode();
 
-    for (auto& linkInfo : m_Links) {
-        ed::Link(linkInfo.Id, linkInfo.InputId, linkInfo.OutputId);
+    for (auto& linkInfo : _links) {
+        ed::Link(linkInfo.id, linkInfo.start_pid, linkInfo.end_pid);
     }
 
     if (ed::BeginCreate()) {
@@ -119,15 +117,14 @@ void NodeWindow::show() {
             //   * input invalid, output valid - user started to drag new ling from output pin
             //   * input valid, output valid   - user dragged link over other pin, can be validated
 
-            if (inputPinId && outputPinId) // both are valid, let's accept link
+            if (inputPinId && outputPinId)  // both are valid, let's accept link
             {
                 // ed::AcceptNewItem() return true when user release mouse button.
                 if (ed::AcceptNewItem()) {
-                    // Since we accepted new link, lets add one to our list of links.
-                    m_Links.push_back({ ed::LinkId(m_NextLinkId++), inputPinId, outputPinId });
+                    _links.push_back({ed::LinkId(_next_link_id++), inputPinId, outputPinId});
 
                     // Draw new link.
-                    ed::Link(m_Links.back().Id, m_Links.back().InputId, m_Links.back().OutputId);
+                    ed::Link(_links.back().id, _links.back().start_pid, _links.back().end_pid);
                 }
 
                 // You may choose to reject connection between these nodes
@@ -136,31 +133,33 @@ void NodeWindow::show() {
             }
         }
     }
-    ed::EndCreate(); // Wraps up object creation action handling.
-
+    ed::EndCreate();  // Wraps up object creation action handling.
 
     // Handle deletion action
     if (ed::BeginDelete()) {
-        // There may be many links marked for deletion, let's loop over them.
-        ed::LinkId deletedLinkId;
-        while (ed::QueryDeletedLink(&deletedLinkId)) {
-            // If you agree that link can be deleted, accept deletion.
+        ed::NodeId nodeId = 0;
+        while (ed::QueryDeletedNode(&nodeId)) {
             if (ed::AcceptDeletedItem()) {
-                // Then remove link from your data.
-                for (auto& link : m_Links) {
-                    if (link.Id == deletedLinkId) {
-                        // ed::DeleteLink(link.Id);
-                        m_Links.erase(&link);
-                        break;
-                    }
+                auto id = std::find_if(_nodes.begin(), _nodes.end(), [nodeId](auto& node) { return node.id == nodeId; });
+                if (id != _nodes.end()) {
+                    _nodes.erase(id);
+                    break;
                 }
             }
+        }
 
-            // You may reject link deletion by calling:
-            // ed::RejectDeletedItem();
+        ed::LinkId deletedLinkId;
+        while (ed::QueryDeletedLink(&deletedLinkId)) {
+            if (ed::AcceptDeletedItem()) {
+                auto id = std::find_if(_links.begin(), _links.end(), [=](auto& link) { return link.id == deletedLinkId; });
+                if (id != _links.end()) {
+                    _links.erase(id);
+                    break;
+                }
+            }
         }
     }
-    ed::EndDelete(); // Wrap up deletion action
+    ed::EndDelete();  // Wrap up deletion action
 
     ed::End();
     ed::SetCurrentEditor(nullptr);

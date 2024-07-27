@@ -8,7 +8,7 @@ add_library(ui
 )
 add_subdirectory(widget)
 add_subdirectory(dialog)
-add_subdirectory(node_editor)
+add_subdirectory(imgui_node_editor)
 
 target_include_directories(ui PUBLIC ${SRC_ROOT})
 
