@@ -1,7 +1,17 @@
 
-file(GLOB_RECURSE NODE_EDITOR_SRC *.cpp)
+add_library(
+    nodes
+    demo.cpp
+    struct.cpp
+)
 
-add_library(nodes ${NODE_EDITOR_SRC})
+message(STATUS "================================")
+message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
+message(STATUS "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
+message(STATUS "CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
+message(STATUS "CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+message(STATUS "================================")
+target_include_directories(nodes PUBLIC ${SRC_ROOT})
 
 target_link_libraries(nodes
     OpenGL::GL
@@ -9,4 +19,3 @@ target_link_libraries(nodes
     glfw
     imgui::imgui
 )
-

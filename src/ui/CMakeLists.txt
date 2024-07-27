@@ -8,6 +8,7 @@ add_library(ui
 )
 add_subdirectory(widget)
 add_subdirectory(dialog)
+add_subdirectory(nodes)
 add_subdirectory(imgui_node_editor)
 
 target_include_directories(ui PUBLIC ${SRC_ROOT})
@@ -21,6 +22,7 @@ target_link_libraries(ui
     common_widgets
     dialogs
     imgui_node_editor
+    nodes
 )
 
 vtk_module_autoinit(

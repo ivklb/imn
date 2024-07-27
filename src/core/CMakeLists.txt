@@ -5,8 +5,6 @@ add_library(core
     setting.cpp
 )
 
-message(STATUS ${SRC_ROOT})
-
 target_include_directories(core PUBLIC ${SRC_ROOT})
 
 target_link_libraries(core PRIVATE

@@ -12,6 +12,7 @@
 #include "ui/widget/common_widgets.hpp"
 #include "util/common.hpp"
 #include "util/imgui_util.hpp"
+#include "ui/nodes/demo.hpp"
 
 using namespace Moon::ui;
 namespace ed = ax::NodeEditor;
@@ -20,6 +21,7 @@ NodeWindow::NodeWindow() {
     ed::Config config;
     config.SettingsFile = "Simple.json";
     _context = ed::CreateEditor(&config);
+    _nodes.push_back(create_simple_node());
 }
 
 NodeWindow::~NodeWindow() {
@@ -98,6 +100,9 @@ void NodeWindow::show() {
     ed::EndPin();
     ed::EndNode();
 
+    for (auto& n : _nodes) {
+        n.on_frame();
+    }
     for (auto& linkInfo : _links) {
         ed::Link(linkInfo.id, linkInfo.start_pid, linkInfo.end_pid);
     }

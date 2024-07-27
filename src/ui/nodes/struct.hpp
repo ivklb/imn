@@ -40,8 +40,9 @@ struct Node {
     std::string state;
     std::string saved_state;
 
-    Node(int id, const char* name, ImColor color = ImColor(255, 255, 255)) : id(id), name(name), color(color), size(0, 0) {
-    }
+    Node(const char* name, ImColor color = ImColor(255, 255, 255));
+    void add_pin(Pin p);
+    void add_pins(std::vector<Pin> ps);
 
     void on_frame();
 };

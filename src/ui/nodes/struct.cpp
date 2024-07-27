@@ -1,5 +1,5 @@
 
-#include "node.hpp"
+#include "struct.hpp"
 
 #include <vector>
 
@@ -38,6 +38,27 @@ void Pin::on_frame() {
         ax::Widgets::Icon(ImVec2(icon_size, icon_size), type, connected, color, ImColor(32, 32, 32, alpha));
     }
     ed::EndPin();
+}
+
+Node::Node(const char* name, ImColor color)
+    : name(name),
+      color(color) {
+    id = get_unique_id();
+}
+
+void Node::add_pin(Pin p) {
+    p.node = this;
+    if (p.kind == ed::PinKind::Input) {
+        inputs.push_back(p);
+    } else {
+        outputs.push_back(p);
+    }
+}
+
+void Node::add_pins(std::vector<Pin> ps) {
+    for (auto& p : ps) {
+        add_pin(p);
+    }
 }
 
 void Node::on_frame() {
