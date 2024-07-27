@@ -13,7 +13,7 @@
 
 #include "base_window.hpp"
 #include "ui/imgui_node_editor/imgui_node_editor.h"
-#include "ui/node.hpp"
+#include "ui/nodes/struct.hpp"
 
 namespace ed = ax::NodeEditor;
 

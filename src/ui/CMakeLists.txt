@@ -3,7 +3,6 @@ add_library(ui
     image_viewer.cpp
     main_window.cpp
     node_window.cpp
-    node.cpp
     style.cpp
     vtk_viewer.cpp
 )
