@@ -103,3 +103,9 @@ void Node::on_frame() {
         ed::Resume();
     }
 }
+
+Link::Link(ed::PinId start_pid, ed::PinId end_pid)
+    : start_pid(start_pid),
+      end_pid(end_pid) {
+    id = get_unique_id();
+}

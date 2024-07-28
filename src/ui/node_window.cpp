@@ -8,11 +8,11 @@
 #include "core/setting.hpp"
 #include "include/def.hpp"
 #include "ui/imgui_node_editor/utilities/widgets.h"
+#include "ui/nodes/demo.hpp"
 #include "ui/style.hpp"
 #include "ui/widget/common_widgets.hpp"
 #include "util/common.hpp"
 #include "util/imgui_util.hpp"
-#include "ui/nodes/demo.hpp"
 
 using namespace Moon::ui;
 namespace ed = ax::NodeEditor;
@@ -35,8 +35,8 @@ void NodeWindow::show() {
     for (auto& n : _nodes) {
         n.on_frame();
     }
-    for (auto& linkInfo : _links) {
-        ed::Link(linkInfo.id, linkInfo.start_pid, linkInfo.end_pid);
+    for (auto& link : _links) {
+        ed::Link(link.id, link.start_pid, link.end_pid);
     }
 
     if (ed::BeginCreate()) {
@@ -54,14 +54,12 @@ void NodeWindow::show() {
             //   * input invalid, output valid - user started to drag new ling from output pin
             //   * input valid, output valid   - user dragged link over other pin, can be validated
 
-            if (inputPinId && outputPinId)  // both are valid, let's accept link
-            {
+            if (inputPinId && outputPinId) {
                 // ed::AcceptNewItem() return true when user release mouse button.
                 if (ed::AcceptNewItem()) {
-                    _links.push_back({ed::LinkId(_next_link_id++), inputPinId, outputPinId});
-
-                    // Draw new link.
-                    ed::Link(_links.back().id, _links.back().start_pid, _links.back().end_pid);
+                    Link link{inputPinId, outputPinId};
+                    _links.push_back(link);
+                    ed::Link(link.id, link.start_pid, link.end_pid);
                 }
 
                 // You may choose to reject connection between these nodes
@@ -80,6 +78,7 @@ void NodeWindow::show() {
                 auto id = std::find_if(_nodes.begin(), _nodes.end(), [nodeId](auto& node) { return node.id == nodeId; });
                 if (id != _nodes.end()) {
                     _nodes.erase(id);
+                    // TODO: delete link
                     break;
                 }
             }

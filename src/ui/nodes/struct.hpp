@@ -53,8 +53,7 @@ struct Link {
     ed::PinId end_pid;
     ImColor color;
 
-    Link(ed::LinkId id, ed::PinId startPinId, ed::PinId endPinId) : id(id), start_pid(startPinId), end_pid(endPinId), color(255, 255, 255) {
-    }
+    Link(ed::PinId start_pid, ed::PinId end_pid);
 };
 
 }  // namespace Moon::ui

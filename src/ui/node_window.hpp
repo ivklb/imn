@@ -29,10 +29,7 @@ class NodeWindow : public BaseWindow {
     std::vector<Node> _nodes;
     std::vector<Link> _links;
 
-    int _next_link_id = 100;
-
     ed::EditorContext* _context = nullptr;
-
     ed::NodeId _context_node_id = 0;
     ed::LinkId _context_link_id = 0;
     ed::PinId _context_pin_id = 0;
