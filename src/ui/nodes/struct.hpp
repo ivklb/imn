@@ -40,6 +40,7 @@ struct Node {
     std::string state;
     std::string saved_state;
 
+    Node() {}  // used in std::map
     Node(const char* name, ImColor color = ImColor(255, 255, 255));
     void add_pin(Pin p);
     void add_pins(std::vector<Pin> ps);
@@ -53,6 +54,7 @@ struct Link {
     ed::PinId end_pid;
     ImColor color;
 
+    Link() {}  // used in std::map
     Link(ed::PinId start_pid, ed::PinId end_pid);
 };
 

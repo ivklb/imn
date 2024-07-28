@@ -26,8 +26,12 @@ class NodeWindow : public BaseWindow {
     void show() override;
 
    private:
-    std::vector<Node> _nodes;
-    std::vector<Link> _links;
+    Node* _find_node(ed::NodeId id);
+    Link* _find_link(ed::LinkId id);
+    Pin* _find_pin(ed::PinId id);
+
+    std::map<ed::NodeId, Node> _nodes;
+    std::map<ed::LinkId, Link> _links;
 
     ed::EditorContext* _context = nullptr;
     ed::NodeId _context_node_id = 0;
