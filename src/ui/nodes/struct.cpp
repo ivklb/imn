@@ -12,12 +12,12 @@ using namespace ax;
 using ax::Widgets::IconType;
 using namespace Moon::ui;
 
-Pin::Pin(const char* name, ed::PinKind kind, ax::Widgets::IconType type, ImColor color)
+Pin::Pin(const char* name, ed::PinKind kind, ImColor color, ax::Widgets::IconType type)
     : node(nullptr),
       name(name),
       kind(kind),
-      type(type),
       color(color),
+      type(type),
       connected(false) {
     id = get_unique_id();
 }

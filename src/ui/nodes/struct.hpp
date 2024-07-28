@@ -21,11 +21,11 @@ struct Pin {
     ed::PinId id;
     std::string name;
     ed::PinKind kind;
-    IconType type;
     ImColor color;
+    IconType type;
     bool connected;
 
-    Pin(const char* name, ed::PinKind kind, IconType type = IconType::Circle, ImColor color = ImColor(255, 255, 255));
+    Pin(const char* name, ed::PinKind kind, ImColor color = ImColor(255, 255, 255), IconType type = IconType::Circle);
     void on_frame();
 };
 
