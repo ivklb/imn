@@ -33,6 +33,7 @@ class NodeWindow : public BaseWindow {
     std::map<ed::NodeId, Node> _nodes;
     std::map<ed::LinkId, Link> _links;
 
+    ImVec2 _mouse_pos;
     ed::EditorContext* _context = nullptr;
     ed::NodeId _context_node_id = 0;
     ed::LinkId _context_link_id = 0;

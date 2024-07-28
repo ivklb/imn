@@ -5,6 +5,8 @@
 #include <implot.h>
 #include <spdlog/spdlog.h>
 
+#include <optional>
+
 #include "core/setting.hpp"
 #include "include/def.hpp"
 #include "ui/imgui_node_editor/utilities/widgets.h"
@@ -22,8 +24,10 @@ NodeWindow::NodeWindow() {
     config.SettingsFile = "Simple.json";
     _context = ed::CreateEditor(&config);
 
-    auto tmp_node = create_simple_node();
-    _nodes[tmp_node.id] = tmp_node;
+    auto tmp_node1 = create_simple_node();
+    auto tmp_node2 = create_simple_node();
+    _nodes[tmp_node1.id] = tmp_node1;
+    _nodes[tmp_node2.id] = tmp_node2;
 }
 
 NodeWindow::~NodeWindow() {
@@ -61,6 +65,8 @@ void NodeWindow::show() {
                 if (ed::AcceptNewItem()) {
                     Link link{inputPinId, outputPinId};
                     _links[link.id] = link;
+                    _find_pin(inputPinId)->connected = true;
+                    _find_pin(outputPinId)->connected = true;
                     ed::Link(link.id, link.start_pid, link.end_pid);
                 }
 
@@ -69,6 +75,17 @@ void NodeWindow::show() {
                 // visual feedback by changing link thickness and color.
             }
         }
+        // ed::PinId pinId = 0;
+        // if (ed::QueryNewNode(&pinId)) {
+        //     if (ed::AcceptNewItem()) {
+        //         // createNewNode = true;
+        //         // newNodeLinkPin = FindPin(pinId);
+        //         // newLinkPin = nullptr;
+        //         ed::Suspend();
+        //         // ImGui::OpenPopup("Create New Node");
+        //         ed::Resume();
+        //     }
+        // }
     }
     ed::EndCreate();  // Wraps up object creation action handling.
 
@@ -96,6 +113,40 @@ void NodeWindow::show() {
         }
     }
     ed::EndDelete();  // Wrap up deletion action
+
+    auto tmp_mouse_pos = ImGui::GetMousePos();
+    ed::Suspend();
+    if (ed::ShowNodeContextMenu(&_context_node_id)) {
+        ImGui::OpenPopup("Node Context Menu");
+    } else if (ed::ShowPinContextMenu(&_context_pin_id)) {
+        ImGui::OpenPopup("Pin Context Menu");
+    } else if (ed::ShowLinkContextMenu(&_context_link_id)) {
+        ImGui::OpenPopup("Link Context Menu");
+    } else if (ed::ShowBackgroundContextMenu()) {
+        _mouse_pos = tmp_mouse_pos;
+        ImGui::OpenPopup("Create New Node");
+    }
+    ed::Resume();
+
+    ed::Suspend();
+    if (ImGui::BeginPopup("Create New Node")) {
+        std::optional<Node> node;
+        if (ImGui::MenuItem("dummy")) {
+        }
+        if (ImGui::BeginMenu("New Node")) {
+            if (ImGui::MenuItem("Simple Node")) {
+                node = create_simple_node();
+            }
+            ImGui::EndMenu();
+        }
+        if (node.has_value()) {
+            _nodes[node.value().id] = node.value();
+            ed::SetNodePosition(node.value().id, _mouse_pos);
+        }
+
+        ImGui::EndPopup();
+    }
+    ed::Resume();
 
     ed::End();
     ed::SetCurrentEditor(nullptr);
