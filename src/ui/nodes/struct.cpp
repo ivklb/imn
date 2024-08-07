@@ -37,7 +37,7 @@ Pin::Pin(const char* name, PinKind kind, ColorTheme color)
       name(name),
       kind(kind),
       color(color),
-      connected(false) {
+      connect_count(0) {
     id = IDGenerator::next();
 }
 
@@ -107,8 +107,10 @@ void Node::_draw_pins() {
 void Node::_draw_static() {
 }
 
-Link::Link(int from_pid, int to_pid)
-    : from_pid(from_pid),
+Link::Link(int from_nid, int from_pid, int to_nid, int to_pid)
+    : from_nid(from_nid),
+      from_pid(from_pid),
+      to_nid(to_nid),
       to_pid(to_pid) {
     id = IDGenerator::next();
 }
@@ -141,17 +143,37 @@ int Graph::insert_node(const std::shared_ptr<Node>& node) {
 }
 
 void Graph::erase_node(int node_id) {
+    std::vector<int> links_to_remove;
+    for (auto& [id, link] : links) {
+        if (link->from_nid == node_id || link->to_nid == node_id) {
+            links_to_remove.push_back(id);
+        }
+    }
+    for (auto& link_id : links_to_remove) {
+        erase_link(link_id);
+    }
     nodes.erase(node_id);
-    // TODO: remove edges
 }
 
 int Graph::insert_link(int from_pid, int to_pid) {
-    auto link = std::make_shared<Link>(from_pid, to_pid);
+    auto from_pin = pin(from_pid);
+    auto to_pin = pin(to_pid);
+    if (to_pin->connect_count > 0) {
+        // TODO: break existing link?
+        return -1;
+    }
+
+    from_pin->connect_count++;
+    to_pin->connect_count++;
+    auto link = std::make_shared<Link>(from_pin->node->id, from_pid, to_pin->node->id, to_pid);
     links[link->id] = link;
     return link->id;
 }
 
 void Graph::erase_link(int link_id) {
+    auto link = links.at(link_id);
+    nodes[link->from_nid]->outputs[link->from_pid]->connect_count--;
+    nodes[link->to_nid]->inputs[link->to_pid]->connect_count--;
     links.erase(link_id);
 }
 

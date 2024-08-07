@@ -11,6 +11,7 @@ struct DemoNode : public Node {
     DemoNode(const char* name, ColorTheme color = ColorTheme::Blue);
 };
 
+
 }  // namespace Moon::ui
 
 #endif

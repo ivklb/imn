@@ -19,7 +19,7 @@ void IntPin::draw_frame() {
     if (kind == PinKind::In) {
         ImNodes::BeginInputAttribute(id);
         ImGui::TextUnformatted(name.c_str());
-        if (!connected) {
+        if (connect_count == 0) {
             ImGui::SameLine();
             ImGui::PushItemWidth(node_width - label_width);
             ImGui::DragInt("##hidelabel", &value);

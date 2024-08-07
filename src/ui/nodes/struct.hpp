@@ -37,6 +37,7 @@ enum class NodeStatus {
     Pending,
     Processing,
     WaitingUserInput,
+    WaitingLink,
     Done,
     Error,
 };
@@ -49,7 +50,7 @@ struct Pin {
     std::string name;
     PinKind kind;
     ColorTheme color;
-    bool connected;
+    int connect_count;
 
     Pin(const char* name, PinKind kind, ColorTheme color = ColorTheme::Blue);
     virtual ~Pin() {}
@@ -67,6 +68,7 @@ struct Node {
     Node(const char* name, ColorTheme color = ColorTheme::Blue);
     virtual ~Node() {}
     virtual void draw_frame();
+    virtual void process() {}
 
    protected:
     void _build_pins();
@@ -78,16 +80,20 @@ struct Node {
 
 struct Link {
     int id;
+    int from_nid;
     int from_pid;
+    int to_nid;
     int to_pid;
 
     // Link() {}  // used in std::map
-    Link(int from_pid, int to_pid);
+    Link(int from_nid, int from_pid, int to_nid, int to_pid);
 };
 
 struct Graph {
     std::map<int, std::shared_ptr<Node>> nodes;
     std::map<int, std::shared_ptr<Link>> links;
+    // IdMap<int>              edges_from_node_;
+    // IdMap<std::vector<int>> node_neighbors_;
 
     // Element Access
     std::shared_ptr<Pin> pin(int pid) const;
@@ -113,7 +119,6 @@ struct IDGenerator {
 
 ImColor get_normal_color(ColorTheme color);
 ImColor get_highlight_color(ColorTheme color);
-
 
 }  // namespace Moon::ui
 #endif
