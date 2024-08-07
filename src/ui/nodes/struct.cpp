@@ -8,7 +8,31 @@
 
 using namespace Moon::ui;
 
-Pin::Pin(const char* name, PinKind kind, ImColor color)
+// https://flatuicolors.com/palette/defo
+std::map<ColorTheme, std::tuple<ImColor, ImColor>> color_theme_map = {
+    // {ColorTheme::Cyan, {ImColor(0x1abc9c), ImColor(0x16a085)}},
+    // {ColorTheme::Green, {ImColor(0x2ecc71), ImColor(0x27ae60)}},
+    // {ColorTheme::Blue, {ImColor(0x3498db), ImColor(0x2980b9)}},
+    // {ColorTheme::Purple, {ImColor(0x9b59b6), ImColor(0x8e44ad)}},
+    // {ColorTheme::Midnight, {ImColor(0x34495e), ImColor(0x2c3e50)}},
+    // {ColorTheme::Yellow, {ImColor(0xf1c40f), ImColor(0xf39c12)}},
+    // {ColorTheme::Orange, {ImColor(0xe67e22), ImColor(0xd35400)}},
+    // {ColorTheme::Red, {ImColor(0xe74c3c), ImColor(0xc0392b)}},
+    // {ColorTheme::White, {ImColor(0xecf0f1), ImColor(0xbdc3c7)}},
+    // {ColorTheme::Gray, {ImColor(0x95a5a6), ImColor(0x7f8c8d)}},
+    {ColorTheme::Cyan, {ImColor(26, 188, 156), ImColor(22, 160, 133)}},
+    {ColorTheme::Green, {ImColor(46, 204, 113), ImColor(39, 174, 96)}},
+    {ColorTheme::Blue, {ImColor(52, 152, 219), ImColor(41, 128, 185)}},
+    {ColorTheme::Purple, {ImColor(155, 89, 182), ImColor(142, 68, 173)}},
+    {ColorTheme::Midnight, {ImColor(52, 73, 94), ImColor(44, 62, 80)}},
+    {ColorTheme::Yellow, {ImColor(241, 196, 15), ImColor(243, 156, 18)}},
+    {ColorTheme::Orange, {ImColor(230, 126, 34), ImColor(211, 84, 0)}},
+    {ColorTheme::Red, {ImColor(231, 76, 60), ImColor(192, 57, 43)}},
+    {ColorTheme::White, {ImColor(236, 240, 241), ImColor(189, 195, 199)}},
+    {ColorTheme::Gray, {ImColor(149, 165, 166), ImColor(127, 140, 141)}},
+};
+
+Pin::Pin(const char* name, PinKind kind, ColorTheme color)
     : node(nullptr),
       name(name),
       kind(kind),
@@ -32,26 +56,28 @@ void Pin::draw_frame() {
     }
 }
 
-Node::Node(const char* name, ImColor color)
+Node::Node(const char* name, ColorTheme color)
     : name(name),
       color(color) {
     id = IDGenerator::next();
 }
 
 void Node::draw_frame() {
-    ImNodes::PushColorStyle(ImNodesCol_TitleBar, color);
-    ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, color);
+    ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, get_highlight_color(color));
+    ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, get_highlight_color(color));
+    ImNodes::PushColorStyle(ImNodesCol_TitleBar, get_normal_color(color));
 
     ImNodes::BeginNode(id);
 
-    ImGui::BeginGroup();
-    ImGui::Text(name.c_str());
-    ImGui::EndGroup();
+    ImNodes::BeginNodeTitleBar();
+    ImGui::TextUnformatted(name.c_str());
+    ImNodes::EndNodeTitleBar();
 
     _draw_pins();
     _draw_static();
 
     ImNodes::EndNode();
+    ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();
 
@@ -99,9 +125,14 @@ std::shared_ptr<Pin> Graph::pin(int pid) const {
     return nullptr;
 }
 
-size_t Graph::num_edges_from_node(int node_id) const {
+std::vector<std::shared_ptr<Link>> Graph::input_links_from_node(int node_id) const {
     // TODO: fix me
-    return 0;
+    return {};
+}
+
+std::vector<std::shared_ptr<Link>> Graph::output_links_from_node(int node_id) const {
+    // TODO: fix me
+    return {};
 }
 
 int Graph::insert_node(const std::shared_ptr<Node>& node) {
@@ -114,20 +145,29 @@ void Graph::erase_node(int node_id) {
     // TODO: remove edges
 }
 
-int Graph::insert_edge(int from_pid, int to_pid) {
+int Graph::insert_link(int from_pid, int to_pid) {
     auto link = std::make_shared<Link>(from_pid, to_pid);
     links[link->id] = link;
     return link->id;
 }
 
-void Graph::erase_edge(int edge_id) {
-    links.erase(edge_id);
+void Graph::erase_link(int link_id) {
+    links.erase(link_id);
 }
 
 int IDGenerator::_next_id = 0;
 int IDGenerator::next() {
     return _next_id++;
 }
+
 void IDGenerator::set_next(int id) {
     _next_id = id;
+}
+
+ImColor Moon::ui::get_normal_color(ColorTheme color) {
+    return std::get<1>(color_theme_map.at(color));
+}
+
+ImColor Moon::ui::get_highlight_color(ColorTheme color) {
+    return std::get<0>(color_theme_map.at(color));
 }

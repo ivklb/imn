@@ -137,7 +137,7 @@ void NodeWindow::_handle_new_links() {
         //         std::swap(start_attr, end_attr);
         //     }
         // }
-        _graph.insert_edge(start_attr, end_attr);
+        _graph.insert_link(start_attr, end_attr);
     }
 }
 
@@ -145,7 +145,7 @@ void NodeWindow::_handle_deleted_links() {
     {
         int link_id;
         if (ImNodes::IsLinkDestroyed(&link_id)) {
-            _graph.erase_edge(link_id);
+            _graph.erase_link(link_id);
         }
     }
 
@@ -156,7 +156,7 @@ void NodeWindow::_handle_deleted_links() {
             selected_links.resize(static_cast<size_t>(num_selected));
             ImNodes::GetSelectedLinks(selected_links.data());
             for (const int edge_id : selected_links) {
-                _graph.erase_edge(edge_id);
+                _graph.erase_link(edge_id);
             }
         }
     }

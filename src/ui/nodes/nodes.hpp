@@ -8,7 +8,7 @@
 namespace Moon::ui {
 
 struct DemoNode : public Node {
-    DemoNode(const char* name, ImColor color = ImColor(255, 255, 255));
+    DemoNode(const char* name, ColorTheme color = ColorTheme::Blue);
 };
 
 }  // namespace Moon::ui
