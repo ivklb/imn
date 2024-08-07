@@ -45,9 +45,10 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::show() {
+    auto window = App::app()->main_window_handle();
 
     // Main loop
-    while (!glfwWindowShouldClose(_window)) {
+    while (!glfwWindowShouldClose(window)) {
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
@@ -66,7 +67,7 @@ void MainWindow::show() {
         // Render dear imgui into screen
         ImGui::Render();
         int display_w, display_h;
-        glfwGetFramebufferSize(_window, &display_w, &display_h);
+        glfwGetFramebufferSize(window, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -78,7 +79,7 @@ void MainWindow::show() {
             ImGui::RenderPlatformWindowsDefault();
             glfwMakeContextCurrent(backup_current_context);
         }
-        glfwSwapBuffers(_window);
+        glfwSwapBuffers(window);
     }
     _cleanup();
 }
@@ -106,11 +107,12 @@ void MainWindow::_setup_gl() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     // Create window with graphics context
-    _window = glfwCreateWindow(1280, 720, kAppName.c_str(), NULL, NULL);
+    auto _window = glfwCreateWindow(1280, 720, kAppName.c_str(), NULL, NULL);
     if (_window == NULL) {
         SPDLOG_ERROR("Failed to create GLFW window");
         return;
     }
+    App::app()->set_main_window_handle(_window);
     glfwMakeContextCurrent(_window);
     glfwSwapInterval(1); // Enable vsync
 
@@ -147,7 +149,7 @@ void MainWindow::_setup_imgui() {
     style.FramePadding = ImVec2(4, 4);
 
     // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(_window, true);
+    ImGui_ImplGlfw_InitForOpenGL(App::app()->main_window_handle(), true);
     ImGui_ImplOpenGL3_Init(_glsl_version);
 
     // Our state
@@ -329,6 +331,6 @@ void MainWindow::_cleanup() {
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    glfwDestroyWindow(_window);
+    glfwDestroyWindow(App::app()->main_window_handle());
     glfwTerminate();
 }

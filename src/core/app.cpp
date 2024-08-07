@@ -10,6 +10,16 @@
 using namespace Moon;
 
 
+App* App::app() {
+    static bool init_flag = false;
+    static App _app;
+    if (!init_flag) {
+        _app.init();
+        init_flag = true;
+    }
+    return &_app;
+}
+
 void App::init() {
     auto max_size = 50 * 1024 * 1024;  // 50MB
     auto max_files = 10;

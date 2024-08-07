@@ -5,8 +5,8 @@
 
 
 int main(int argc, char* argv[]) {
-    Moon::App app;
-    app.init();
+    // trigger init
+    Moon::App::app();
 
     Moon::ui::MainWindow window;
     window.show();

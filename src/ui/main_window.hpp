@@ -43,7 +43,6 @@ private:
     void _cleanup();
 
 private:
-    GLFWwindow* _window;
     const char* _glsl_version = "#version 130";
     ImageViewer _image_viewer;
     NodeWindow _node_window;

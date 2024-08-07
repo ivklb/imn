@@ -1,6 +1,7 @@
 
 add_executable(${PROJECT_NAME} main.cpp)
 add_subdirectory(core)
+add_subdirectory(ext/nfd)
 add_subdirectory(ui)
 add_subdirectory(util)
 
@@ -10,6 +11,7 @@ target_link_libraries(${PROJECT_NAME}
     glfw
     imgui::imgui
     implot::implot
+    nfd
     opencv_core
     opencv_imgcodecs
     unofficial::gl3w::gl3w

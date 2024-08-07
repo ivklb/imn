@@ -35,3 +35,7 @@ void IntPin::draw_frame() {
     ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();
 }
+
+ImagePin::ImagePin(const char* name, PinKind kind)
+    : Pin(name, kind, ColorTheme::Red) {
+}

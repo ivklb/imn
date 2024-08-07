@@ -2,6 +2,7 @@
 
 add_library(util STATIC
     common.cpp
+    fs.cpp
     imgui_util.cpp
 )
 

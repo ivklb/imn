@@ -42,9 +42,6 @@ Pin::Pin(const char* name, PinKind kind, ColorTheme color)
 }
 
 void Pin::draw_frame() {
-    int alpha = 255;
-    float icon_size = ui::get_style().font_size;
-
     if (kind == PinKind::In) {
         ImNodes::BeginInputAttribute(id);
         ImGui::TextUnformatted(name.c_str());
