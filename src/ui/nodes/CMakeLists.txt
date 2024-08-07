@@ -1,7 +1,8 @@
 
 add_library(
     nodes
-    demo.cpp
+    nodes.cpp
+    pins.cpp
     struct.cpp
 )
 

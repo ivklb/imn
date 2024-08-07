@@ -17,7 +17,6 @@ target_link_libraries(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     core
-    imgui_node_editor
     ui
     util
 )

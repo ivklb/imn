@@ -1,61 +1,99 @@
 
 
-#ifndef UI__NODE_EDITOR__NODE_HPP
-#define UI__NODE_EDITOR__NODE_HPP
+#ifndef UI__NODES__STRUCT_HPP
+#define UI__NODES__STRUCT_HPP
 
+#include <imgui.h>
+
+#include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
-#include "ui/imgui_node_editor/imgui_node_editor.h"
-#include "ui/imgui_node_editor/utilities/widgets.h"
-
-namespace ed = ax::NodeEditor;
-using ax::Widgets::IconType;
-
 namespace Moon::ui {
+
+enum class PinKind {
+    In,
+    Out,
+};
+
+enum class NodeStatus {
+    Idle,
+    Pending,
+    Processing,
+    WaitingUserInput,
+    Done,
+    Error,
+};
 
 struct Node;
 
 struct Pin {
     Node* node;
-    ed::PinId id;
+    int id;
     std::string name;
-    ed::PinKind kind;
+    PinKind kind;
     ImColor color;
-    IconType type;
     bool connected;
 
-    Pin(const char* name, ed::PinKind kind, ImColor color = ImColor(255, 255, 255), IconType type = IconType::Circle);
-    void on_frame();
+    Pin(const char* name, PinKind kind, ImColor color = ImColor(255, 255, 255));
+    virtual ~Pin() {}
+    virtual void draw_frame();
 };
 
 struct Node {
-    ed::NodeId id;
+    int id;
     std::string name;
-    std::vector<Pin> inputs;
-    std::vector<Pin> outputs;
+    std::map<int, std::shared_ptr<Pin>> inputs;
+    std::map<int, std::shared_ptr<Pin>> outputs;
     ImColor color;
-    ImVec2 size;
+    NodeStatus status;
 
-    std::string state;
-    std::string saved_state;
-
-    Node() {}  // used in std::map
+    // Node() {}  // used in std::map
     Node(const char* name, ImColor color = ImColor(255, 255, 255));
-    void add_pin(Pin p);
-    void add_pins(std::vector<Pin> ps);
+    virtual ~Node() {}
+    virtual void draw_frame();
 
-    void on_frame();
+   protected:
+    void _build_pins();
+
+   private:
+    virtual void _draw_pins();
+    virtual void _draw_static();
 };
 
 struct Link {
-    ed::LinkId id;
-    ed::PinId start_pid;
-    ed::PinId end_pid;
-    ImColor color;
+    int id;
+    int from_pid;
+    int to_pid;
 
-    Link() {}  // used in std::map
-    Link(ed::PinId start_pid, ed::PinId end_pid);
+    // Link() {}  // used in std::map
+    Link(int from_pid, int to_pid);
+};
+
+struct Graph {
+    std::map<int, std::shared_ptr<Node>> nodes;
+    std::map<int, std::shared_ptr<Link>> links;
+
+    // Element Access
+    std::shared_ptr<Pin> pin(int pid) const;
+
+    // Capacity
+    size_t num_edges_from_node(int node_id) const;
+
+    // Modifiers
+    int insert_node(const std::shared_ptr<Node>& node);
+    void erase_node(int node_id);
+    int insert_edge(int from_pid, int to_pid);
+    void erase_edge(int edge_id);
+};
+
+struct IDGenerator {
+    static int next();
+    static void set_next(int id);
+
+   private:
+    static int _next_id;
 };
 
 }  // namespace Moon::ui

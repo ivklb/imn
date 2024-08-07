@@ -3,109 +3,131 @@
 
 #include <vector>
 
-#include "ui/imgui_node_editor/imgui_node_editor.h"
+#include "ui/node_editor/imnodes.h"
 #include "ui/style.hpp"
-#include "util/common.hpp"
 
-namespace ed = ax::NodeEditor;
-using namespace ax;
-using ax::Widgets::IconType;
 using namespace Moon::ui;
 
-Pin::Pin(const char* name, ed::PinKind kind, ImColor color, ax::Widgets::IconType type)
+Pin::Pin(const char* name, PinKind kind, ImColor color)
     : node(nullptr),
       name(name),
       kind(kind),
       color(color),
-      type(type),
       connected(false) {
-    id = get_unique_id();
+    id = IDGenerator::next();
 }
 
-void Pin::on_frame() {
-    ed::BeginPin(id, kind);
-
+void Pin::draw_frame() {
     int alpha = 255;
     float icon_size = ui::get_style().font_size;
 
-    if (kind == ed::PinKind::Input) {
-        ax::Widgets::Icon(ImVec2(icon_size, icon_size), type, connected, color, ImColor(32, 32, 32, alpha));
-        ImGui::SameLine();
-        ImGui::Text(name.c_str());
-    } else if (kind == ed::PinKind::Output) {
-        ImGui::Text(name.c_str());
-        ImGui::SameLine();
-        ax::Widgets::Icon(ImVec2(icon_size, icon_size), type, connected, color, ImColor(32, 32, 32, alpha));
+    if (kind == PinKind::In) {
+        ImNodes::BeginInputAttribute(id);
+        ImGui::TextUnformatted(name.c_str());
+        ImNodes::EndInputAttribute();
+    } else if (kind == PinKind::Out) {
+        ImNodes::BeginOutputAttribute(id);
+        ImGui::TextUnformatted(name.c_str());
+        ImNodes::EndOutputAttribute();
     }
-    ed::EndPin();
 }
 
 Node::Node(const char* name, ImColor color)
     : name(name),
       color(color) {
-    id = get_unique_id();
+    id = IDGenerator::next();
 }
 
-void Node::add_pin(Pin p) {
-    p.node = this;
-    if (p.kind == ed::PinKind::Input) {
-        inputs.push_back(p);
-    } else {
-        outputs.push_back(p);
-    }
-}
+void Node::draw_frame() {
+    ImNodes::PushColorStyle(ImNodesCol_TitleBar, color);
+    ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, color);
 
-void Node::add_pins(std::vector<Pin> ps) {
-    for (auto& p : ps) {
-        add_pin(p);
-    }
-}
-
-void Node::on_frame() {
-    ed::BeginNode(id);
+    ImNodes::BeginNode(id);
 
     ImGui::BeginGroup();
     ImGui::Text(name.c_str());
-
-    auto padding2 = ed::GetStyle().NodePadding;
-    ImGui::Dummy(ImVec2(0.0f, padding2.y / 2));
     ImGui::EndGroup();
-    auto header_top_left = ImGui::GetItemRectMin();
-    auto header_bottom_right = ImGui::GetItemRectMax();
 
-    for (auto& pin : inputs) {
-        pin.on_frame();
-    }
-    ImGui::SameLine();
-    for (auto& pin : outputs) {
-        pin.on_frame();
-    }
+    _draw_pins();
+    _draw_static();
 
-    ed::EndNode();
-    auto node_bottom_right = ImGui::GetItemRectMax();
-
-    auto drawList = ed::GetNodeBackgroundDrawList(id);
-
-    auto padding = ed::GetStyle().NodePadding;
-    const auto border_width = ed::GetStyle().NodeBorderWidth;
-
-    // draw header background
-    drawList->AddRectFilled(
-        header_top_left - ImVec2(padding.x - border_width, padding.y - border_width),
-        ImVec2(node_bottom_right.x - border_width, header_bottom_right.y),
-        color,
-        ed::GetStyle().NodeRounding,
-        ImDrawFlags_RoundCornersTop);
+    ImNodes::EndNode();
+    ImNodes::PopColorStyle();
+    ImNodes::PopColorStyle();
 
     if (ImGui::IsItemHovered()) {
-        ed::Suspend();
         ImGui::SetTooltip("State: %s", "123");
-        ed::Resume();
     }
 }
 
-Link::Link(ed::PinId start_pid, ed::PinId end_pid)
-    : start_pid(start_pid),
-      end_pid(end_pid) {
-    id = get_unique_id();
+void Node::_build_pins() {
+    for (auto& [id, pin] : inputs) {
+        pin->node = this;
+    }
+    for (auto& [id, pin] : outputs) {
+        pin->node = this;
+    }
+}
+
+void Node::_draw_pins() {
+    for (auto& [id, pin] : inputs) {
+        pin->draw_frame();
+    }
+    for (auto& [id, pin] : outputs) {
+        pin->draw_frame();
+    }
+}
+
+void Node::_draw_static() {
+}
+
+Link::Link(int from_pid, int to_pid)
+    : from_pid(from_pid),
+      to_pid(to_pid) {
+    id = IDGenerator::next();
+}
+
+std::shared_ptr<Pin> Graph::pin(int pid) const {
+    for (auto& [id, node] : nodes) {
+        if (node->inputs.count(pid)) {
+            return node->inputs.at(pid);
+        }
+        if (node->outputs.count(pid)) {
+            return node->outputs.at(pid);
+        }
+    }
+    return nullptr;
+}
+
+size_t Graph::num_edges_from_node(int node_id) const {
+    // TODO: fix me
+    return 0;
+}
+
+int Graph::insert_node(const std::shared_ptr<Node>& node) {
+    nodes[node->id] = node;
+    return node->id;
+}
+
+void Graph::erase_node(int node_id) {
+    nodes.erase(node_id);
+    // TODO: remove edges
+}
+
+int Graph::insert_edge(int from_pid, int to_pid) {
+    auto link = std::make_shared<Link>(from_pid, to_pid);
+    links[link->id] = link;
+    return link->id;
+}
+
+void Graph::erase_edge(int edge_id) {
+    links.erase(edge_id);
+}
+
+int IDGenerator::_next_id = 0;
+int IDGenerator::next() {
+    return _next_id++;
+}
+void IDGenerator::set_next(int id) {
+    _next_id = id;
 }

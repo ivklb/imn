@@ -155,6 +155,8 @@ void MainWindow::_setup_imgui() {
     int out_height;
     auto img = cv::imread("asset/image/moon.jpeg", cv::IMREAD_UNCHANGED);
     _image_viewer.set_image(std::make_shared<cv::Mat>(std::move(img)));
+
+    _node_window.setup();
 }
 
 void MainWindow::_on_frame() {

@@ -8,3 +8,6 @@
 /code_ref
 /__pycache__
 /.cache
+/todo
+/tmp
+/test.py
