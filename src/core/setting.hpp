@@ -7,12 +7,12 @@
 #include <nlohmann/json.hpp>
 
 
-struct MoonSettings {
+struct IMNSettings {
     std::string font_file;
     std::string lang;
     std::string default_lang;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(MoonSettings,
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(IMNSettings,
         font_file,
         lang,
         default_lang
@@ -20,6 +20,6 @@ struct MoonSettings {
 };
 
 
-MoonSettings& global_setting();
+IMNSettings& global_setting();
 
 #endif

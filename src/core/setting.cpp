@@ -24,11 +24,11 @@ std::string _search_setting_file() {
     return "";
 }
 
-MoonSettings _load_setting(const std::string& filename) {
+IMNSettings _load_setting(const std::string& filename) {
     std::ifstream ifs(filename);
     try {
         json jf = json::parse(ifs, nullptr, true, true);
-        return jf.get<MoonSettings>();
+        return jf.get<IMNSettings>();
     } catch (std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         std::cerr << "Invalid setting file: " << filename << std::endl;
@@ -36,12 +36,12 @@ MoonSettings _load_setting(const std::string& filename) {
     return {};
 }
 
-MoonSettings _load_setting() {
+IMNSettings _load_setting() {
     auto filename = _search_setting_file();
     return _load_setting(filename);
 }
 
-MoonSettings& global_setting() {
-    static MoonSettings setting = _load_setting();
+IMNSettings& global_setting() {
+    static IMNSettings setting = _load_setting();
     return setting;
 }

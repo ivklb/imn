@@ -32,17 +32,17 @@
 
 #include <any>
 #include <exception>
-#include <functional> // for std::bind
+#include <functional>  // for std::bind
 #include <map>
 #include <string>
 
-namespace Moon {
+namespace imn {
 
 namespace Lambda {
 // https://stackoverflow.com/questions/59897767/c-storing-callbacks-with-variadic-arguments
 class LambdaManager {
-public:
-    template<typename F>
+   public:
+    template <typename F>
     void store(const std::string& key, F&& f) {
         using arg_tuple = typename function_traits<F>::arg_tuple;
         using return_type = typename function_traits<F>::return_type;
@@ -56,28 +56,29 @@ public:
             }
         };
     }
-    template<typename... Args>
+    template <typename... Args>
     std::any call(const std::string& key, Args... arg) {
         if (myHash.count(key) == 0) {
             throw std::runtime_error("LambdaManager::call: key not found: " + key);
         }
         return _call_func(myHash[key], arg...);
     }
-private:
+
+   private:
     std::map<std::string, std::function<std::any(std::any)>> myHash;
 
-    template<typename T>
+    template <typename T>
     struct function_traits : public function_traits<decltype(&T::operator())> {
     };
 
-    template<typename ClassType, typename ReturnType, typename... Args>
-    struct function_traits<ReturnType(ClassType::*)(Args...) const> {
+    template <typename ClassType, typename ReturnType, typename... Args>
+    struct function_traits<ReturnType (ClassType::*)(Args...) const> {
         using arg_tuple = std::tuple<Args...>;
         using return_type = ReturnType;
     };
 
-    template<typename... Args>
-    std::any _call_func(const std::function<std::any(std::any)>& f, Args &&... args) {
+    template <typename... Args>
+    std::any _call_func(const std::function<std::any(std::any)>& f, Args&&... args) {
         return f(std::make_tuple(std::forward<Args>(args)...));
     }
 };
@@ -87,19 +88,19 @@ inline LambdaManager& _load_manager() {
     return m;
 }
 
-template<typename F>
+template <typename F>
 void store(const std::string& key, F&& f) {
     auto& m = _load_manager();
     m.store(key, std::forward<F>(f));
 }
 
-template<typename... Args>
+template <typename... Args>
 std::any call(const std::string& key, Args... arg) {
     auto& m = _load_manager();
     return m.call(key, std::forward<Args>(arg)...);
 }
 
 }  // end namespace Lambda
-}  // end namespace Moon
+}  // namespace imn
 
 #endif

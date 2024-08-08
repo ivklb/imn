@@ -3,7 +3,7 @@
 
 #include "ui/node_editor/imnodes.h"
 
-using namespace Moon::ui;
+using namespace imn::ui;
 
 IntPin::IntPin(const char* name, PinKind kind, ColorTheme color)
     : Pin(name, kind, color),

@@ -9,7 +9,7 @@
 
 #include "ui/nodes/struct.hpp"
 
-namespace Moon::ui {
+namespace imn::ui {
 
 struct DemoNode : public Node {
     DemoNode(const char* name, ColorTheme color = ColorTheme::Blue);
@@ -23,6 +23,6 @@ struct ImageLoaderNode : public Node {
     void _draw_static() override;
 };
 
-}  // namespace Moon::ui
+}  // namespace imn::ui
 
 #endif

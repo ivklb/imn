@@ -13,7 +13,7 @@ float _default_font_size() {
 }
 }
 
-Moon::ui::Style& Moon::ui::get_style() {
+imn::ui::Style& imn::ui::get_style() {
     static Style style = {
         .font_size = _default_font_size(),
         .image_button_size = { _default_font_size() * 2, _default_font_size() * 2 },
@@ -21,7 +21,7 @@ Moon::ui::Style& Moon::ui::get_style() {
     return style;
 }
 
-float Moon::ui::get_input_box_height() {
+float imn::ui::get_input_box_height() {
     // https://github.com/ocornut/imgui/issues/4511#issuecomment-913381339
     return get_style().font_size + ImGui::GetStyle().FramePadding.y * 2;
 }

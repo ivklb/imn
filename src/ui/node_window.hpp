@@ -15,7 +15,7 @@
 #include "ui/node_editor/imnodes.h"
 #include "ui/nodes/struct.hpp"
 
-namespace Moon::ui {
+namespace imn::ui {
 
 class NodeWindow : public BaseWindow {
    public:
@@ -35,10 +35,9 @@ class NodeWindow : public BaseWindow {
 
     Graph _graph;
 
-
     ImVec2 _mouse_pos;
 };
 
-}  // namespace Moon::ui
+}  // namespace imn::ui
 
 #endif

@@ -9,13 +9,13 @@
 #include "core/io.hpp"
 
 
-inline std::tuple<bool, Moon::IO::ImportConfig> show_import_dialog(std::vector<std::string> filename) {
+inline std::tuple<bool, imn::io::ImportConfig> show_import_dialog(std::vector<std::string> filename) {
     // Always center this window when appearing
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
     ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Once);
 
-    static Moon::IO::ImportConfig rv = { 0 };
+    static imn::io::ImportConfig rv = { 0 };
     rv.common_image = false;
     const char* items[] = { "uint16", "float32" };
     static int item_current = 0;

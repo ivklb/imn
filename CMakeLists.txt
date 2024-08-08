@@ -4,7 +4,7 @@ if(NOT(DEFINED ENV{CMAKE_TOOLCHAIN_FILE}))
     message(FATAL_ERROR "ERROR: environment variable 'CMAKE_TOOLCHAIN_FILE' not found")
 endif()
 
-project(iMoon)
+project(imn)
 
 set(CMAKE_CXX_STANDARD 20)
 set(APP_VERSION_MAJOR 1)

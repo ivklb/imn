@@ -3,37 +3,37 @@
 #define UI__MAIN_WINDOW_HPP
 
 // TODO: please pay attention to the order of vtk & OpenGL headers
-#include <iostream>
-#include <vtkSmartPointer.h>
-#include <vtkActor.h>
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <implot.h>
+#include <vtkActor.h>
+#include <vtkSmartPointer.h>
+
+#include <iostream>
 #include <memory>
 #include <optional>
 #include <vector>
 
-#include "ui/vtk_viewer.hpp"
-#include "ui/imgui_vtk_demo.h"
-#include "ui/image_viewer.hpp"
-#include "ui/node_window.hpp"
-#include "util/imgui_util.hpp"
 #include "core/setting.hpp"
+#include "ui/image_viewer.hpp"
+#include "ui/imgui_vtk_demo.h"
+#include "ui/node_window.hpp"
+#include "ui/vtk_viewer.hpp"
+#include "util/imgui_util.hpp"
 
-
-namespace Moon {
+namespace imn {
 namespace ui {
 
-
 class MainWindow {
-public:
+   public:
     MainWindow();
 
     void show();
-private:
+
+   private:
     void _setup();
     void _setup_gl();
     void _setup_imgui();
@@ -42,7 +42,7 @@ private:
     void _show_dialog();
     void _cleanup();
 
-private:
+   private:
     const char* _glsl_version = "#version 130";
     ImageViewer _image_viewer;
     NodeWindow _node_window;
@@ -52,6 +52,6 @@ private:
     bool _load_as_volume;
 };
 
-}
-}
+}  // namespace ui
+}  // namespace imn
 #endif

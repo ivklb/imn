@@ -11,7 +11,7 @@
 #include <tuple>
 #include <vector>
 
-namespace Moon::ui {
+namespace imn::ui {
 
 // https://hackernoon.com/zh/%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E9%A2%9C%E8%89%B2%E5%B9%B6%E7%A1%AE%E5%AE%9A%E4%B8%8D%E5%90%8C%E7%8A%B6%E6%80%81%E7%9A%84%E8%89%B2%E8%B0%83%E6%82%AC%E5%81%9C%E6%B4%BB%E5%8A%A8%E6%8C%89%E4%B8%8B%E7%A6%81%E7%94%A8
 enum class ColorTheme {
@@ -120,5 +120,5 @@ struct IDGenerator {
 ImColor get_normal_color(ColorTheme color);
 ImColor get_highlight_color(ColorTheme color);
 
-}  // namespace Moon::ui
+}  // namespace imn::ui
 #endif

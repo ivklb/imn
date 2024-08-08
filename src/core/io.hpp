@@ -9,9 +9,7 @@
 #include <string>
 #include <vector>
 
-
-namespace Moon {
-namespace IO {
+namespace imn::io {
 
 struct ImportConfig {
     bool common_image;  // png/jpg/tiff/...
@@ -27,7 +25,6 @@ std::vector<std::shared_ptr<cv::Mat>>
 load_image_stack(
     const std::vector<std::string>& file_list,
     ImportConfig config);
-}
-}
+}  // namespace imn::io
 
 #endif

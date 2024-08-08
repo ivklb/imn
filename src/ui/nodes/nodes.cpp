@@ -5,7 +5,7 @@
 #include "pins.hpp"
 #include "util/fs.hpp"
 
-using namespace Moon::ui;
+using namespace imn::ui;
 
 DemoNode::DemoNode(const char* name, ColorTheme color) : Node(name, color) {
     auto pa = std::make_shared<IntPin>("a", PinKind::In, ColorTheme::Green);
@@ -19,6 +19,7 @@ DemoNode::DemoNode(const char* name, ColorTheme color) : Node(name, color) {
     outputs[pc->id] = pc;
 
     _build_pins();
+    status = NodeStatus::WaitingUserInput;
 }
 
 ImageLoaderNode::ImageLoaderNode() : Node("Image Loader", ColorTheme::Red) {

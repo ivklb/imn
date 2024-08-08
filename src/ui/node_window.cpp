@@ -15,7 +15,7 @@
 #include "util/common.hpp"
 #include "util/imgui_util.hpp"
 
-using namespace Moon::ui;
+using namespace imn::ui;
 
 NodeWindow::NodeWindow() {
     // TODO: load from settings
@@ -98,7 +98,7 @@ void NodeWindow::_show_node_editor() {
 
 void NodeWindow::_handle_new_nodes() {
     const bool open_popup = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
-                            ImNodes::IsEditorHovered() &&  ImGui::IsMouseReleased(ImGuiMouseButton_Right);
+                            ImNodes::IsEditorHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right);
 
     if (!ImGui::IsAnyItemHovered() && open_popup) {
         ImGui::OpenPopup("add node");

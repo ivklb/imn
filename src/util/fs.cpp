@@ -102,7 +102,7 @@ bool openFileBrowser(DialogMode mode, const std::vector<ItemFilter> &validExtens
     NFD::UniquePathSet outPaths;
     nfdresult_t result = NFD_ERROR;
     nfdwindowhandle_t nativeWindow{};
-    NFD_GetNativeWindowFromGLFWWindow(Moon::App::app()->main_window_handle(), &nativeWindow);
+    NFD_GetNativeWindowFromGLFWWindow(imn::App::app()->main_window_handle(), &nativeWindow);
 
     // Open the correct file dialog based on the mode
     switch (mode) {

@@ -6,7 +6,7 @@
 #include "ui/node_editor/imnodes.h"
 #include "ui/style.hpp"
 
-using namespace Moon::ui;
+using namespace imn::ui;
 
 // https://flatuicolors.com/palette/defo
 std::map<ColorTheme, std::tuple<ImColor, ImColor>> color_theme_map = {
@@ -190,10 +190,10 @@ void IDGenerator::set_next(int id) {
     _next_id = id;
 }
 
-ImColor Moon::ui::get_normal_color(ColorTheme color) {
+ImColor imn::ui::get_normal_color(ColorTheme color) {
     return std::get<1>(color_theme_map.at(color));
 }
 
-ImColor Moon::ui::get_highlight_color(ColorTheme color) {
+ImColor imn::ui::get_highlight_color(ColorTheme color) {
     return std::get<0>(color_theme_map.at(color));
 }

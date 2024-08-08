@@ -12,7 +12,7 @@
 #include "ui/widget/common_widgets.hpp"
 #include "ui/style.hpp"
 
-using namespace Moon::ui;
+using namespace imn::ui;
 
 ImageViewer::ImageViewer() {
     _id = get_unique_id();

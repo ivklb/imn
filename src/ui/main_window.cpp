@@ -34,7 +34,7 @@
 #include "core/app.hpp"
 
 
-using namespace Moon::ui;
+using namespace imn::ui;
 
 static void _glfw_error_callback(int error, const char* description) {
     SPDLOG_ERROR("Glfw Error {}: {}", error, description);
@@ -282,7 +282,7 @@ void MainWindow::_show_dialog() {
             filename.ends_with(".jpg") ||
             filename.ends_with(".png") ||
             filename.ends_with(".bmp");
-        Moon::IO::ImportConfig config = { 0 };
+        imn::io::ImportConfig config = { 0 };
         if (is_common_image_file) {
             config.common_image = true;
         } else {
@@ -303,7 +303,7 @@ void MainWindow::_show_dialog() {
             _files_to_open.clear();
         } else {
             // TODO: run in thread, add cancel logic
-            auto image_stack = Moon::IO::load_image_stack(_files_to_open, config);
+            auto image_stack = imn::io::load_image_stack(_files_to_open, config);
             auto image_viewer = std::make_shared<ImageViewer>();
             image_viewer->set_images(image_stack);
             _windows.push_back(image_viewer);

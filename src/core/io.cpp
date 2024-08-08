@@ -1,13 +1,12 @@
 
 #include "io.hpp"
+
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <opencv2/opencv.hpp>
+#include <string>
 
-
-namespace Moon {
-namespace IO {
+namespace imn::io {
 
 std::vector<std::shared_ptr<cv::Mat>>
 load_image_stack(const std::vector<std::string>& file_list, ImportConfig config) {
@@ -27,5 +26,4 @@ load_image_stack(const std::vector<std::string>& file_list, ImportConfig config)
     return images;
 }
 
-}
-}
+}  // namespace imn::io

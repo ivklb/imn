@@ -7,16 +7,16 @@
 #include <imgui.h>
 #include <memory>
 
-#ifdef MOON_EXPORT
-#  define MOON_API extern "C" __declspec(dllexport)
+#ifdef IMN_EXPORT
+#  define IMN_API extern "C" __declspec(dllexport)
 #else
-#  define MOON_API extern "C" __declspec(dllimport)
+#  define IMN_API extern "C" __declspec(dllimport)
 #endif
 
 
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Dtype;
 
-const std::string kAppName = "iMoon";
+const std::string kAppName = "imn";
 const std::string kAsciiLogo = R"(
  _ __  __
 (_)  \/  | ___   ___  _ __

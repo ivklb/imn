@@ -7,7 +7,7 @@
 
 #include "include/def.hpp"
 
-using namespace Moon;
+using namespace imn;
 
 
 App* App::app() {

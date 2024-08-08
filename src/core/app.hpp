@@ -1,12 +1,12 @@
 
-#ifndef CORE__MOON_HPP
-#define CORE__MOON_HPP
+#ifndef CORE__APP_HPP
+#define CORE__APP_HPP
 
 #include <GLFW/glfw3.h>
 
 #include <memory>
 
-namespace Moon {
+namespace imn {
 
 class App {
    public:
@@ -19,6 +19,6 @@ class App {
    private:
     GLFWwindow* _window;
 };
-}  // namespace Moon
+}  // namespace imn
 
 #endif

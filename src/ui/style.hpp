@@ -4,8 +4,7 @@
 
 #include <imgui.h>
 
-
-namespace Moon {
+namespace imn {
 namespace ui {
 
 struct Style {
@@ -17,8 +16,7 @@ Style& get_style();
 
 float get_input_box_height();
 
-}
-}
-
+}  // namespace ui
+}  // namespace imn
 
 #endif

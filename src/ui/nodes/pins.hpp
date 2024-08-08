@@ -9,7 +9,7 @@
 
 #include "ui/nodes/struct.hpp"
 
-namespace Moon::ui {
+namespace imn::ui {
 
 struct IntPin : public Pin {
     int value;
@@ -22,5 +22,5 @@ struct ImagePin : public Pin {
     ImagePin(const char* name, PinKind kind);
 };
 
-}  // namespace Moon::ui
+}  // namespace imn::ui
 #endif

@@ -4,14 +4,13 @@
 
 #include <any>
 #include <map>
-#include <string>
-#include <vector>
-#include <tuple>
-#include <set>
 #include <mutex>
+#include <set>
+#include <string>
+#include <tuple>
+#include <vector>
 
-
-namespace Moon {
+namespace imn {
 namespace Cache {
 const int kSizeHintB = 0;
 const int kSizeHintKB = 1;
@@ -19,16 +18,16 @@ const int kSizeHintMB = 2;
 const int kSizeHintGB = 3;
 
 inline auto _get_cache() -> std::tuple<
-    std::map<std::string, std::any>&,
-    std::map<std::string, int>&,
-    std::mutex&> {
+                             std::map<std::string, std::any>&,
+                             std::map<std::string, int>&,
+                             std::mutex&> {
     static std::map<std::string, std::any> cache;
     static std::map<std::string, int> size_hint;
     static std::mutex mtx;
-    return { cache, size_hint, mtx };
+    return {cache, size_hint, mtx};
 }
 
-template<typename T>
+template <typename T>
 void add(const std::string& key, const T& value, int hint = kSizeHintB) {
     auto [cache, size_hint, mtx] = _get_cache();
     std::lock_guard<std::mutex> lock(mtx);
@@ -36,7 +35,7 @@ void add(const std::string& key, const T& value, int hint = kSizeHintB) {
     size_hint[key] = hint;
 }
 
-template<typename T>
+template <typename T>
 T get(const std::string& key) {
     auto [cache, size_hint, mtx] = _get_cache();
     std::lock_guard<std::mutex> lock(mtx);
@@ -71,6 +70,6 @@ inline void clear() {
     size_hint.clear();
 }
 
-}
-}
+}  // namespace Cache
+}  // namespace imn
 #endif
