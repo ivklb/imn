@@ -19,7 +19,7 @@ DemoNode::DemoNode(const char* name, ColorTheme color) : Node(name, color) {
     outputs[pc->id] = pc;
 
     _build_pins();
-    status = NodeStatus::WaitingUserInput;
+    status = NodeStatus::Processing;
 }
 
 ImageLoaderNode::ImageLoaderNode() : Node("Image Loader", ColorTheme::Red) {

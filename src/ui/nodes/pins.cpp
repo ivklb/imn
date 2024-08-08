@@ -21,7 +21,8 @@ void IntPin::draw_frame() {
         ImGui::TextUnformatted(name.c_str());
         if (connect_count == 0) {
             ImGui::SameLine();
-            ImGui::PushItemWidth(node_width - label_width);
+            auto w = node_width - label_width - ImGui::GetStyle().ItemSpacing.x;
+            ImGui::PushItemWidth(w);
             ImGui::DragInt("##hidelabel", &value);
             ImGui::PopItemWidth();
         }

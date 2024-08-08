@@ -79,6 +79,7 @@ struct Node {
    private:
     virtual void _draw_titlebar_tooltip() {}
     virtual void _draw_pins();
+    virtual void _draw_process_bar();
     virtual void _draw_body() {}
 };
 
