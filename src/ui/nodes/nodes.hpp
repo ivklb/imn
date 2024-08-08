@@ -24,7 +24,6 @@ struct ImageLoaderNode : public Node {
 };
 
 struct ImagePreviewNode : public Node {
-
     ImagePreviewNode();
     void _draw_body() override;
 };
