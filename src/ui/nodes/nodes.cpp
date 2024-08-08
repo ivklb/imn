@@ -37,6 +37,7 @@ void ImageLoaderNode::_draw_body() {
                 file_path = path;
             });
     }
+
     ImGui::SameLine();
     ImGui::SetNextItemWidth(50);
     ImGui::InputText("##file_path", (char*)file_path.string().c_str(), 256, ImGuiInputTextFlags_ReadOnly);

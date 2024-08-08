@@ -32,6 +32,7 @@ void IntPin::draw_frame() {
         ImGui::TextUnformatted(name.c_str());
         ImNodes::EndOutputAttribute();
     }
+
     ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();
 }
