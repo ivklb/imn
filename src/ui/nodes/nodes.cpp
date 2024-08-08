@@ -39,5 +39,10 @@ void ImageLoaderNode::_draw_static() {
             });
     }
     ImGui::SameLine();
-    ImGui::Text(file_path.string().c_str());
+    ImGui::SetNextItemWidth(50);
+    ImGui::InputText("##file_path", (char*)file_path.string().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+    if (!file_path.empty() && ImGui::BeginItemTooltip()) {
+        ImGui::TextUnformatted(file_path.string().c_str());
+        ImGui::EndTooltip();
+    }
 }

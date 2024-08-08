@@ -77,6 +77,9 @@ void Node::draw_frame() {
     ImNodes::BeginNodeTitleBar();
     ImGui::TextUnformatted(name.c_str());
     ImNodes::EndNodeTitleBar();
+    if (ImGui::IsItemHovered()) {
+        ImGui::SetTooltip("State: %s", "123");
+    }
 
     _draw_pins();
     _draw_static();
@@ -85,10 +88,6 @@ void Node::draw_frame() {
     ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();
-
-    if (ImGui::IsItemHovered()) {
-        ImGui::SetTooltip("State: %s", "123");
-    }
 }
 
 void Node::_build_pins() {
