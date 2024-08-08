@@ -1,6 +1,8 @@
 
 #include "struct.hpp"
 
+#include <spdlog/spdlog.h>
+
 #include <vector>
 
 #include "ui/node_editor/imnodes.h"
@@ -65,7 +67,7 @@ Node::Node(const char* name, ColorTheme color)
     : name(name),
       color(color),
       status(NodeStatus::Idle),
-      width(100),
+      width(200),
       process_cur(0),
       process_max(0) {
     id = IDGenerator::next();
@@ -91,6 +93,7 @@ void Node::draw_frame() {
     _draw_body();
 
     ImNodes::EndNode();
+
     ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();

@@ -37,11 +37,10 @@ ImageLoaderNode::ImageLoaderNode() : Node("Image Loader", ColorTheme::Red), conf
 }
 
 void ImageLoaderNode::_draw_body() {
-    auto button_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.3;
-    auto text_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.7;
+    auto button_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.3f;
+    auto text_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.7f;
 
-    ImGui::SetNextItemWidth(button_width);
-    if (ImGui::Button("...")) {
+    if (ImGui::Button("...", ImVec2(button_width, 0))) {
         imn::fs::openFileBrowser(
             imn::fs::DialogMode::Open,
             {{"Image Files", "png,jpg,jpeg,bmp,tiff,tif,gif"}},
@@ -64,8 +63,8 @@ void ImageLoaderNode::_draw_body() {
         const char* combo_items[] = {"uint8", "uint16", "uint32", "float32"};
         const int combo_values[] = {CV_8UC1, CV_16UC1, CV_32SC1, CV_32FC1};
         static int item_current = 0;
-        ImGui::PushItemWidth(width);
-        ImGui::Combo("image type", &item_current, combo_items, IM_ARRAYSIZE(combo_items));
+        ImGui::PushItemWidth(width - ImGui::CalcTextSize("height").x - ImGui::GetStyle().ItemSpacing.x);
+        ImGui::Combo("type", &item_current, combo_items, IM_ARRAYSIZE(combo_items));
         ImGui::InputInt("offset", &config.offset);
         ImGui::InputInt("width", &config.width);
         ImGui::InputInt("height", &config.height);
