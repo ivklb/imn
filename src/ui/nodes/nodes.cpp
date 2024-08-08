@@ -28,13 +28,11 @@ ImageLoaderNode::ImageLoaderNode() : Node("Image Loader", ColorTheme::Red) {
     _build_pins();
 }
 
-void ImageLoaderNode::_draw_static() {
+void ImageLoaderNode::_draw_body() {
     if (ImGui::Button("...")) {
         imn::fs::openFileBrowser(
             imn::fs::DialogMode::Open,
-            {
-                {"Image Files", "png,jpg,jpeg,bmp,tiff,tif,gif"},
-            },
+            {{"Image Files", "png,jpg,jpeg,bmp,tiff,tif,gif"}},
             [this](const std::filesystem::path& path) {
                 file_path = path;
             });

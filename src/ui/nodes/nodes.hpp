@@ -20,7 +20,7 @@ struct ImageLoaderNode : public Node {
     std::filesystem::path file_path;
 
     ImageLoaderNode();
-    void _draw_static() override;
+    void _draw_body() override;
 };
 
 }  // namespace imn::ui

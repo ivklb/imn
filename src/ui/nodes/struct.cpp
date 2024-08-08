@@ -42,7 +42,7 @@ Pin::Pin(const char* name, PinKind kind, ColorTheme color)
 }
 
 void Pin::draw_frame() {
-    const float node_width = 100.f;
+    const float node_width = node->width;
     const float label_width = ImGui::CalcTextSize(name.c_str()).x;
 
     ImNodes::PushColorStyle(ImNodesCol_PinHovered, get_highlight_color(color));
@@ -63,7 +63,11 @@ void Pin::draw_frame() {
 
 Node::Node(const char* name, ColorTheme color)
     : name(name),
-      color(color) {
+      color(color),
+      status(NodeStatus::Idle),
+      width(100),
+      process_cur(0),
+      process_max(0) {
     id = IDGenerator::next();
 }
 
@@ -77,12 +81,13 @@ void Node::draw_frame() {
     ImNodes::BeginNodeTitleBar();
     ImGui::TextUnformatted(name.c_str());
     ImNodes::EndNodeTitleBar();
-    if (ImGui::IsItemHovered()) {
-        ImGui::SetTooltip("State: %s", "123");
+    if (ImGui::BeginItemTooltip()) {
+        _draw_titlebar_tooltip();
+        ImGui::EndTooltip();
     }
 
     _draw_pins();
-    _draw_static();
+    _draw_body();
 
     ImNodes::EndNode();
     ImNodes::PopColorStyle();
@@ -106,9 +111,6 @@ void Node::_draw_pins() {
     for (auto& [id, pin] : outputs) {
         pin->draw_frame();
     }
-}
-
-void Node::_draw_static() {
 }
 
 Link::Link(int from_nid, int from_pid, int to_nid, int to_pid)

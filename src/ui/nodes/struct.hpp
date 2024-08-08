@@ -64,6 +64,9 @@ struct Node {
     std::map<int, std::shared_ptr<Pin>> outputs;
     ColorTheme color;
     NodeStatus status;
+    float width;
+    int process_cur;
+    int process_max;
 
     Node(const char* name, ColorTheme color = ColorTheme::Blue);
     virtual ~Node() {}
@@ -74,8 +77,9 @@ struct Node {
     void _build_pins();
 
    private:
+    virtual void _draw_titlebar_tooltip() {}
     virtual void _draw_pins();
-    virtual void _draw_static();
+    virtual void _draw_body() {}
 };
 
 struct Link {

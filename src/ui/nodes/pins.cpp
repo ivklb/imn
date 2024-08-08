@@ -11,7 +11,7 @@ IntPin::IntPin(const char* name, PinKind kind, ColorTheme color)
 }
 
 void IntPin::draw_frame() {
-    const float node_width = 100.f;
+    const float node_width = node->width;
     const float label_width = ImGui::CalcTextSize(name.c_str()).x;
 
     ImNodes::PushColorStyle(ImNodesCol_PinHovered, get_highlight_color(color));
