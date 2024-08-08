@@ -105,6 +105,10 @@ void Node::_build_pins() {
     }
 }
 
+void Node::_draw_titlebar_tooltip() {
+    ImGui::TextUnformatted(name.c_str());
+}
+
 void Node::_draw_pins() {
     for (auto& [id, pin] : inputs) {
         pin->draw_frame();

@@ -29,6 +29,10 @@ ImageLoaderNode::ImageLoaderNode() : Node("Image Loader", ColorTheme::Red) {
 }
 
 void ImageLoaderNode::_draw_body() {
+    auto button_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.3;
+    auto text_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.7;
+
+    ImGui::SetNextItemWidth(button_width);
     if (ImGui::Button("...")) {
         imn::fs::openFileBrowser(
             imn::fs::DialogMode::Open,
@@ -39,7 +43,7 @@ void ImageLoaderNode::_draw_body() {
     }
 
     ImGui::SameLine();
-    ImGui::SetNextItemWidth(50);
+    ImGui::SetNextItemWidth(text_width);
     ImGui::InputText("##file_path", (char*)file_path.string().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
     if (!file_path.empty() && ImGui::BeginItemTooltip()) {
         ImGui::TextUnformatted(file_path.string().c_str());
