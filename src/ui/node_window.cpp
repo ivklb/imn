@@ -65,7 +65,7 @@ void NodeWindow::_show_menu_bar() {
 
 void NodeWindow::_show_info() {
     ImGui::TextUnformatted("Edit the color of the output color window using nodes.");
-    ImGui::TextUnformatted("A   -- add node");
+    ImGui::TextUnformatted("Right click -- add node");
     ImGui::TextUnformatted("Del -- delete selected node or link");
     ImGui::TextUnformatted("Alt + mouse -- drag canvas");
 }
@@ -98,7 +98,7 @@ void NodeWindow::_show_node_editor() {
 
 void NodeWindow::_handle_new_nodes() {
     const bool open_popup = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
-                            ImNodes::IsEditorHovered() && ImGui::IsKeyReleased(ImGuiKey_A);
+                            ImNodes::IsEditorHovered() &&  ImGui::IsMouseReleased(ImGuiMouseButton_Right);
 
     if (!ImGui::IsAnyItemHovered() && open_popup) {
         ImGui::OpenPopup("add node");
@@ -106,7 +106,6 @@ void NodeWindow::_handle_new_nodes() {
 
     if (ImGui::BeginPopup("add node")) {
         const ImVec2 click_pos = ImGui::GetMousePosOnOpeningCurrentPopup();
-
         if (ImGui::MenuItem("add")) {
             auto node = std::make_shared<DemoNode>("add");
             _graph.insert_node(node);
@@ -119,6 +118,11 @@ void NodeWindow::_handle_new_nodes() {
             ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
         }
 
+        if (ImGui::MenuItem("image loader")) {
+            auto node = std::make_shared<ImageLoaderNode>();
+            _graph.insert_node(node);
+            ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
+        }
         ImGui::EndPopup();
     }
 }

@@ -42,15 +42,23 @@ Pin::Pin(const char* name, PinKind kind, ColorTheme color)
 }
 
 void Pin::draw_frame() {
+    const float node_width = 100.f;
+    const float label_width = ImGui::CalcTextSize(name.c_str()).x;
+
+    ImNodes::PushColorStyle(ImNodesCol_PinHovered, get_highlight_color(color));
+    ImNodes::PushColorStyle(ImNodesCol_Pin, get_normal_color(color));
     if (kind == PinKind::In) {
         ImNodes::BeginInputAttribute(id);
         ImGui::TextUnformatted(name.c_str());
         ImNodes::EndInputAttribute();
     } else if (kind == PinKind::Out) {
         ImNodes::BeginOutputAttribute(id);
+        ImGui::Indent(node_width - label_width);
         ImGui::TextUnformatted(name.c_str());
         ImNodes::EndOutputAttribute();
     }
+    ImNodes::PopColorStyle();
+    ImNodes::PopColorStyle();
 }
 
 Node::Node(const char* name, ColorTheme color)

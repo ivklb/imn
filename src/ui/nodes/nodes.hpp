@@ -4,6 +4,7 @@
 
 #include <imgui.h>
 
+#include <filesystem>
 #include <opencv2/opencv.hpp>
 
 #include "ui/nodes/struct.hpp"
@@ -14,10 +15,12 @@ struct DemoNode : public Node {
     DemoNode(const char* name, ColorTheme color = ColorTheme::Blue);
 };
 
-struct ImageOpenNode : public Node {
+struct ImageLoaderNode : public Node {
     cv::Mat image;
+    std::filesystem::path file_path;
 
-    ImageOpenNode();
+    ImageLoaderNode();
+    void _draw_static() override;
 };
 
 }  // namespace Moon::ui

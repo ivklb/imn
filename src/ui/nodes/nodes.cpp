@@ -3,6 +3,7 @@
 #include "nodes.hpp"
 
 #include "pins.hpp"
+#include "util/fs.hpp"
 
 using namespace Moon::ui;
 
@@ -20,8 +21,23 @@ DemoNode::DemoNode(const char* name, ColorTheme color) : Node(name, color) {
     _build_pins();
 }
 
-ImageOpenNode::ImageOpenNode() : Node("Image Open", ColorTheme::Red) {
+ImageLoaderNode::ImageLoaderNode() : Node("Image Loader", ColorTheme::Red) {
     auto p = std::make_shared<ImagePin>("image", PinKind::Out);
     outputs[p->id] = p;
     _build_pins();
+}
+
+void ImageLoaderNode::_draw_static() {
+    if (ImGui::Button("...")) {
+        imn::fs::openFileBrowser(
+            imn::fs::DialogMode::Open,
+            {
+                {"Image Files", "png,jpg,jpeg,bmp,tiff,tif,gif"},
+            },
+            [this](const std::filesystem::path& path) {
+                file_path = path;
+            });
+    }
+    ImGui::SameLine();
+    ImGui::Text(file_path.string().c_str());
 }
