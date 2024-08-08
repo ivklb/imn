@@ -18,11 +18,14 @@ typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Dtype;
 
 const std::string kAppName = "imn";
 const std::string kAsciiLogo = R"(
- _ __  __
-(_)  \/  | ___   ___  _ __
-| | |\/| |/ _ \ / _ \| '_ \
-| | |  | | (_) | (_) | | | |
-|_|_|  |_|\___/ \___/|_| |_|)";
+ /$$
+|__/
+ /$$ /$$$$$$/$$$$  /$$$$$$$
+| $$| $$_  $$_  $$| $$__  $$
+| $$| $$ \ $$ \ $$| $$  \ $$
+| $$| $$ | $$ | $$| $$  | $$
+| $$| $$ | $$ | $$| $$  | $$
+|__/|__/ |__/ |__/|__/  |__/)";
 
 const std::string kDialogChooseFile = "dialog_import_file";
 const std::string kDialogImportFile = "dialog_choose_file";
