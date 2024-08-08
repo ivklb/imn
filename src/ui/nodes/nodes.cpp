@@ -6,6 +6,8 @@
 #include <utf8.h>
 #include <utf8/cpp20.h>
 
+#include <opencv2/opencv.hpp>
+
 #include "core/io.hpp"
 #include "pins.hpp"
 #include "ui/dialog/import_dialog.hpp"
@@ -28,7 +30,7 @@ DemoNode::DemoNode(const char* name, ColorTheme color) : Node(name, color) {
     status = NodeStatus::Processing;
 }
 
-ImageLoaderNode::ImageLoaderNode() : Node("Image Loader", ColorTheme::Red) {
+ImageLoaderNode::ImageLoaderNode() : Node("Image Loader", ColorTheme::Red), config({}) {
     auto p = std::make_shared<ImagePin>("image", PinKind::Out);
     outputs[p->id] = p;
     _build_pins();
@@ -44,28 +46,37 @@ void ImageLoaderNode::_draw_body() {
             imn::fs::DialogMode::Open,
             {{"Image Files", "png,jpg,jpeg,bmp,tiff,tif,gif"}},
             [this](const char* p) {
-                std::u16string pp = utf8::utf8to16(std::string(p));
-                std::filesystem::path path(pp);
-
-                if (imn::io::is_image(path)) {
-                    image = imn::io::load_image(path, {});
-                    file_path = p;
-                } else {
-                    auto [ok, conf] = show_import_dialog({});
-                    if (ok) {
-                        image = imn::io::load_image(path, conf);
-                        file_path = p;
-                    }
-                }
+                file_str = p;
+                file_path = utf8::utf8to16(file_str);
             });
     }
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(text_width);
-    ImGui::InputText("##file_path", (char*)file_path.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
-    if (!file_path.empty() && ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted(file_path.c_str());
+    ImGui::InputText("##file_path", (char*)file_str.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+    if (!file_str.empty() && ImGui::BeginItemTooltip()) {
+        ImGui::TextUnformatted(file_str.c_str());
         ImGui::EndTooltip();
+    }
+
+    if (!file_str.empty() && !imn::io::is_image(file_path)) {
+        status = NodeStatus::WaitingUserInput;
+        const char* combo_items[] = {"uint8", "uint16", "uint32", "float32"};
+        const int combo_values[] = {CV_8UC1, CV_16UC1, CV_32SC1, CV_32FC1};
+        static int item_current = 0;
+        ImGui::PushItemWidth(width);
+        ImGui::Combo("image type", &item_current, combo_items, IM_ARRAYSIZE(combo_items));
+        ImGui::InputInt("offset", &config.offset);
+        ImGui::InputInt("width", &config.width);
+        ImGui::InputInt("height", &config.height);
+        ImGui::PopItemWidth();
+        config.image_type = combo_values[item_current];
+    }
+
+    if (ImGui::Button("load")) {
+        status = NodeStatus::Processing;
+        image = imn::io::load_image(file_path, config);
+        status = NodeStatus::Done;
     }
 }
 
