@@ -2,19 +2,18 @@
 #ifndef INCLUDE__DEF_HPP
 #define INCLUDE__DEF_HPP
 
-#include <string>
-#include <eigen3/Eigen/Dense>
 #include <imgui.h>
+
+#include <any>
+#include <eigen3/Eigen/Dense>
 #include <memory>
+#include <string>
 
 #ifdef IMN_EXPORT
-#  define IMN_API extern "C" __declspec(dllexport)
+#define IMN_API extern "C" __declspec(dllexport)
 #else
-#  define IMN_API extern "C" __declspec(dllimport)
+#define IMN_API extern "C" __declspec(dllimport)
 #endif
-
-
-typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Dtype;
 
 const std::string kAppName = "imn";
 const std::string kAsciiLogo = R"(
@@ -36,5 +35,7 @@ const ImVec4 kColorRed = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
 const ImVec4 kColorGreen = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
 const ImVec4 kColorBlue = ImVec4(0.0f, 0.0f, 1.0f, 1.0f);
 const ImVec4 kColorYellow = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
+
+typedef void (*ProgressCallback)(int progress, int max, const char* msg, std::any user_data);
 
 #endif
