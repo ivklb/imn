@@ -2,7 +2,13 @@
 
 #include "nodes.hpp"
 
+#include <spdlog/spdlog.h>
+#include <utf8.h>
+#include <utf8/cpp20.h>
+
+#include "core/io.hpp"
 #include "pins.hpp"
+#include "ui/dialog/import_dialog.hpp"
 #include "util/fs.hpp"
 
 using namespace imn::ui;
@@ -37,16 +43,40 @@ void ImageLoaderNode::_draw_body() {
         imn::fs::openFileBrowser(
             imn::fs::DialogMode::Open,
             {{"Image Files", "png,jpg,jpeg,bmp,tiff,tif,gif"}},
-            [this](const std::filesystem::path& path) {
-                file_path = path;
+            [this](const char* p) {
+                std::u16string pp = utf8::utf8to16(std::string(p));
+                std::filesystem::path path(pp);
+
+                if (imn::io::is_image(path)) {
+                    image = imn::io::load_image(path, {});
+                    file_path = p;
+                } else {
+                    auto [ok, conf] = show_import_dialog({});
+                    if (ok) {
+                        image = imn::io::load_image(path, conf);
+                        file_path = p;
+                    }
+                }
             });
     }
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(text_width);
-    ImGui::InputText("##file_path", (char*)file_path.string().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+    ImGui::InputText("##file_path", (char*)file_path.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
     if (!file_path.empty() && ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted(file_path.string().c_str());
+        ImGui::TextUnformatted(file_path.c_str());
         ImGui::EndTooltip();
     }
+}
+
+ImagePreviewNode::ImagePreviewNode()
+    : Node("Image Preview", ColorTheme::Orange) {
+    auto p = std::make_shared<ImagePin>("image", PinKind::In);
+    inputs[p->id] = p;
+    _build_pins();
+
+    status = NodeStatus::WaitingLink;
+}
+
+void ImagePreviewNode::_draw_body() {
 }

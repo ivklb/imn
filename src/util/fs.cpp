@@ -79,7 +79,7 @@ void openFolderWithSelectionExternal(const std::filesystem::path &selectedFilePa
 #endif
 }
 
-bool openFileBrowser(DialogMode mode, const std::vector<ItemFilter> &validExtensions, const std::function<void(std::filesystem::path)> &callback, const std::string &defaultPath, bool multiple) {
+bool openFileBrowser(DialogMode mode, const std::vector<ItemFilter> &validExtensions, const std::function<void(const char*)> &callback, const std::string &defaultPath, bool multiple) {
     // Turn the content of the ItemFilter objects into something NFD understands
     std::vector<nfdfilteritem_t> validExtensionsNfd;
     validExtensionsNfd.reserve(validExtensions.size());

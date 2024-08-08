@@ -1,6 +1,9 @@
 
 #include "io.hpp"
 
+#include <spdlog/spdlog.h>
+
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <opencv2/opencv.hpp>
@@ -11,13 +14,18 @@ namespace imn::io {
 bool is_image(const std::filesystem::path& file_path) {
     std::string ext = file_path.extension().string();
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-    return ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tiff" || ext == ".tif";
+    return ext.ends_with(".png") || ext.ends_with(".bmp") ||
+           ext.ends_with(".jpeg") || ext.ends_with(".jpg") ||
+           ext.ends_with(".tiff") || ext.ends_with(".tif");
 }
 
 std::shared_ptr<cv::Mat>
 load_image(const std::filesystem::path& file_path, ImportConfig config) {
     if (is_image(file_path)) {
-        std::ifstream infile(file_path, std::ios_base::binary);
+        if (!std::filesystem::exists(file_path)) {
+            SPDLOG_DEBUG("file not exist: {}", file_path.string());
+        }
+        std::ifstream infile(file_path.string(), std::ios_base::binary);
         std::vector<char> buffer{std::istreambuf_iterator<char>(infile), std::istreambuf_iterator<char>()};
         cv::Mat mat = cv::imdecode(buffer, cv::IMREAD_UNCHANGED);
         return std::make_shared<cv::Mat>(std::move(mat));

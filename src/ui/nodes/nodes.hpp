@@ -16,12 +16,19 @@ struct DemoNode : public Node {
 };
 
 struct ImageLoaderNode : public Node {
-    cv::Mat image;
-    std::filesystem::path file_path;
+    std::shared_ptr<cv::Mat> image;
+    std::string file_path;
 
     ImageLoaderNode();
     void _draw_body() override;
 };
+
+struct ImagePreviewNode : public Node {
+
+    ImagePreviewNode();
+    void _draw_body() override;
+};
+
 
 }  // namespace imn::ui
 

@@ -19,6 +19,7 @@ find_package(OpenCV REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(utf8cpp REQUIRED)
 find_package(VTK REQUIRED)
 
 add_compile_definitions(SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE)

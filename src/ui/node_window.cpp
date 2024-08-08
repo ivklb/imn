@@ -111,15 +111,18 @@ void NodeWindow::_handle_new_nodes() {
             _graph.insert_node(node);
             ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
         }
-
         if (ImGui::MenuItem("multiply")) {
             auto node = std::make_shared<DemoNode>("multiply");
             _graph.insert_node(node);
             ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
         }
-
         if (ImGui::MenuItem("image loader")) {
             auto node = std::make_shared<ImageLoaderNode>();
+            _graph.insert_node(node);
+            ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
+        }
+        if (ImGui::MenuItem("image preview")) {
+            auto node = std::make_shared<ImagePreviewNode>();
             _graph.insert_node(node);
             ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
         }
