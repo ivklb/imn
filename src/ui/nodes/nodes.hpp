@@ -27,8 +27,11 @@ struct ImageLoaderNode : public Node {
 };
 
 struct ImagePreviewNode : public Node {
+    std::shared_ptr<Pin> in_image;
+
     ImagePreviewNode();
     void _draw_body() override;
+    void _process() override;
 };
 
 

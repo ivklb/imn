@@ -5,6 +5,7 @@
 
 #include <imgui.h>
 
+#include <any>
 #include <map>
 #include <memory>
 #include <string>
@@ -33,8 +34,6 @@ enum class PinKind {
 };
 
 enum class NodeStatus {
-    Idle,
-    Pending,
     Processing,
     WaitingUserInput,
     WaitingLink,
@@ -43,6 +42,7 @@ enum class NodeStatus {
 };
 
 struct Node;
+struct Graph;
 
 struct Pin {
     Node* node;
@@ -58,6 +58,7 @@ struct Pin {
 };
 
 struct Node {
+    Graph* graph;
     int id;
     std::string name;
     std::map<int, std::shared_ptr<Pin>> inputs;
@@ -71,17 +72,25 @@ struct Node {
     Node(const char* name, ColorTheme color = ColorTheme::Blue);
     virtual ~Node() {}
     virtual void draw_frame();
-    virtual void process() {}
+    virtual std::any get_input(int pid);
+    template <typename T>
+    T get_input(int pid);
+    virtual std::any get_output(int pid);
+    virtual void process();
 
    protected:
-    void _build_pins();
-
-   private:
+    virtual void _process() {}
+    virtual void _build_pins();
     virtual void _draw_titlebar_tooltip();
     virtual void _draw_pins();
     virtual void _draw_process_bar();
     virtual void _draw_body() {}
 };
+
+template <typename T>
+T Node::get_input(int pid) {
+    return std::any_cast<T>(get_input(pid));
+}
 
 struct Link {
     int id;
@@ -97,6 +106,7 @@ struct Link {
 struct Graph {
     std::map<int, std::shared_ptr<Node>> nodes;
     std::map<int, std::shared_ptr<Link>> links;
+    std::map<int, std::shared_ptr<Link>> in_pin_link_map;
     // IdMap<int>              edges_from_node_;
     // IdMap<std::vector<int>> node_neighbors_;
 
@@ -104,14 +114,18 @@ struct Graph {
     std::shared_ptr<Pin> pin(int pid) const;
 
     // Capacity
-    std::vector<std::shared_ptr<Link>> input_links_from_node(int node_id) const;
-    std::vector<std::shared_ptr<Link>> output_links_from_node(int node_id) const;
+
+    std::shared_ptr<Node> get_connected_node(int pin_id) const;
+    // std::vector<std::shared_ptr<Link>> input_links_from_node(int node_id) const;
+    // std::vector<std::shared_ptr<Link>> output_links_from_node(int node_id) const;
 
     // Modifiers
     int insert_node(const std::shared_ptr<Node>& node);
     void erase_node(int node_id);
     int insert_link(int from_pid, int to_pid);
     void erase_link(int link_id);
+
+    void process();
 };
 
 struct IDGenerator {

@@ -81,12 +81,17 @@ void ImageLoaderNode::_draw_body() {
 
 ImagePreviewNode::ImagePreviewNode()
     : Node("Image Preview", ColorTheme::Orange) {
-    auto p = std::make_shared<ImagePin>("image", PinKind::In);
-    inputs[p->id] = p;
+    in_image = std::make_shared<ImagePin>("image", PinKind::In);
+    inputs[in_image->id] = in_image;
     _build_pins();
 
     status = NodeStatus::WaitingLink;
 }
 
 void ImagePreviewNode::_draw_body() {
+}
+
+void ImagePreviewNode::_process() {
+    auto mat = get_input<std::shared_ptr<cv::Mat>>(in_image->id);
+
 }

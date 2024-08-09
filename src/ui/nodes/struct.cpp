@@ -66,8 +66,8 @@ void Pin::draw_frame() {
 Node::Node(const char* name, ColorTheme color)
     : name(name),
       color(color),
-      status(NodeStatus::Idle),
-      width(200),
+      status(NodeStatus::WaitingLink),
+      width(150),
       process_cur(0),
       process_max(0) {
     id = IDGenerator::next();
@@ -97,6 +97,36 @@ void Node::draw_frame() {
     ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();
+}
+
+std::any Node::get_input(int pid) {
+    if (!graph) {
+        SPDLOG_DEBUG("Node {} has no graph", name);
+        return {};
+    }
+    auto node = graph->get_connected_node(pid);
+    if (!node) {
+        SPDLOG_DEBUG("Node {} has no connected node", name);
+        return {};
+    }
+    return node->get_output(pid);
+}
+
+std::any Node::get_output(int pid) {
+    return {};
+}
+
+void Node::process() {
+    status = NodeStatus::Processing;
+
+    // TODO: run in thread
+    try {
+        _process();
+        status = NodeStatus::Done;
+    } catch (const std::exception& e) {
+        SPDLOG_ERROR("Node {} process error: {}", name, e.what());
+        status = NodeStatus::Error;
+    }
 }
 
 void Node::_build_pins() {
@@ -152,17 +182,16 @@ std::shared_ptr<Pin> Graph::pin(int pid) const {
     return nullptr;
 }
 
-std::vector<std::shared_ptr<Link>> Graph::input_links_from_node(int node_id) const {
-    // TODO: fix me
-    return {};
-}
-
-std::vector<std::shared_ptr<Link>> Graph::output_links_from_node(int node_id) const {
-    // TODO: fix me
-    return {};
+std::shared_ptr<Node> Graph::get_connected_node(int pin_id) const {
+    if (in_pin_link_map.count(pin_id)) {
+        auto link = in_pin_link_map.at(pin_id);
+        return nodes.at(link->to_nid);
+    }
+    return nullptr;
 }
 
 int Graph::insert_node(const std::shared_ptr<Node>& node) {
+    node->graph = this;
     nodes[node->id] = node;
     return node->id;
 }
@@ -192,6 +221,7 @@ int Graph::insert_link(int from_pid, int to_pid) {
     to_pin->connect_count++;
     auto link = std::make_shared<Link>(from_pin->node->id, from_pid, to_pin->node->id, to_pid);
     links[link->id] = link;
+    in_pin_link_map[to_pin->id] = link;
     return link->id;
 }
 
@@ -200,6 +230,25 @@ void Graph::erase_link(int link_id) {
     nodes[link->from_nid]->outputs[link->from_pid]->connect_count--;
     nodes[link->to_nid]->inputs[link->to_pid]->connect_count--;
     links.erase(link_id);
+    in_pin_link_map.erase(link->to_pid);
+}
+
+void Graph::process() {
+    for (auto& [nid, node] : nodes) {
+        if (node->status == NodeStatus::WaitingLink) {
+            bool inputs_ready = true;
+            for (auto& [pid, pin] : node->inputs) {
+                auto n = get_connected_node(pid);
+                if (n == nullptr || n->status != NodeStatus::Done) {
+                    inputs_ready = false;
+                    break;
+                }
+            }
+            if (inputs_ready) {
+                node->process();
+            }
+        }
+    }
 }
 
 int IDGenerator::_next_id = 0;
