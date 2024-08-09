@@ -55,10 +55,11 @@ void ImageViewer::show() {
         auto region = ImGui::GetContentRegionAvail();
         _show_image(ImVec2(region.x, region.y - get_input_box_height()));
 
-        static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
-        static int slider_i = 50;
-        ImGui::SetNextItemWidth(region.x);
-        ImGui::SliderInt("##slider", &_img_idx, 0, _images.size() - 1, "%d", flags);
+        if (_images.size() > 1) {
+            static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
+            ImGui::SetNextItemWidth(region.x);
+            ImGui::SliderInt("##slider", &_img_idx, 0, _images.size() - 1, "%d", flags);
+        }
         ImGui::EndChild();
     }
     ImGui::PopStyleVar();
