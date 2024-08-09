@@ -7,10 +7,10 @@
 
 #include "core/setting.hpp"
 #include "include/def.hpp"
+#include "ui/style.hpp"
+#include "ui/widget/common_widgets.hpp"
 #include "util/common.hpp"
 #include "util/imgui_util.hpp"
-#include "ui/widget/common_widgets.hpp"
-#include "ui/style.hpp"
 
 using namespace imn::ui;
 
@@ -73,9 +73,7 @@ void ImageViewer::_show_toolbar() {
     auto toolbar_height = region.y;
 
     ImGuiWindowFlags window_flags =
-        ImGuiWindowFlags_HorizontalScrollbar
-        | ImGuiWindowFlags_NoScrollbar
-        ;
+        ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoScrollbar;
     ImGui::BeginChild("toolbar", ImVec2(toolbar_width, toolbar_height), false, window_flags);
     if (ImageButton("##button_none", "asset/image/cursor.png", _mouse_mode == kNone, icon_size)) {
         SPDLOG_DEBUG("mouse mode: none");
@@ -133,14 +131,13 @@ void ImageViewer::_show_image(ImVec2 region) {
         // if (!_tex_id_map.contains(_img_idx)) {
         //     _tex_id_map[_img_idx] = load_texture_2d(_images[_img_idx].get());
         // } else {
-            // TODO: remove me, test only
-            try {
-
+        // TODO: remove me, test only
+        try {
             glDeleteTextures(1, (GLuint*)&_tex_id_map[_img_idx]);
-            } catch (const std::exception& e) {
-                SPDLOG_ERROR("{}", e.what());
-            }
-            _tex_id_map[_img_idx] = load_texture_2d(_images[_img_idx].get());
+        } catch (const std::exception& e) {
+            SPDLOG_ERROR("{}", e.what());
+        }
+        _tex_id_map[_img_idx] = load_texture_2d(_images[_img_idx].get());
         // }
         ImPlot::PlotImage("##image", _tex_id_map[_img_idx], _bounds_min, _bounds_max);
         if (_show_horizontal_line) {
@@ -188,5 +185,5 @@ std::tuple<ImVec2, ImVec2> ImageViewer::_calc_paint_region(double image_width, d
         p2 = ImVec2((canvas_width + paint_width) / 2, canvas_height);
     }
     SPDLOG_DEBUG("p1: {}, {} p2: {}, {}", p1.x, p1.y, p2.x, p2.y);
-    return { p1, p2 };
+    return {p1, p2};
 }

@@ -7,8 +7,8 @@
 #include <filesystem>
 #include <opencv2/opencv.hpp>
 
-#include "ui/nodes/struct.hpp"
 #include "core/io.hpp"
+#include "ui/nodes/struct.hpp"
 
 namespace imn::ui {
 
@@ -17,7 +17,7 @@ struct DemoNode : public Node {
 };
 
 struct ImageLoaderNode : public Node {
-    std::string file_str;  // used to display in the UI
+    std::string file_str;             // used to display in the UI
     std::filesystem::path file_path;  // used to access file with unicode path
     imn::io::ImportConfig config;
     std::shared_ptr<cv::Mat> image;
@@ -33,7 +33,6 @@ struct ImagePreviewNode : public Node {
     void _draw_body() override;
     void _process() override;
 };
-
 
 }  // namespace imn::ui
 

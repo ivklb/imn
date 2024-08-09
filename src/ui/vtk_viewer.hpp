@@ -2,23 +2,23 @@
 #ifndef UI__VTK_VIEWER_HPP
 #define UI__VTK_VIEWER_HPP
 
-#include <iostream>
-#include <string>
-#include <exception>
-
-#include "imgui.h"
-
-#include <vtkProp.h>
-#include <vtkPropCollection.h>
-#include <vtkSmartPointer.h>
 #include <vtkActor.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCommand.h>
 #include <vtkGenericOpenGLRenderWindow.h>
-#include <vtkOpenGLFramebufferObject.h>
 #include <vtkGenericRenderWindowInteractor.h>
 #include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkOpenGLFramebufferObject.h>
+#include <vtkProp.h>
+#include <vtkPropCollection.h>
 #include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
+
+#include <exception>
+#include <iostream>
+#include <string>
+
+#include "imgui.h"
 
 // RGB Color in range [0.0, 1.0]
 #define DEFAULT_BACKGROUND 0.39, 0.39, 0.39
@@ -26,49 +26,57 @@
 #define DEFAULT_ALPHA 1
 
 class VtkViewerError : public std::runtime_error {
-public:
+   public:
     explicit VtkViewerError(const std::string& message) throw() : std::runtime_error(message) {}
     ~VtkViewerError() = default;
-public:
+
+   public:
     virtual char const* what() const throw() {
         return exception::what();
     }
 };
 
 class VtkViewer {
-private:
+   private:
     static void isCurrentCallbackFn(vtkObject* caller, long unsigned int eventId, void* clientData, void* callData);
     void processEvents();
-private:
+
+   private:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow;
     vtkSmartPointer<vtkGenericRenderWindowInteractor> interactor;
     vtkSmartPointer<vtkInteractorStyleTrackballCamera> interactorStyle;
     vtkSmartPointer<vtkRenderer> renderer;
-private:
+
+   private:
     unsigned int viewportWidth, viewportHeight;
     unsigned int tex;
     bool firstRender;
-public:
+
+   public:
     VtkViewer();
     VtkViewer(const VtkViewer& vtkViewer);
     VtkViewer(VtkViewer&& vtkViewer) noexcept;
     ~VtkViewer();
 
     VtkViewer& operator=(const VtkViewer& vtkViewer);
-private:
+
+   private:
     IMGUI_IMPL_API void init();
-public:
+
+   public:
     IMGUI_IMPL_API void render();
     IMGUI_IMPL_API void render(const ImVec2 size);
     IMGUI_IMPL_API void addActor(const vtkSmartPointer<vtkProp>& actor);
     IMGUI_IMPL_API void addActors(const vtkSmartPointer<vtkPropCollection>& actors);
     IMGUI_IMPL_API void removeActor(const vtkSmartPointer<vtkProp>& actor);
     void setViewportSize(const ImVec2 newSize);
-public:
+
+   public:
     static inline unsigned int NoScrollFlags() {
         return ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
     }
-public:
+
+   public:
     inline void setRenderWindow(const vtkSmartPointer<vtkGenericOpenGLRenderWindow>& renderWindow) {
         this->renderWindow = renderWindow;
     }
@@ -84,7 +92,8 @@ public:
     inline void setRenderer(const vtkSmartPointer<vtkRenderer>& renderer) {
         this->renderer = renderer;
     }
-public:
+
+   public:
     inline vtkSmartPointer<vtkGenericOpenGLRenderWindow>& getRenderWindow() {
         return renderWindow;
     }
@@ -100,8 +109,8 @@ public:
     inline vtkSmartPointer<vtkRenderer>& getRenderer() {
         return renderer;
     }
-public:
 
+   public:
     inline unsigned int getViewportWidth() const {
         return viewportWidth;
     }

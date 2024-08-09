@@ -2,13 +2,12 @@
 #include "app.hpp"
 
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
-#include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
+#include <spdlog/spdlog.h>
 
 #include "include/def.hpp"
 
 using namespace imn;
-
 
 App* App::app() {
     static bool init_flag = false;

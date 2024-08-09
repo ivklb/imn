@@ -11,8 +11,7 @@ bool ImageButton(
     const ImVec2& uv0,
     const ImVec2& uv1,
     const ImVec4& bg_col,
-    const ImVec4& tint_col
-) {
+    const ImVec4& tint_col) {
     auto tex_id = load_texture_2d(image_file, false);
     if (active) {
         // ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
@@ -26,11 +25,10 @@ bool ImageButton(
 }
 
 bool ImageButtonWithText(ImTextureID texture, const std::string& text, float x, float y, float w, float h) {
-    ImGui::SetCursorPos({ x, y });
-    bool clicked = ImGui::ImageButton(("Button_" + text).c_str(), texture, { w, h });
+    ImGui::SetCursorPos({x, y});
+    bool clicked = ImGui::ImageButton(("Button_" + text).c_str(), texture, {w, h});
     ImVec2 text_size = ImGui::CalcTextSize(text.c_str());
-    ImGui::SetCursorPos({ x + (w - text_size.x) * 0.5f, y + (h - text_size.y) * 0.5f });
+    ImGui::SetCursorPos({x + (w - text_size.x) * 0.5f, y + (h - text_size.y) * 0.5f});
     ImGui::Text(text.c_str());
     return clicked;
 }
-

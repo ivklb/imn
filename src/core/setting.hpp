@@ -2,10 +2,9 @@
 #ifndef CORE__SETTING_HPP
 #define CORE__SETTING_HPP
 
+#include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
-#include <nlohmann/json.hpp>
-
 
 struct IMNSettings {
     std::string font_file;
@@ -13,12 +12,10 @@ struct IMNSettings {
     std::string default_lang;
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(IMNSettings,
-        font_file,
-        lang,
-        default_lang
-    )
+                                   font_file,
+                                   lang,
+                                   default_lang)
 };
-
 
 IMNSettings& global_setting();
 

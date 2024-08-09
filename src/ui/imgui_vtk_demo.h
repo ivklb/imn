@@ -1,6 +1,5 @@
 #pragma once
 #include <vtkActor.h>
-#include <vtkSmartPointer.h>
 #include <vtkContourFilter.h>
 #include <vtkMath.h>
 #include <vtkNamedColors.h>
@@ -8,18 +7,18 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkShortArray.h>
+#include <vtkSmartPointer.h>
 #include <vtkStructuredPoints.h>
 
-
 static vtkSmartPointer<vtkActor> SetupDemoPipeline() {
-    double Pr = 10.0; // The Lorenz parameters
+    double Pr = 10.0;  // The Lorenz parameters
     double b = 2.667;
     double r = 28.0;
-    double x, y, z;       // starting (and current) x, y, z
-    double h = 0.01;      // integration step size
-    int resolution = 200; // slice resolution
-    int iter = 10000000;  // number of iterations
-    double xmin = -30.0;  // x, y, z range for voxels
+    double x, y, z;        // starting (and current) x, y, z
+    double h = 0.01;       // integration step size
+    int resolution = 200;  // slice resolution
+    int iter = 10000000;   // number of iterations
+    double xmin = -30.0;   // x, y, z range for voxels
     double xmax = 30.0;
     double ymin = -30.0;
     double ymax = 30.0;
@@ -86,7 +85,7 @@ static vtkSmartPointer<vtkActor> SetupDemoPipeline() {
     volume->SetDimensions(resolution, resolution, resolution);
     volume->SetOrigin(xmin, ymin, zmin);
     volume->SetSpacing((xmax - xmin) / resolution, (ymax - ymin) / resolution,
-        (zmax - zmin) / resolution);
+                       (zmax - zmin) / resolution);
 
     printf("  contouring...\n");
 

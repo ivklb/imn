@@ -1,12 +1,12 @@
 
 #include "progress_dialog.hpp"
 
-#include <functional>
 #include <imgui.h>
+
+#include <functional>
 #include <string>
 #include <tuple>
 #include <vector>
-
 
 void ProgressDialog::cancel() {
     _cancel_callback();
@@ -30,4 +30,3 @@ void ProgressDialog::render() {
         ImGui::EndPopup();
     }
 }
-

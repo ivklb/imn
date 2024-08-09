@@ -7,8 +7,6 @@
 
 int get_unique_id();
 
-
 std::tuple<int, int> get_screen_resolution();
-
 
 #endif

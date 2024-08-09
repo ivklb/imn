@@ -3,11 +3,12 @@
 #define UI__DIALOG__IMPORT_DIALOG_HPP
 
 #include <imgui.h>
+
 #include <string>
 #include <tuple>
 #include <vector>
-#include "core/io.hpp"
 
+#include "core/io.hpp"
 
 inline std::tuple<bool, imn::io::ImportConfig> show_import_dialog(std::vector<std::string> filename) {
     // Always center this window when appearing
@@ -15,9 +16,9 @@ inline std::tuple<bool, imn::io::ImportConfig> show_import_dialog(std::vector<st
     ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
     ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Once);
 
-    static imn::io::ImportConfig rv = { 0 };
+    static imn::io::ImportConfig rv = {0};
     rv.common_image = false;
-    const char* items[] = { "uint16", "float32" };
+    const char* items[] = {"uint16", "float32"};
     static int item_current = 0;
     bool ok = false;
 
@@ -36,11 +37,12 @@ inline std::tuple<bool, imn::io::ImportConfig> show_import_dialog(std::vector<st
         }
         ImGui::SetItemDefaultFocus();
         ImGui::SameLine();
-        if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+            ImGui::CloseCurrentPopup();
+        }
         ImGui::EndPopup();
     }
-    return { ok, rv };
+    return {ok, rv};
 }
-
 
 #endif

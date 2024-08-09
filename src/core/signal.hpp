@@ -2,10 +2,9 @@
 #ifndef _APP_SIGNAL_HPP_
 #define _APP_SIGNAL_HPP_
 
-#include <utility>
 #include <boost/any.hpp>
 #include <boost/signals2.hpp>
-
+#include <utility>
 
 enum EventType {
     k2DWindowLevelChanged,
@@ -25,6 +24,7 @@ enum EventType {
     kScanStarted,
     kTick,
 };
+
 struct AppEvent {
     EventType type;
     boost::any p1;

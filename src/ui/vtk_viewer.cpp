@@ -20,16 +20,16 @@
 #endif
 
 #include <stdio.h>
-#if defined(_MSC_VER) && _MSC_VER <= 1500 // MSVC 2008 or earlier
-#include <stddef.h>     // intptr_t
+#if defined(_MSC_VER) && _MSC_VER <= 1500  // MSVC 2008 or earlier
+#include <stddef.h>                        // intptr_t
 #else
-#include <stdint.h>     // intptr_t
+#include <stdint.h>  // intptr_t
 #endif
 
 // OpenGL Loader
 // This can be replaced with another loader, e.g. glad, but
 // remember to change the corresponding initialize call below!
-#include <GL/gl3w.h>            // GL3w, initialized with gl3wInit()
+#include <GL/gl3w.h>  // GL3w, initialized with gl3wInit()
 
 // Include glfw3.h after our OpenGL definitions
 #include <GLFW/glfw3.h>
@@ -44,8 +44,9 @@ void VtkViewer::processEvents() {
         return;
     }
 
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigWindowsMoveFromTitleBarOnly = true; // don't drag window when clicking on image.
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+    io.ConfigWindowsMoveFromTitleBarOnly = true;  // don't drag window when clicking on image.
     ImVec2 viewportPos = ImGui::GetCursorStartPos();
 
     double xpos = static_cast<double>(io.MousePos[0]) - static_cast<double>(viewportPos.x);
@@ -61,7 +62,7 @@ void VtkViewer::processEvents() {
             interactor->InvokeEvent(vtkCommand::LeftButtonPressEvent, nullptr);
         } else if (io.MouseClicked[ImGuiMouseButton_Right]) {
             interactor->InvokeEvent(vtkCommand::RightButtonPressEvent, nullptr);
-            ImGui::SetWindowFocus(); // make right-clicks bring window into focus
+            ImGui::SetWindowFocus();  // make right-clicks bring window into focus
         } else if (io.MouseWheel > 0) {
             interactor->InvokeEvent(vtkCommand::MouseWheelForwardEvent, nullptr);
         } else if (io.MouseWheel < 0) {
@@ -79,21 +80,16 @@ void VtkViewer::processEvents() {
 }
 
 VtkViewer::VtkViewer()
-    : viewportWidth(0), viewportHeight(0), renderWindow(nullptr), interactor(nullptr), interactorStyle(nullptr),
-    renderer(nullptr), tex(0), firstRender(true) {
+    : viewportWidth(0), viewportHeight(0), renderWindow(nullptr), interactor(nullptr), interactorStyle(nullptr), renderer(nullptr), tex(0), firstRender(true) {
     init();
 }
 
 VtkViewer::VtkViewer(const VtkViewer& vtkViewer)
-    : viewportWidth(0), viewportHeight(0), renderWindow(vtkViewer.renderWindow), interactor(vtkViewer.interactor),
-    interactorStyle(vtkViewer.interactorStyle), renderer(vtkViewer.renderer), tex(vtkViewer.tex),
-    firstRender(vtkViewer.firstRender) {
+    : viewportWidth(0), viewportHeight(0), renderWindow(vtkViewer.renderWindow), interactor(vtkViewer.interactor), interactorStyle(vtkViewer.interactorStyle), renderer(vtkViewer.renderer), tex(vtkViewer.tex), firstRender(vtkViewer.firstRender) {
 }
 
 VtkViewer::VtkViewer(VtkViewer&& vtkViewer) noexcept
-    : viewportWidth(0), viewportHeight(0), renderWindow(std::move(vtkViewer.renderWindow)),
-    interactor(std::move(vtkViewer.interactor)), interactorStyle(std::move(vtkViewer.interactorStyle)),
-    renderer(std::move(vtkViewer.renderer)), tex(vtkViewer.tex), firstRender(vtkViewer.firstRender) {
+    : viewportWidth(0), viewportHeight(0), renderWindow(std::move(vtkViewer.renderWindow)), interactor(std::move(vtkViewer.interactor)), interactorStyle(std::move(vtkViewer.interactorStyle)), renderer(std::move(vtkViewer.renderer)), tex(vtkViewer.tex), firstRender(vtkViewer.firstRender) {
 }
 
 VtkViewer::~VtkViewer() {
@@ -118,7 +114,6 @@ VtkViewer& VtkViewer::operator=(const VtkViewer& vtkViewer) {
 }
 
 void VtkViewer::init() {
-
     renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->ResetCamera();
     renderer->SetBackground(DEFAULT_BACKGROUND);
@@ -131,7 +126,7 @@ void VtkViewer::init() {
     interactor->SetInteractorStyle(interactorStyle);
     interactor->EnableRenderOff();
 
-    int viewportSize[2] = { static_cast<int>(viewportWidth), static_cast<int>(viewportHeight) };
+    int viewportSize[2] = {static_cast<int>(viewportWidth), static_cast<int>(viewportHeight)};
 
     renderWindow = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
     renderWindow->SetSize(viewportSize);
@@ -197,7 +192,7 @@ void VtkViewer::setViewportSize(const ImVec2 newSize) {
     viewportWidth = static_cast<unsigned int>(newSize.x);
     viewportHeight = static_cast<unsigned int>(newSize.y);
 
-    int viewportSize[] = { static_cast<int>(newSize.x), static_cast<int>(newSize.y) };
+    int viewportSize[] = {static_cast<int>(newSize.x), static_cast<int>(newSize.y)};
 
     // Free old buffers
     glDeleteTextures(1, &tex);

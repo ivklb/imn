@@ -11,4 +11,3 @@ target_link_libraries(common_widgets
     glfw
     imgui::imgui
 )
-

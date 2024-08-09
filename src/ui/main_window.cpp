@@ -2,12 +2,13 @@
 #include "main_window.hpp"
 
 // Standard Library
+#include <vtkActor.h>
+#include <vtkSmartPointer.h>
+
 #include <algorithm>
 #include <iostream>
 
 #include "ui/vtk_viewer.hpp"
-#include <vtkSmartPointer.h>
-#include <vtkActor.h>
 // OpenGL Loader
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
@@ -17,22 +18,20 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <implot.h>
-
 #include <spdlog/spdlog.h>
 
 // File-Specific Includes
+#include "core/app.hpp"
+#include "core/setting.hpp"
 #include "include/def.hpp"
-#include "ui/imgui_vtk_demo.h" // Actor generator for this demo
-#include "ui/widget/common_widgets.hpp"
-#include "ui/image_viewer.hpp"
 #include "ui/dialog/ImGuiFileDialog.h"
 #include "ui/dialog/import_dialog.hpp"
-#include "ui/widget/imgui_notify.h"
+#include "ui/image_viewer.hpp"
+#include "ui/imgui_vtk_demo.h"  // Actor generator for this demo
 #include "ui/style.hpp"
+#include "ui/widget/common_widgets.hpp"
+#include "ui/widget/imgui_notify.h"
 #include "util/imgui_util.hpp"
-#include "core/setting.hpp"
-#include "core/app.hpp"
-
 
 using namespace imn::ui;
 
@@ -114,7 +113,7 @@ void MainWindow::_setup_gl() {
     }
     App::app()->set_main_window_handle(_window);
     glfwMakeContextCurrent(_window);
-    glfwSwapInterval(1); // Enable vsync
+    glfwSwapInterval(1);  // Enable vsync
 
     if (gl3wInit() != 0) {
         SPDLOG_ERROR("Failed to initialize OpenGL loader!");
@@ -207,7 +206,6 @@ void MainWindow::_create_dock_space_and_menubar() {
     window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
     window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
-
     // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
     // and handle the pass-thru hole, so we ask Begin() to not render a background.
     if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
@@ -259,9 +257,9 @@ void MainWindow::_show_dialog() {
     // file dialog
     ImGuiFileDialog::Instance()->SetFileStyle(IGFD_FileStyleByTypeDir, nullptr, ImVec4(0.5f, 1.0f, 0.9f, 0.9f));
     if (ImGuiFileDialog::Instance()->Display(
-        "ChooseFileDlgKey",
-        ImGuiWindowFlags_NoCollapse,
-        ImVec2(650, 300))) {
+            "ChooseFileDlgKey",
+            ImGuiWindowFlags_NoCollapse,
+            ImVec2(650, 300))) {
         if (ImGuiFileDialog::Instance()->IsOk()) {
             std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
             std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
@@ -282,7 +280,7 @@ void MainWindow::_show_dialog() {
             filename.ends_with(".jpg") ||
             filename.ends_with(".png") ||
             filename.ends_with(".bmp");
-        imn::io::ImportConfig config = { 0 };
+        imn::io::ImportConfig config = {0};
         if (is_common_image_file) {
             config.common_image = true;
         } else {
@@ -307,11 +305,10 @@ void MainWindow::_show_dialog() {
             auto image_viewer = std::make_shared<ImageViewer>();
             image_viewer->set_images(image_stack);
             _windows.push_back(image_viewer);
-            ImGui::InsertNotification({ ImGuiToastType_Info, 3000, "! %s", "We can also format here:)" });
+            ImGui::InsertNotification({ImGuiToastType_Info, 3000, "! %s", "We can also format here:)"});
             _files_to_open.clear();
         }
     } else {
-
     }
 
     // progress dialog
@@ -322,7 +319,7 @@ void MainWindow::_show_dialog() {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.f);
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(43.f / 255.f, 43.f / 255.f, 43.f / 255.f, 100.f / 255.f));
     ImGui::RenderNotifications();
-    ImGui::PopStyleVar(1); // Don't forget to Pop()
+    ImGui::PopStyleVar(1);  // Don't forget to Pop()
     ImGui::PopStyleColor(1);
 }
 

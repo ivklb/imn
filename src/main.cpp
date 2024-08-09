@@ -1,8 +1,7 @@
 
 
-#include "ui/main_window.hpp"
 #include "core/app.hpp"
-
+#include "ui/main_window.hpp"
 
 int main(int argc, char* argv[]) {
     // trigger init

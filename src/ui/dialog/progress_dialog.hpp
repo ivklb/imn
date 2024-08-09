@@ -2,16 +2,16 @@
 #ifndef UI__DIALOG__PROGRESS_DIALOG_HPP
 #define UI__DIALOG__PROGRESS_DIALOG_HPP
 
-#include <functional>
 #include <imgui.h>
+
+#include <functional>
+#include <mutex>
 #include <string>
 #include <tuple>
 #include <vector>
-#include <mutex>
-
 
 class ProgressDialog {
-public:
+   public:
     ProgressDialog();
     static ProgressDialog* Instance() {
         static ProgressDialog _instance;
@@ -25,7 +25,7 @@ public:
     void cancel();
     void render();
 
-private:
+   private:
     bool _show;
     std::mutex _mutex;
     std::string _title;

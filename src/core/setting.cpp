@@ -2,14 +2,13 @@
 #include "setting.hpp"
 
 #include <exception>
-#include <iostream>
-#include <fstream>
 #include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <nlohmann/json.hpp>
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
-
 
 std::string _search_setting_file() {
     std::vector<fs::path> file_list = {

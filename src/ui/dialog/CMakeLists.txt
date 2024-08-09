@@ -12,4 +12,3 @@ target_link_libraries(dialogs
     glfw
     imgui::imgui
 )
-

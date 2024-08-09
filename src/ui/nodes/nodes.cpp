@@ -12,6 +12,7 @@
 #include "pins.hpp"
 #include "ui/dialog/import_dialog.hpp"
 #include "util/fs.hpp"
+#include "util/imgui_util.hpp"
 
 using namespace imn::ui;
 
@@ -93,5 +94,5 @@ void ImagePreviewNode::_draw_body() {
 
 void ImagePreviewNode::_process() {
     auto mat = get_input<std::shared_ptr<cv::Mat>>(in_image->id);
-
+    auto tex = load_texture_2d(mat.get());
 }
