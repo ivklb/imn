@@ -5,6 +5,7 @@
 
 #include <vector>
 
+#include "core/thread_pool.hpp"
 #include "ui/node_editor/imnodes.h"
 #include "ui/style.hpp"
 
@@ -118,15 +119,15 @@ std::any Node::get_output(int pid) {
 
 void Node::process() {
     status = NodeStatus::Processing;
-
-    // TODO: run in thread
-    try {
-        _process();
-        status = NodeStatus::Done;
-    } catch (const std::exception& e) {
-        SPDLOG_ERROR("Node {} process error: {}", name, e.what());
-        status = NodeStatus::Error;
-    }
+    imn::core::thread_pool()->enqueue([this]() {
+        try {
+            _process();
+            status = NodeStatus::Done;
+        } catch (const std::exception& e) {
+            SPDLOG_ERROR("Node {} process error: {}", name, e.what());
+            status = NodeStatus::Error;
+        }
+    });
 }
 
 void Node::_build_pins() {
