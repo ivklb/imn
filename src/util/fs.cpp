@@ -1,5 +1,6 @@
 #include "fs.hpp"
 
+#include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 // #include <shellapi.h>
 #include <shlobj.h>
