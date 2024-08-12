@@ -40,6 +40,7 @@ void NodeWindow::show() {
     _show_node_editor();
 
     ImGui::End();
+    _graph.process();
 }
 
 void NodeWindow::_show_menu_bar() {

@@ -67,7 +67,7 @@ void Pin::draw_frame() {
 Node::Node(const char* name, ColorTheme color)
     : name(name),
       color(color),
-      status(NodeStatus::WaitingLink),
+      status(NodeStatus::WaitingNodeInput),
       width(150),
       process_cur(0),
       process_max(0) {
@@ -105,12 +105,12 @@ std::any Node::get_input(int pid) {
         SPDLOG_DEBUG("Node {} has no graph", name);
         return {};
     }
-    auto node = graph->get_connected_node(pid);
+    auto node = graph->get_upstream_node(pid);
     if (!node) {
-        SPDLOG_DEBUG("Node {} has no connected node", name);
+        SPDLOG_DEBUG("Node {} has no upstream node", name);
         return {};
     }
-    return node->get_output(pid);
+    return std::move(node->get_output(pid));
 }
 
 std::any Node::get_output(int pid) {
@@ -183,10 +183,10 @@ std::shared_ptr<Pin> Graph::pin(int pid) const {
     return nullptr;
 }
 
-std::shared_ptr<Node> Graph::get_connected_node(int pin_id) const {
+std::shared_ptr<Node> Graph::get_upstream_node(int pin_id) const {
     if (in_pin_link_map.count(pin_id)) {
         auto link = in_pin_link_map.at(pin_id);
-        return nodes.at(link->to_nid);
+        return nodes.at(link->from_nid);
     }
     return nullptr;
 }
@@ -236,10 +236,10 @@ void Graph::erase_link(int link_id) {
 
 void Graph::process() {
     for (auto& [nid, node] : nodes) {
-        if (node->status == NodeStatus::WaitingLink) {
+        if (node->status == NodeStatus::WaitingNodeInput) {
             bool inputs_ready = true;
             for (auto& [pid, pin] : node->inputs) {
-                auto n = get_connected_node(pid);
+                auto n = get_upstream_node(pid);
                 if (n == nullptr || n->status != NodeStatus::Done) {
                     inputs_ready = false;
                     break;

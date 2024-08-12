@@ -6,9 +6,11 @@
 #include <utf8.h>
 #include <utf8/cpp20.h>
 
+#include <cassert>
 #include <opencv2/opencv.hpp>
 
 #include "core/io.hpp"
+#include "core/lambda.hpp"
 #include "pins.hpp"
 #include "ui/dialog/import_dialog.hpp"
 #include "util/fs.hpp"
@@ -35,6 +37,12 @@ ImageLoaderNode::ImageLoaderNode() : Node("Image Loader", ColorTheme::Red), conf
     auto p = std::make_shared<ImagePin>("image", PinKind::Out);
     outputs[p->id] = p;
     _build_pins();
+    status = NodeStatus::WaitingUserInput;
+}
+
+std::any ImageLoaderNode::get_output(int pid) {
+    assert(status == NodeStatus::Done && "ImageLoaderNode::get_output() called before processing is done");
+    return image;
 }
 
 void ImageLoaderNode::_draw_body() {
@@ -81,12 +89,12 @@ void ImageLoaderNode::_draw_body() {
 }
 
 ImagePreviewNode::ImagePreviewNode()
-    : Node("Image Preview", ColorTheme::Orange) {
+    : Node("Image Preview", ColorTheme::Orange), show_window(false) {
     in_image = std::make_shared<ImagePin>("image", PinKind::In);
     inputs[in_image->id] = in_image;
     _build_pins();
 
-    status = NodeStatus::WaitingLink;
+    status = NodeStatus::WaitingNodeInput;
 }
 
 void ImagePreviewNode::_draw_body() {
@@ -94,5 +102,9 @@ void ImagePreviewNode::_draw_body() {
 
 void ImagePreviewNode::_process() {
     auto mat = get_input<std::shared_ptr<cv::Mat>>(in_image->id);
-    auto tex = load_texture_2d(mat.get());
+    if (!viewer) {
+        viewer = std::make_shared<ui::ImageViewer>();
+        viewer->set_image(mat);
+        lambda::call("ADD_WINDOW", std::shared_ptr<BaseWindow>(viewer));
+    }
 }

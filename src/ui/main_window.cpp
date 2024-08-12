@@ -15,6 +15,7 @@
 #include <iostream>
 
 #include "core/app.hpp"
+#include "core/lambda.hpp"
 #include "core/setting.hpp"
 #include "include/def.hpp"
 #include "ui/dialog/ImGuiFileDialog.h"
@@ -82,6 +83,9 @@ void MainWindow::_setup() {
     // disable warning window in release mode
     vtkObject::GlobalWarningDisplayOff();
 #endif
+    lambda::store("ADD_WINDOW", [this](std::shared_ptr<BaseWindow> w) {
+        _windows.push_back(w);
+    });
     _setup_gl();
     _setup_imgui();
 }

@@ -36,7 +36,7 @@ enum class PinKind {
 enum class NodeStatus {
     Processing,
     WaitingUserInput,
-    WaitingLink,
+    WaitingNodeInput,
     Done,
     Error,
 };
@@ -115,7 +115,7 @@ struct Graph {
 
     // Capacity
 
-    std::shared_ptr<Node> get_connected_node(int pin_id) const;
+    std::shared_ptr<Node> get_upstream_node(int pin_id) const;
     // std::vector<std::shared_ptr<Link>> input_links_from_node(int node_id) const;
     // std::vector<std::shared_ptr<Link>> output_links_from_node(int node_id) const;
 

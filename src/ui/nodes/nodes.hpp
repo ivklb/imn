@@ -8,6 +8,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "core/io.hpp"
+#include "ui/image_viewer.hpp"
 #include "ui/nodes/struct.hpp"
 
 namespace imn::ui {
@@ -23,11 +24,14 @@ struct ImageLoaderNode : public Node {
     std::shared_ptr<cv::Mat> image;
 
     ImageLoaderNode();
+    std::any get_output(int pid) override;
     void _draw_body() override;
 };
 
 struct ImagePreviewNode : public Node {
     std::shared_ptr<Pin> in_image;
+    bool show_window;
+    std::shared_ptr<ImageViewer> viewer;
 
     ImagePreviewNode();
     void _draw_body() override;
