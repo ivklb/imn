@@ -17,6 +17,7 @@
 #include "core/app.hpp"
 #include "core/lambda.hpp"
 #include "core/setting.hpp"
+#include "ext/imgui_notify/ImGuiNotify.hpp"
 #include "include/def.hpp"
 #include "ui/dialog/ImGuiFileDialog.h"
 #include "ui/dialog/import_dialog.hpp"
@@ -25,7 +26,6 @@
 #include "ui/style.hpp"
 #include "ui/vtk_viewer.hpp"
 #include "ui/widget/common_widgets.hpp"
-#include "ui/widget/imgui_notify.h"
 #include "util/imgui_util.hpp"
 
 using namespace imn::ui;
@@ -137,7 +137,16 @@ void MainWindow::_setup_imgui() {
     config.MergeMode = true;
     io.Fonts->AddFontFromFileTTF(font_file, font_size, nullptr, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
     io.Fonts->AddFontFromFileTTF(font_file, font_size, &config, GetGlyphRangesGreek());
-    ImGui::MergeIconsWithLatestFont(font_size - 6, false);
+    // ImGui::MergeIconsWithLatestFont(font_size - 6, false);
+
+    // merge in icons from Font Awesome
+    float iconFontSize = font_size * 2.0f / 3.0f;  // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
+    static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_16_FA, 0};
+    ImFontConfig icons_config;
+    icons_config.MergeMode = true;
+    icons_config.PixelSnapH = true;
+    icons_config.GlyphMinAdvanceX = iconFontSize;
+    io.Fonts->AddFontFromFileTTF("asset/font/fa-solid-900.ttf", iconFontSize, &icons_config, icons_ranges);
     io.Fonts->Build();
 
     // Setup Dear ImGui style
@@ -307,7 +316,7 @@ void MainWindow::_show_dialog() {
             auto image_viewer = std::make_shared<ImageViewer>();
             image_viewer->set_images(image_stack);
             _windows.push_back(image_viewer);
-            ImGui::InsertNotification({ImGuiToastType_Info, 3000, "! %s", "We can also format here:)"});
+            ImGui::InsertNotification({ImGuiToastType::Info, 3000, "! %s", "We can also format here:)"});
             _files_to_open.clear();
         }
     } else {

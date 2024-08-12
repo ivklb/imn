@@ -11,9 +11,9 @@
 
 #include "core/io.hpp"
 #include "core/lambda.hpp"
+#include "ext/imgui_notify/ImGuiNotify.hpp"
 #include "pins.hpp"
 #include "ui/dialog/import_dialog.hpp"
-#include "ui/widget/imgui_notify.h"
 #include "util/fs.hpp"
 #include "util/imgui_util.hpp"
 
@@ -84,7 +84,7 @@ void ImageLoaderNode::_draw_body() {
 
     if (ImGui::Button("load")) {
         if (file_str.empty()) {
-            ImGui::InsertNotification({ImGuiToastType_Warning, 3000, "! %s", "Please select a file"});
+            ImGui::InsertNotification({ImGuiToastType::Warning, 3000, "! %s", "Please select a file"});
         } else {
             status = NodeStatus::Processing;
             image = imn::io::load_image(file_path, config);
