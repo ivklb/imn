@@ -1,26 +1,19 @@
 
 #include "main_window.hpp"
 
-// Standard Library
+#include <GL/gl3w.h>
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+#include <implot.h>
+#include <spdlog/spdlog.h>
 #include <vtkActor.h>
 #include <vtkSmartPointer.h>
 
 #include <algorithm>
 #include <iostream>
 
-#include "ui/vtk_viewer.hpp"
-// OpenGL Loader
-#include <GL/gl3w.h>
-#include <GLFW/glfw3.h>
-
-// ImGui + imgui-vtk
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
-#include <implot.h>
-#include <spdlog/spdlog.h>
-
-// File-Specific Includes
 #include "core/app.hpp"
 #include "core/setting.hpp"
 #include "include/def.hpp"
@@ -29,6 +22,7 @@
 #include "ui/image_viewer.hpp"
 #include "ui/imgui_vtk_demo.h"  // Actor generator for this demo
 #include "ui/style.hpp"
+#include "ui/vtk_viewer.hpp"
 #include "ui/widget/common_widgets.hpp"
 #include "ui/widget/imgui_notify.h"
 #include "util/imgui_util.hpp"
