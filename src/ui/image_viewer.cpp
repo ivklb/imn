@@ -52,10 +52,12 @@ void ImageViewer::show() {
 
     {
         ImGui::BeginChild("image");
-        auto region = ImGui::GetContentRegionAvail();
-        _show_image(ImVec2(region.x, region.y - get_input_box_height()));
+        if (_images.size() <= 1) {
+            _show_image(ImGui::GetContentRegionAvail());
+        } else {
+            auto region = ImGui::GetContentRegionAvail();
+            _show_image(ImVec2(region.x, region.y - ImGui::GetFrameHeight()));
 
-        if (_images.size() > 1) {
             static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
             ImGui::SetNextItemWidth(region.x);
             ImGui::SliderInt("##slider", &_img_idx, 0, _images.size() - 1, "%d", flags);
