@@ -1,4 +1,5 @@
-
 {
-    "menu_file": "File"
+    "file": "File",
+    "view": "View",
+    "lang": "Language"
 }

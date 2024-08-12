@@ -232,7 +232,7 @@ void MainWindow::_create_dock_space_and_menubar() {
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
     if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu(I18N_STR("menu_file"))) {
+        if (ImGui::BeginMenu(I18N_STR("file"))) {
             if (ImGui::MenuItem("Open Image(s)", "Ctrl+O")) {
                 _load_as_volume = false;
                 IGFD::FileDialogConfig config;
@@ -250,6 +250,19 @@ void MainWindow::_create_dock_space_and_menubar() {
             }
             if (ImGui::MenuItem("Exit", "Ctrl+Q")) {
                 SPDLOG_INFO("Exit");
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu(I18N_STR("view"))) {
+            if (ImGui::BeginMenu(I18N_STR("lang"))) {
+                auto& settings = setting::global_setting();
+                if (ImGui::MenuItem("en", NULL, settings.lang == "en")) {
+                    settings.lang = "en";
+                }
+                if (ImGui::MenuItem("zh", NULL, settings.lang == "zh")) {
+                    settings.lang = "zh";
+                }
+                ImGui::EndMenu();
             }
             ImGui::EndMenu();
         }
