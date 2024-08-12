@@ -1,3 +1,4 @@
+
 /**
  * @file ImGuiNotify.hpp
  * @brief A header-only library for creating toast notifications with ImGui.

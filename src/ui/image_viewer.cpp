@@ -48,8 +48,10 @@ void ImageViewer::show() {
     ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
     ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::Begin(("中文 μm image##" + _id).c_str());
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+
     if (_show_toolbar) {
         _show_toolbar_func();
         ImGui::SameLine();
@@ -71,6 +73,7 @@ void ImageViewer::show() {
     }
     ImGui::PopStyleVar();
     ImGui::End();
+    ImGui::PopStyleVar();
 }
 
 void ImageViewer::show_toolbar(bool show) {
