@@ -29,6 +29,7 @@ NodeWindow::~NodeWindow() {
 void NodeWindow::setup() {
     ImNodes::CreateContext();
     ImNodes::GetIO().EmulateThreeButtonMouse.Modifier = &ImGui::GetIO().KeyAlt;
+    ImNodes::GetStyle().GridSpacing = get_style().font_size * 2;
 }
 
 void NodeWindow::show() {
