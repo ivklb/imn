@@ -152,8 +152,8 @@ void MainWindow::_setup_imgui() {
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     auto& style = ImGui::GetStyle();
-    style.WindowPadding = ImVec2(0, 0);
-    style.FramePadding = ImVec2(4, 4);
+    // style.WindowPadding = ImVec2(0, 0);
+    // style.FramePadding = ImVec2(4, 4);
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(App::app()->main_window_handle(), true);
@@ -299,10 +299,6 @@ void MainWindow::_show_dialog() {
             if (ok) {
                 config = conf;
                 // TODO: handle cancelled action
-                // https://github.com/bshoshany/thread-pool/blob/master/include/BS_thread_pool_utils.hpp
-                // https://github.com/bshoshany/thread-pool/blob/master/include/BS_thread_pool.hpp
-                // https://github.com/bshoshany/thread-pool
-                // https://github.com/progschj/ThreadPool
             }
         }
 
@@ -322,14 +318,7 @@ void MainWindow::_show_dialog() {
     } else {
     }
 
-    // show notification
-    // Render toasts on top of everything, at the end of your code!
-    // You should push style vars here
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.f);
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(43.f / 255.f, 43.f / 255.f, 43.f / 255.f, 100.f / 255.f));
     ImGui::RenderNotifications();
-    ImGui::PopStyleColor(1);
-    ImGui::PopStyleVar(1);  // Don't forget to Pop()
 }
 
 void MainWindow::_cleanup() {
