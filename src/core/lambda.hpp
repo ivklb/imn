@@ -30,6 +30,8 @@
 #ifndef _UTIL_LAMBDA_HPP_
 #define _UTIL_LAMBDA_HPP_
 
+#include <spdlog/spdlog.h>
+
 #include <any>
 #include <exception>
 #include <functional>  // for std::bind
@@ -97,10 +99,15 @@ void store(const std::string& key, F&& f) {
 template <typename... Args>
 std::any call(const std::string& key, Args... arg) {
     auto& m = _load_manager();
-    return m.call(key, std::forward<Args>(arg)...);
+    try {
+        return m.call(key, std::forward<Args>(arg)...);
+    } catch (const std::exception& e) {
+        SPDLOG_ERROR("fail to call lambda function : {} {}", key, e.what());
+        throw;
+    }
 }
 
-}  // end namespace Lambda
+}  // namespace lambda
 }  // namespace imn
 
 #endif

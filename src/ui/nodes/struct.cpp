@@ -110,7 +110,7 @@ std::any Node::get_input(int pid) {
         SPDLOG_DEBUG("Node {} has no upstream node", name);
         return {};
     }
-    return std::move(node->get_output(pid));
+    return node->get_output(pid);
 }
 
 std::any Node::get_output(int pid) {
