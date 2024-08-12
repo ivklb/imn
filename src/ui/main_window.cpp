@@ -17,6 +17,7 @@
 #include "core/app.hpp"
 #include "core/lambda.hpp"
 #include "core/setting.hpp"
+#include "core/i18n.hpp"
 #include "ext/imgui_notify/ImGuiNotify.hpp"
 #include "include/def.hpp"
 #include "ui/dialog/ImGuiFileDialog.h"
@@ -231,7 +232,7 @@ void MainWindow::_create_dock_space_and_menubar() {
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
     if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("File")) {
+        if (ImGui::BeginMenu(i18n::text("menu_file").c_str())) {
             if (ImGui::MenuItem("Open Image(s)", "Ctrl+O")) {
                 _load_as_volume = false;
                 IGFD::FileDialogConfig config;
