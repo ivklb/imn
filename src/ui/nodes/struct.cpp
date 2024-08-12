@@ -68,10 +68,13 @@ Node::Node(const char* name, ColorTheme color)
     : name(name),
       color(color),
       status(NodeStatus::Created),
-      width(150),
       process_cur(0),
       process_max(0) {
     id = IDGenerator::next();
+
+    auto name_width = ImGui::CalcTextSize(name).x * 1.2f;
+    auto default_width = ui::get_style().font_size * 6.0f;
+    width = std::max(name_width, default_width);
 }
 
 void Node::draw_frame() {
