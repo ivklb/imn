@@ -67,7 +67,7 @@ void Pin::draw_frame() {
 Node::Node(const char* name, ColorTheme color)
     : name(name),
       color(color),
-      status(NodeStatus::WaitingNodeInput),
+      status(NodeStatus::Created),
       width(150),
       process_cur(0),
       process_max(0) {
@@ -163,11 +163,11 @@ void Node::_draw_process_bar() {
     }
 }
 
-Link::Link(int from_nid, int from_pid, int to_nid, int to_pid)
-    : from_nid(from_nid),
-      from_pid(from_pid),
-      to_nid(to_nid),
-      to_pid(to_pid) {
+Link::Link(int start_nid, int start_pid, int end_nid, int end_pid)
+    : start_nid(start_nid),
+      start_pid(start_pid),
+      end_nid(end_nid),
+      end_pid(end_pid) {
     id = IDGenerator::next();
 }
 
@@ -184,11 +184,21 @@ std::shared_ptr<Pin> Graph::pin(int pid) const {
 }
 
 std::shared_ptr<Node> Graph::get_upstream_node(int pin_id) const {
-    if (in_pin_link_map.count(pin_id)) {
-        auto link = in_pin_link_map.at(pin_id);
-        return nodes.at(link->from_nid);
+    if (end_pin_to_link.count(pin_id)) {
+        auto link = end_pin_to_link.at(pin_id);
+        return nodes.at(link->start_nid);
     }
     return nullptr;
+}
+
+std::vector<std::shared_ptr<Node>> Graph::get_downstream_nodes(int pin_id) const {
+    std::vector<std::shared_ptr<Node>> nodes;
+    if (start_pin_to_links.count(pin_id)) {
+        for (auto& link : start_pin_to_links.at(pin_id)) {
+            nodes.push_back(this->nodes.at(link->end_nid));
+        }
+    }
+    return nodes;
 }
 
 int Graph::insert_node(const std::shared_ptr<Node>& node) {
@@ -200,7 +210,7 @@ int Graph::insert_node(const std::shared_ptr<Node>& node) {
 void Graph::erase_node(int node_id) {
     std::vector<int> links_to_remove;
     for (auto& [id, link] : links) {
-        if (link->from_nid == node_id || link->to_nid == node_id) {
+        if (link->start_nid == node_id || link->end_nid == node_id) {
             links_to_remove.push_back(id);
         }
     }
@@ -210,9 +220,9 @@ void Graph::erase_node(int node_id) {
     nodes.erase(node_id);
 }
 
-int Graph::insert_link(int from_pid, int to_pid) {
-    auto from_pin = pin(from_pid);
-    auto to_pin = pin(to_pid);
+int Graph::insert_link(int start_pid, int end_pid) {
+    auto from_pin = pin(start_pid);
+    auto to_pin = pin(end_pid);
     if (to_pin->connect_count > 0) {
         // TODO: break existing link?
         return -1;
@@ -220,23 +230,37 @@ int Graph::insert_link(int from_pid, int to_pid) {
 
     from_pin->connect_count++;
     to_pin->connect_count++;
-    auto link = std::make_shared<Link>(from_pin->node->id, from_pid, to_pin->node->id, to_pid);
+    auto link = std::make_shared<Link>(from_pin->node->id, start_pid, to_pin->node->id, end_pid);
     links[link->id] = link;
-    in_pin_link_map[to_pin->id] = link;
+    end_pin_to_link[to_pin->id] = link;
+    if (start_pin_to_links.count(start_pid) == 0) {
+        start_pin_to_links[start_pid] = std::vector<std::shared_ptr<Link>>();
+    }
+    start_pin_to_links[start_pid].push_back(link);
     return link->id;
 }
 
 void Graph::erase_link(int link_id) {
     auto link = links.at(link_id);
-    nodes[link->from_nid]->outputs[link->from_pid]->connect_count--;
-    nodes[link->to_nid]->inputs[link->to_pid]->connect_count--;
+    nodes[link->start_nid]->outputs[link->start_pid]->connect_count--;
+    nodes[link->end_nid]->inputs[link->end_pid]->connect_count--;
     links.erase(link_id);
-    in_pin_link_map.erase(link->to_pid);
+    end_pin_to_link.erase(link->end_pid);
+    std::erase_if(start_pin_to_links[link->start_pid], [=](const auto& l) { return l->id == link_id; });
 }
 
 void Graph::process() {
     for (auto& [nid, node] : nodes) {
-        if (node->status == NodeStatus::WaitingNodeInput) {
+        if (node->status == NodeStatus::Dirty) {
+            for (auto& [pid, pin] : node->outputs) {
+                auto ns = get_downstream_nodes(pid);
+                for (auto& n : ns) {
+                    n->status = NodeStatus::Pending;
+                }
+            }
+            node->status = NodeStatus::Done;
+        }
+        if (node->status == NodeStatus::Pending) {
             bool inputs_ready = true;
             for (auto& [pid, pin] : node->inputs) {
                 auto n = get_upstream_node(pid);

@@ -34,7 +34,10 @@ enum class PinKind {
 };
 
 enum class NodeStatus {
+    Created,
+    Dirty,
     Processing,
+    Pending,
     WaitingUserInput,
     WaitingNodeInput,
     Done,
@@ -94,35 +97,32 @@ T Node::get_input(int pid) {
 
 struct Link {
     int id;
-    int from_nid;
-    int from_pid;
-    int to_nid;
-    int to_pid;
+    int start_nid;
+    int start_pid;
+    int end_nid;
+    int end_pid;
 
     // Link() {}  // used in std::map
-    Link(int from_nid, int from_pid, int to_nid, int to_pid);
+    Link(int start_nid, int start_pid, int end_nid, int end_pid);
 };
 
 struct Graph {
     std::map<int, std::shared_ptr<Node>> nodes;
     std::map<int, std::shared_ptr<Link>> links;
-    std::map<int, std::shared_ptr<Link>> in_pin_link_map;
-    // IdMap<int>              edges_from_node_;
-    // IdMap<std::vector<int>> node_neighbors_;
+    std::map<int, std::shared_ptr<Link>> end_pin_to_link;
+    std::map<int, std::vector<std::shared_ptr<Link>>> start_pin_to_links;
 
     // Element Access
     std::shared_ptr<Pin> pin(int pid) const;
 
     // Capacity
-
     std::shared_ptr<Node> get_upstream_node(int pin_id) const;
-    // std::vector<std::shared_ptr<Link>> input_links_from_node(int node_id) const;
-    // std::vector<std::shared_ptr<Link>> output_links_from_node(int node_id) const;
+    std::vector<std::shared_ptr<Node>> get_downstream_nodes(int pin_id) const;
 
     // Modifiers
     int insert_node(const std::shared_ptr<Node>& node);
     void erase_node(int node_id);
-    int insert_link(int from_pid, int to_pid);
+    int insert_link(int start_pid, int end_pid);
     void erase_link(int link_id);
 
     void process();

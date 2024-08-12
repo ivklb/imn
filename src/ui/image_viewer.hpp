@@ -7,6 +7,7 @@
 
 #include <map>
 #include <memory>
+#include <mutex>
 #include <opencv2/opencv.hpp>
 #include <tuple>
 #include <vector>
@@ -28,14 +29,16 @@ class ImageViewer : public BaseWindow {
     void set_image(std::shared_ptr<cv::Mat> image);
     void set_images(std::vector<std::shared_ptr<cv::Mat>> images);
     void show() override;
+    void show_toolbar(bool show);
 
    private:
-    void _show_toolbar();
+    void _show_toolbar_func();
     void _show_image(ImVec2 region);
     std::tuple<ImVec2, ImVec2> _calc_paint_region(double image_width, double image_height, double canvas_width, double canvas_height);
 
     std::string _id;
 
+    std::mutex _mutex;
     std::vector<std::shared_ptr<cv::Mat>> _images;
     std::map<int, ImTextureID> _tex_id_map;
     int _img_idx;
@@ -46,6 +49,7 @@ class ImageViewer : public BaseWindow {
     double _scale;
     double _drag_x;
     double _drag_y;
+    bool _show_toolbar;
 
     MouseMode _mouse_mode = kNone;
     double _ruler_points[4];  // {start_x, end_x, start_y, end_y}

@@ -30,25 +30,30 @@ ImageViewer::~ImageViewer() {
 }
 
 void ImageViewer::set_image(std::shared_ptr<cv::Mat> image) {
+    std::lock_guard<std::mutex> lock(_mutex);
     _images.clear();
     _images.push_back(image);
     _img_idx = 0;
 }
 
 void ImageViewer::set_images(std::vector<std::shared_ptr<cv::Mat>> images) {
+    std::lock_guard<std::mutex> lock(_mutex);
     _images = images;
     _img_idx = 0;
 }
 
 void ImageViewer::show() {
+    std::lock_guard<std::mutex> lock(_mutex);
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
     ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
 
     ImGui::Begin(("中文 μm image##" + _id).c_str());
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-    _show_toolbar();
-    ImGui::SameLine();
+    if (_show_toolbar) {
+        _show_toolbar_func();
+        ImGui::SameLine();
+    }
 
     {
         ImGui::BeginChild("image");
@@ -68,7 +73,11 @@ void ImageViewer::show() {
     ImGui::End();
 }
 
-void ImageViewer::_show_toolbar() {
+void ImageViewer::show_toolbar(bool show) {
+    _show_toolbar = show;
+}
+
+void ImageViewer::_show_toolbar_func() {
     ImVec2 icon_size = get_style().image_button_size;
 
     auto region = ImGui::GetContentRegionAvail();

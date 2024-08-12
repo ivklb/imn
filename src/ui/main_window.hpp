@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <vector>
 
@@ -45,6 +46,8 @@ class MainWindow {
     const char* _glsl_version = "#version 130";
     ImageViewer _image_viewer;
     NodeWindow _node_window;
+
+    std::mutex _mutex_win;
     std::vector<std::shared_ptr<BaseWindow>> _windows;
 
     std::vector<std::string> _files_to_open;

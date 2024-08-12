@@ -81,7 +81,7 @@ void NodeWindow::_show_node_editor() {
         node->draw_frame();
     }
     for (auto& [lid, link] : _graph.links) {
-        ImNodes::Link(link->id, link->from_pid, link->to_pid);
+        ImNodes::Link(link->id, link->start_pid, link->end_pid);
     }
 
     // Draw minimap

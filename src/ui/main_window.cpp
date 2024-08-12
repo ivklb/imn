@@ -84,6 +84,7 @@ void MainWindow::_setup() {
     vtkObject::GlobalWarningDisplayOff();
 #endif
     lambda::store("ADD_WINDOW", [this](std::shared_ptr<BaseWindow> w) {
+        std::lock_guard<std::mutex> lock(_mutex_win);
         _windows.push_back(w);
     });
     _setup_gl();
@@ -182,8 +183,11 @@ void MainWindow::_on_frame() {
     _image_viewer.show();
     _node_window.show();
 
-    for (auto& viewer : _windows) {
-        viewer->show();
+    {
+        std::lock_guard<std::mutex> lock(_mutex_win);
+        for (auto& viewer : _windows) {
+            viewer->show();
+        }
     }
 }
 
@@ -309,16 +313,14 @@ void MainWindow::_show_dialog() {
     } else {
     }
 
-    // progress dialog
-
     // show notification
     // Render toasts on top of everything, at the end of your code!
     // You should push style vars here
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.f);
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(43.f / 255.f, 43.f / 255.f, 43.f / 255.f, 100.f / 255.f));
     ImGui::RenderNotifications();
-    ImGui::PopStyleVar(1);  // Don't forget to Pop()
     ImGui::PopStyleColor(1);
+    ImGui::PopStyleVar(1);  // Don't forget to Pop()
 }
 
 void MainWindow::_cleanup() {
