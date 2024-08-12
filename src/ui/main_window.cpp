@@ -122,7 +122,7 @@ void MainWindow::_setup_gl() {
 }
 
 void MainWindow::_setup_imgui() {
-    auto& g_setting = global_setting();
+    auto& g_setting = setting::global_setting();
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     auto ctx = ImGui::CreateContext();
@@ -232,7 +232,7 @@ void MainWindow::_create_dock_space_and_menubar() {
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
     if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu(i18n::text("menu_file").c_str())) {
+        if (ImGui::BeginMenu(I18N_STR("menu_file"))) {
             if (ImGui::MenuItem("Open Image(s)", "Ctrl+O")) {
                 _load_as_volume = false;
                 IGFD::FileDialogConfig config;
@@ -323,4 +323,6 @@ void MainWindow::_cleanup() {
 
     glfwDestroyWindow(App::app()->main_window_handle());
     glfwTerminate();
+
+    setting::dump_setting();
 }

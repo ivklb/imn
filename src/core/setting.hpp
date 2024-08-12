@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+namespace imn::setting {
+
 struct IMNSettings {
     std::string font_file;
     std::string lang;
@@ -18,5 +20,8 @@ struct IMNSettings {
 };
 
 IMNSettings& global_setting();
+void dump_setting();
+
+}  // namespace imn::setting
 
 #endif

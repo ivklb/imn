@@ -49,7 +49,7 @@ void ImageViewer::show() {
     ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::Begin(("中文 μm image##" + _id).c_str());
+    ImGui::Begin(("image##" + _id).c_str());
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
     if (_show_toolbar) {

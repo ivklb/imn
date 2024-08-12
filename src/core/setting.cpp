@@ -10,6 +10,9 @@
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 
+namespace imn::setting {
+namespace impl {
+
 std::string _search_setting_file() {
     std::vector<fs::path> file_list = {
         fs::current_path() / "asset" / "config" / "setting.json",
@@ -40,7 +43,16 @@ IMNSettings _load_setting() {
     return _load_setting(filename);
 }
 
+}  // namespace impl
+
 IMNSettings& global_setting() {
-    static IMNSettings setting = _load_setting();
+    static IMNSettings setting = impl::_load_setting();
     return setting;
 }
+
+void dump_setting() {
+    std::ofstream file("asset/config/setting.json");
+    file << std::setfill(' ') << std::setw(4) << json(global_setting());
+}
+
+}  // namespace imn::setting

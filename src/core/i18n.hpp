@@ -12,6 +12,8 @@
 
 #include "core/setting.hpp"
 
+#define I18N_STR(key) imn::i18n::text(key).c_str()
+
 using json = nlohmann::json;
 
 namespace imn::i18n {
@@ -35,9 +37,9 @@ inline void init_text_map() {
         return;
     }
 
-    std::string filename = std::format("asset/config/lang/{}.json", global_setting().default_lang);
+    std::string filename = std::format("asset/config/lang/{}.json", setting::global_setting().default_lang);
     text_map_default = parse_file(filename);
-    filename = std::format("asset/config/lang/{}.json", global_setting().lang);
+    filename = std::format("asset/config/lang/{}.json", setting::global_setting().lang);
     text_map = parse_file(filename);
 
     init = true;
