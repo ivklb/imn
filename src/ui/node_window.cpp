@@ -33,7 +33,7 @@ void NodeWindow::setup() {
 
 void NodeWindow::show() {
     auto flags = ImGuiWindowFlags_MenuBar;
-    ImGui::Begin("color node editor", NULL, flags);
+    ImGui::Begin("node editor", NULL, flags);
 
     _show_menu_bar();
     _show_info();
@@ -64,7 +64,6 @@ void NodeWindow::_show_menu_bar() {
 }
 
 void NodeWindow::_show_info() {
-    ImGui::TextUnformatted("Edit the color of the output color window using nodes.");
     ImGui::TextUnformatted("Right click -- add node");
     ImGui::TextUnformatted("Del -- delete selected node or link");
     ImGui::TextUnformatted("Alt + mouse -- drag canvas");

@@ -38,7 +38,7 @@
 
 namespace imn {
 
-namespace Lambda {
+namespace lambda {
 // https://stackoverflow.com/questions/59897767/c-storing-callbacks-with-variadic-arguments
 class LambdaManager {
    public:

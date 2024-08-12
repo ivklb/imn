@@ -2,7 +2,6 @@
 #ifndef UI__MAIN_WINDOW_HPP
 #define UI__MAIN_WINDOW_HPP
 
-// TODO: please pay attention to the order of vtk & OpenGL headers
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
