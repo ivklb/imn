@@ -160,11 +160,6 @@ void MainWindow::_setup_imgui() {
     ImGui_ImplOpenGL3_Init(_glsl_version);
 
     // Our state
-    int out_width;
-    int out_height;
-    auto img = cv::imread("asset/image/moon.jpeg", cv::IMREAD_UNCHANGED);
-    _image_viewer.set_image(std::make_shared<cv::Mat>(std::move(img)));
-
     _node_window.setup();
 }
 
@@ -189,7 +184,6 @@ void MainWindow::_on_frame() {
         ImGui::End();
         vtkViewer1.removeActor(actor);
     }
-    _image_viewer.show();
     _node_window.show();
 
     {

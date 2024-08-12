@@ -44,7 +44,6 @@ class MainWindow {
 
    private:
     const char* _glsl_version = "#version 130";
-    ImageViewer _image_viewer;
     NodeWindow _node_window;
 
     std::mutex _mutex_win;
