@@ -17,7 +17,7 @@
         { "name": "opencv4", "features": ["eigen", "tiff"] },
         { "name": "spdlog" },
         { "name": "utfcpp" },
-        { "name": "vtk" }
+        { "name": "vtk", "features": ["opengl"] }
     ],
     "builtin-baseline": "2b665df62f1ccc5dead7f1c93888bfe30a918363",
     "overrides": [

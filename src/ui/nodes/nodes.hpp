@@ -50,6 +50,16 @@ struct ImagePreviewNode : public Node {
     void _process() override;
 };
 
+struct VolumePreviewNode : public Node {
+    std::shared_ptr<Pin> in_image;
+    bool show_window;
+    std::shared_ptr<ImageViewer> viewer;
+
+    VolumePreviewNode();
+    void _draw_body() override;
+    void _process() override;
+};
+
 }  // namespace imn::ui
 
 #endif

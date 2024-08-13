@@ -177,6 +177,7 @@ ImagePreviewNode::ImagePreviewNode()
 }
 
 void ImagePreviewNode::_draw_body() {
+    // TODO: show image
 }
 
 void ImagePreviewNode::_process() {

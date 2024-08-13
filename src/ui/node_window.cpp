@@ -141,6 +141,8 @@ void NodeWindow::_handle_new_links() {
         auto input_pin = _graph.pin(start_attr);
         auto output_pin = _graph.pin(end_attr);
 
+        // TODO: check for valid link
+
         // const bool valid_link = start_type != end_type;
         // if (valid_link) {
         //     // Ensure the edge is always directed from the value to

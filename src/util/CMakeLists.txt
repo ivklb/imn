@@ -13,4 +13,5 @@ target_link_libraries(util
     unofficial::gl3w::gl3w
     glfw
     imgui::imgui
+    ${VTK_LIBRARIES}
 )

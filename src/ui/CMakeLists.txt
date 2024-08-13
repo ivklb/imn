@@ -4,6 +4,7 @@ add_library(ui
     main_window.cpp
     node_window.cpp
     style.cpp
+    volume_viewer.cpp
     vtk_viewer.cpp
 )
 add_subdirectory(widget)
