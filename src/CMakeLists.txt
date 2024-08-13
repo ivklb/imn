@@ -2,6 +2,7 @@
 add_executable(${PROJECT_NAME} main.cpp)
 add_subdirectory(core)
 add_subdirectory(ext/nfd)
+add_subdirectory(ext/node_editor)
 add_subdirectory(ui)
 add_subdirectory(util)
 

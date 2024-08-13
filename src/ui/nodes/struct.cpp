@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "core/thread_pool.hpp"
-#include "ui/node_editor/imnodes.h"
+#include "ext/node_editor/imnodes.h"
 #include "ui/style.hpp"
 
 using namespace imn::ui;

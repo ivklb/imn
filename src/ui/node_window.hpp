@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "base_window.hpp"
-#include "ui/node_editor/imnodes.h"
+#include "ext/node_editor/imnodes.h"
 #include "ui/nodes/struct.hpp"
 
 namespace imn::ui {

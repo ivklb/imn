@@ -1,7 +1,7 @@
 
 #include "pins.hpp"
 
-#include "ui/node_editor/imnodes.h"
+#include "ext/node_editor/imnodes.h"
 
 using namespace imn::ui;
 

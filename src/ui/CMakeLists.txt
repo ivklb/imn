@@ -10,7 +10,6 @@ add_library(ui
 add_subdirectory(widget)
 add_subdirectory(dialog)
 add_subdirectory(nodes)
-add_subdirectory(node_editor)
 
 target_include_directories(ui PUBLIC ${SRC_ROOT})
 
