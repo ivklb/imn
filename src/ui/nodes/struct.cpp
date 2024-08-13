@@ -68,8 +68,8 @@ Node::Node(const char* name, ColorTheme color)
     : name(name),
       color(color),
       status(NodeStatus::Created),
-      process_cur(0),
-      process_max(0) {
+      progress_cur(0),
+      progress_max(0) {
     id = IDGenerator::next();
 
     auto name_width = ImGui::CalcTextSize(name).x * 1.2f;
@@ -157,11 +157,11 @@ void Node::_draw_pins() {
 
 void Node::_draw_process_bar() {
     if (status == NodeStatus::Processing) {
-        if (process_max == 0) {
+        if (progress_max == 0) {
             ImGui::ProgressBar(-1.0f * (float)ImGui::GetTime(), ImVec2(width, 5.f), "");
         } else {
-            float fraction = float(process_cur) / process_max;
-            ImGui::ProgressBar(process_cur, ImVec2(-1, 0), "");
+            float fraction = float(progress_cur) / progress_max;
+            ImGui::ProgressBar(fraction, ImVec2(-1, 0), "");
         }
     }
 }

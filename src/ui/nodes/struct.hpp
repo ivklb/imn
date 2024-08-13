@@ -6,6 +6,7 @@
 #include <imgui.h>
 
 #include <any>
+#include <atomic>
 #include <map>
 #include <memory>
 #include <string>
@@ -69,8 +70,8 @@ struct Node {
     ColorTheme color;
     NodeStatus status;
     float width;
-    int process_cur;
-    int process_max;
+    std::atomic_int progress_cur;
+    std::atomic_int progress_max;
 
     Node(const char* name, ColorTheme color = ColorTheme::Blue);
     virtual ~Node() {}

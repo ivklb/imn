@@ -72,16 +72,21 @@ load_image_stack(const std::vector<std::filesystem::path>& file_list, ImportConf
 
 std::shared_ptr<cv::Mat>
 load_volume(const std::filesystem::path& file_path, ImportConfig config, ProgressCallback cb) {
-    std::vector<int> dims = {config.depth, config.height, config.width};
-    auto rv = std::make_shared<cv::Mat>(dims, config.image_type);
-    auto mat_size = rv->total() * rv->elemSize();
     auto file_size = std::filesystem::file_size(file_path);
-    auto read_size = std::min(mat_size, file_size);
+    auto frame_size = size_t(config.height) * config.width * CV_ELEM_SIZE(config.image_type);
+    auto available_frames = int((file_size - config.offset) / frame_size);
+
+    std::vector<int> dims = {available_frames, config.height, config.width};
+    auto rv = std::make_shared<cv::Mat>(dims, config.image_type);
 
     std::ifstream infile(file_path, std::ios_base::binary);
     infile.seekg(config.offset, std::ios::beg);
-    // for ()
-    infile.read((char*)rv->data, read_size);
+    for (int k = 0; k < available_frames; ++k) {
+        infile.read((char*)rv->data + k * frame_size, frame_size);
+        if (cb) {
+            cb(k, available_frames, "Loading volume", 0);
+        }
+    }
     return rv;
 }
 

@@ -147,8 +147,8 @@ void VolumeLoaderNode::_draw_body() {
                 volume = imn::io::load_volume(
                     file_path, config,
                     [this](int progress, int max, const char* msg, std::any user_data) {
-                        process_cur = progress;
-                        process_max = max;
+                        progress_cur = progress;
+                        progress_max = max;
                     });
                 status = NodeStatus::Dirty;
             });
