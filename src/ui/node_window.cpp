@@ -98,8 +98,7 @@ void NodeWindow::_show_node_editor() {
 }
 
 void NodeWindow::_handle_new_nodes() {
-    const bool open_popup = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
-                            ImNodes::IsEditorHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right);
+    const bool open_popup = ImNodes::IsEditorHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right);
 
     if (!ImGui::IsAnyItemHovered() && open_popup) {
         ImGui::OpenPopup("add node");

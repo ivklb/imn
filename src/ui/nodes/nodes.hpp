@@ -28,6 +28,17 @@ struct ImageLoaderNode : public Node {
     void _draw_body() override;
 };
 
+struct VolumeLoaderNode : public Node {
+    std::string file_str;             // used to display in the UI
+    std::filesystem::path file_path;  // used to access file with unicode path
+    imn::io::ImportConfig config;
+    std::shared_ptr<cv::Mat> volume;
+
+    VolumeLoaderNode();
+    std::any get_output(int pid) override;
+    void _draw_body() override;
+};
+
 struct ImagePreviewNode : public Node {
     std::shared_ptr<Pin> in_image;
     bool show_window;

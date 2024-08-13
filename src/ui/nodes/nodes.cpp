@@ -11,6 +11,7 @@
 
 #include "core/io.hpp"
 #include "core/lambda.hpp"
+#include "core/thread_pool.hpp"
 #include "ext/imgui_notify/ImGuiNotify.hpp"
 #include "pins.hpp"
 #include "ui/dialog/import_dialog.hpp"
@@ -89,6 +90,68 @@ void ImageLoaderNode::_draw_body() {
             status = NodeStatus::Processing;
             image = imn::io::load_image(file_path, config);
             status = NodeStatus::Dirty;
+        }
+    }
+}
+
+VolumeLoaderNode::VolumeLoaderNode() : Node("Volume Loader", ColorTheme::Red), config({}) {
+    auto p = std::make_shared<ImagePin>("volume", PinKind::Out);
+    outputs[p->id] = p;
+    _build_pins();
+    status = NodeStatus::WaitingUserInput;
+}
+
+std::any VolumeLoaderNode::get_output(int pid) {
+    assert(status == NodeStatus::Done && "ImageLoaderNode::get_output() called before processing is done");
+    return volume;
+}
+
+void VolumeLoaderNode::_draw_body() {
+    auto button_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.3f;
+    auto text_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.7f;
+
+    if (ImGui::Button("...", ImVec2(button_width, 0))) {
+        imn::fs::openFileBrowser(imn::fs::DialogMode::Open, {}, [this](const char* p) {
+            file_str = p;
+            file_path = utf8::utf8to16(file_str);
+        });
+    }
+
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(text_width);
+    ImGui::InputText("##file_path", (char*)file_str.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+    if (!file_str.empty() && ImGui::BeginItemTooltip()) {
+        ImGui::TextUnformatted(file_str.c_str());
+        ImGui::EndTooltip();
+    }
+
+    status = NodeStatus::WaitingUserInput;
+    const char* combo_items[] = {"uint8", "uint16", "uint32", "float32"};
+    const int combo_values[] = {CV_8UC1, CV_16UC1, CV_32SC1, CV_32FC1};
+    static int item_current = 0;
+    ImGui::PushItemWidth(width - ImGui::CalcTextSize("height").x - ImGui::GetStyle().ItemSpacing.x);
+    ImGui::Combo("type", &item_current, combo_items, IM_ARRAYSIZE(combo_items));
+    ImGui::InputInt("offset", &config.offset);
+    ImGui::InputInt("width", &config.width);
+    ImGui::InputInt("height", &config.height);
+    ImGui::InputInt("depth", &config.depth);
+    ImGui::PopItemWidth();
+    config.image_type = combo_values[item_current];
+
+    if (ImGui::Button("load")) {
+        if (file_str.empty()) {
+            ImGui::InsertNotification({ImGuiToastType::Warning, 3000, "! %s", "Please select a file"});
+        } else {
+            status = NodeStatus::Processing;
+            pool::enqueue([this]() {
+                volume = imn::io::load_volume(
+                    file_path, config,
+                    [this](int progress, int max, const char* msg, std::any user_data) {
+                        process_cur = progress;
+                        process_max = max;
+                    });
+                status = NodeStatus::Dirty;
+            });
         }
     }
 }

@@ -6,6 +6,7 @@
 
 #include <any>
 #include <eigen3/Eigen/Dense>
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -36,6 +37,6 @@ const ImVec4 kColorGreen = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
 const ImVec4 kColorBlue = ImVec4(0.0f, 0.0f, 1.0f, 1.0f);
 const ImVec4 kColorYellow = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
 
-typedef void (*ProgressCallback)(int progress, int max, const char* msg, std::any user_data);
+typedef std::function<void(int progress, int max, const char* msg, std::any user_data)> ProgressCallback;
 
 #endif

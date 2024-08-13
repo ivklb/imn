@@ -70,4 +70,19 @@ load_image_stack(const std::vector<std::filesystem::path>& file_list, ImportConf
     return images;
 }
 
+std::shared_ptr<cv::Mat>
+load_volume(const std::filesystem::path& file_path, ImportConfig config, ProgressCallback cb) {
+    std::vector<int> dims = {config.depth, config.height, config.width};
+    auto rv = std::make_shared<cv::Mat>(dims, config.image_type);
+    auto mat_size = rv->total() * rv->elemSize();
+    auto file_size = std::filesystem::file_size(file_path);
+    auto read_size = std::min(mat_size, file_size);
+
+    std::ifstream infile(file_path, std::ios_base::binary);
+    infile.seekg(config.offset, std::ios::beg);
+    // for ()
+    infile.read((char*)rv->data, read_size);
+    return rv;
+}
+
 }  // namespace imn::io

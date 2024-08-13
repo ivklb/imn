@@ -122,7 +122,7 @@ std::any Node::get_output(int pid) {
 
 void Node::process() {
     status = NodeStatus::Processing;
-    imn::core::thread_pool()->enqueue([this]() {
+    pool::enqueue([this]() {
         try {
             _process();
             status = NodeStatus::Done;

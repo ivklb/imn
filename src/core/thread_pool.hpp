@@ -14,7 +14,7 @@
 #include <thread>
 #include <vector>
 
-namespace imn::core {
+namespace imn::pool {
 
 class ThreadPool {
    public:
@@ -103,5 +103,12 @@ inline std::shared_ptr<ThreadPool> thread_pool() {
     return _pool;
 }
 
-}  // namespace imn::core
+// add new work item to the pool
+template <class F, class... Args>
+auto enqueue(F&& f, Args&&... args)
+    -> std::future<typename std::invoke_result<F, Args...>::type> {
+    return thread_pool()->enqueue(std::forward<F>(f), std::forward<Args>(args)...);
+}
+
+}  // namespace imn::pool
 #endif

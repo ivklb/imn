@@ -19,6 +19,7 @@ struct ImportConfig {
     int image_type;
     int width;
     int height;
+    int depth;
     int offset;
     int num_images;
     bool little_endian;
@@ -38,6 +39,9 @@ std::vector<std::shared_ptr<cv::Mat>>
 load_image_stack(
     const std::vector<std::filesystem::path>& file_list,
     ImportConfig config, ProgressCallback callback = nullptr);
+
+std::shared_ptr<cv::Mat>
+load_volume(const std::filesystem::path& file_path, ImportConfig config, ProgressCallback callback = nullptr);
 
 }  // namespace imn::io
 
