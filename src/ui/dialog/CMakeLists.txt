@@ -1,6 +1,5 @@
 
 add_library(dialogs STATIC
-    ImGuiFileDialog.cpp
     progress_dialog.cpp
 )
 

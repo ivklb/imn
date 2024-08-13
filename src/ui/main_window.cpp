@@ -20,8 +20,6 @@
 #include "core/i18n.hpp"
 #include "ext/imgui_notify/ImGuiNotify.hpp"
 #include "include/def.hpp"
-#include "ui/dialog/ImGuiFileDialog.h"
-#include "ui/dialog/import_dialog.hpp"
 #include "ui/image_viewer.hpp"
 #include "ui/imgui_vtk_demo.h"  // Actor generator for this demo
 #include "ui/style.hpp"
@@ -235,18 +233,9 @@ void MainWindow::_create_dock_space_and_menubar() {
         if (ImGui::BeginMenu(I18N_STR("file"))) {
             if (ImGui::MenuItem("Open Image(s)", "Ctrl+O")) {
                 _load_as_volume = false;
-                IGFD::FileDialogConfig config;
-                config.path = ".";
-                config.flags = ImGuiFileDialogFlags_Modal;
-                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
             }
             if (ImGui::MenuItem("Open Volume")) {
                 _load_as_volume = true;
-                IGFD::FileDialogConfig config;
-                config.path = ".";
-                // config.countSelectionMax = 0;
-                config.flags = ImGuiFileDialogFlags_Modal;
-                ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*", config);
             }
             if (ImGui::MenuItem("Exit", "Ctrl+Q")) {
                 SPDLOG_INFO("Exit");
@@ -273,59 +262,6 @@ void MainWindow::_create_dock_space_and_menubar() {
 }
 
 void MainWindow::_show_dialog() {
-    // file dialog
-    ImGuiFileDialog::Instance()->SetFileStyle(IGFD_FileStyleByTypeDir, nullptr, ImVec4(0.5f, 1.0f, 0.9f, 0.9f));
-    if (ImGuiFileDialog::Instance()->Display(
-            "ChooseFileDlgKey",
-            ImGuiWindowFlags_NoCollapse,
-            ImVec2(650, 300))) {
-        if (ImGuiFileDialog::Instance()->IsOk()) {
-            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-            std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-            auto rv = ImGuiFileDialog::Instance()->GetSelection();
-            _files_to_open.clear();
-            for (auto const& [filename, fullpath] : rv) {
-                _files_to_open.push_back(fullpath);
-            }
-        }
-        ImGuiFileDialog::Instance()->Close();
-    }
-
-    // import dialog
-    if (_files_to_open.size() > 0) {
-        auto filename = _files_to_open[0];
-        std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
-        bool is_common_image_file =
-            filename.ends_with(".jpg") ||
-            filename.ends_with(".png") ||
-            filename.ends_with(".bmp");
-        imn::io::ImportConfig config = {0};
-        if (is_common_image_file) {
-            config.common_image = true;
-        } else {
-            auto [ok, conf] = show_import_dialog(_files_to_open);
-            if (ok) {
-                config = conf;
-                // TODO: handle cancelled action
-            }
-        }
-
-        // TODO: use progress bar
-        if (_load_as_volume) {
-            // TODO: implement me
-            _files_to_open.clear();
-        } else {
-            // TODO: run in thread, add cancel logic
-            auto image_stack = imn::io::load_image_stack(_files_to_open, config);
-            auto image_viewer = std::make_shared<ImageViewer>();
-            image_viewer->set_images(image_stack);
-            _windows.push_back(image_viewer);
-            ImGui::InsertNotification({ImGuiToastType::Info, 3000, "! %s", "We can also format here:)"});
-            _files_to_open.clear();
-        }
-    } else {
-    }
-
     ImGui::RenderNotifications();
 }
 
