@@ -62,10 +62,10 @@ inline std::string text(const std::string& key) {
     if (rv = impl::lang_text(setting::global_setting().lang, key), !rv.empty()) {
         return rv;
     } else if (rv = impl::lang_text(setting::global_setting().default_lang, key), !rv.empty()) {
-        SPDLOG_DEBUG("no translation for key: {} , fallback to default lang", key);
+        // SPDLOG_DEBUG("no translation for key: {} , fallback to default lang", key);
         return rv;
     } else {
-        SPDLOG_DEBUG("no translation for key: {}", key);
+        // SPDLOG_DEBUG("no translation for key: {}", key);
         return key;
     }
 }

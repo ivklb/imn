@@ -15,6 +15,7 @@
 #include "ext/imgui_notify/ImGuiNotify.hpp"
 #include "pins.hpp"
 #include "ui/dialog/import_dialog.hpp"
+#include "ui/style.hpp"
 #include "util/fs.hpp"
 #include "util/imgui_util.hpp"
 
@@ -99,6 +100,8 @@ VolumeLoaderNode::VolumeLoaderNode() : Node("Volume Loader", ColorTheme::Red), c
     outputs[p->id] = p;
     _build_pins();
     status = NodeStatus::WaitingUserInput;
+
+    width = ui::get_style().font_size * 8.0f;
 }
 
 std::any VolumeLoaderNode::get_output(int pid) {

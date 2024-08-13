@@ -121,6 +121,11 @@ void NodeWindow::_handle_new_nodes() {
             _graph.insert_node(node);
             ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
         }
+        if (ImGui::MenuItem("volume loader")) {
+            auto node = std::make_shared<VolumeLoaderNode>();
+            _graph.insert_node(node);
+            ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
+        }
         if (ImGui::MenuItem("image preview")) {
             auto node = std::make_shared<ImagePreviewNode>();
             _graph.insert_node(node);
