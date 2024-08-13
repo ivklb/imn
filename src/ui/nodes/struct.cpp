@@ -157,11 +157,12 @@ void Node::_draw_pins() {
 
 void Node::_draw_process_bar() {
     if (status == NodeStatus::Processing) {
+        auto font_size = ui::get_style().font_size;
         if (progress_max == 0) {
-            ImGui::ProgressBar(-1.0f * (float)ImGui::GetTime(), ImVec2(width, 5.f), "");
+            ImGui::ProgressBar(-1.0f * (float)ImGui::GetTime(), ImVec2(width, font_size * 0.2f), "");
         } else {
             float fraction = float(progress_cur) / progress_max;
-            ImGui::ProgressBar(fraction, ImVec2(-1, 0), "");
+            ImGui::ProgressBar(fraction, ImVec2(width, font_size * 0.2f), "");
         }
     }
 }

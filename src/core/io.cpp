@@ -119,11 +119,9 @@ load_volume(const std::filesystem::path& file_path, ImportConfig config, Progres
     infile.seekg(config.offset, std::ios::beg);
     for (int k = 0; k < available_frames; ++k) {
         infile.read((char*)rv->data + k * frame_size, frame_size);
-        SPDLOG_DEBUG("Loading volume: {}/{} {}", k, available_frames, frame_size);
         if (cb) {
             cb(k, available_frames, "Loading volume", 0);
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     return rv;
 }

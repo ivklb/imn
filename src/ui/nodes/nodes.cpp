@@ -40,7 +40,6 @@ ImageLoaderNode::ImageLoaderNode() : Node("Image Loader", ColorTheme::Red), conf
     auto p = std::make_shared<ImagePin>("image", PinKind::Out);
     outputs[p->id] = p;
     _build_pins();
-    status = NodeStatus::WaitingUserInput;
 }
 
 std::any ImageLoaderNode::get_output(int pid) {
@@ -71,7 +70,6 @@ void ImageLoaderNode::_draw_body() {
     }
 
     if (!file_str.empty() && !imn::io::is_image(file_path)) {
-        status = NodeStatus::WaitingUserInput;
         const char* combo_items[] = {"uint8", "uint16", "uint32", "float32"};
         const int combo_values[] = {CV_8UC1, CV_16UC1, CV_32SC1, CV_32FC1};
         static int item_current = 0;
@@ -99,9 +97,9 @@ VolumeLoaderNode::VolumeLoaderNode() : Node("Volume Loader", ColorTheme::Red), c
     auto p = std::make_shared<ImagePin>("volume", PinKind::Out);
     outputs[p->id] = p;
     _build_pins();
-    status = NodeStatus::WaitingUserInput;
 
     width = ui::get_style().font_size * 8.0f;
+    _item_current = 0;
 }
 
 std::any VolumeLoaderNode::get_output(int pid) {
@@ -140,7 +138,6 @@ void VolumeLoaderNode::_draw_body() {
         ImGui::EndTooltip();
     }
 
-    status = NodeStatus::WaitingUserInput;
     const char* combo_items[] = {"uint8", "uint16", "uint32", "float32"};
     const int combo_values[] = {CV_8UC1, CV_16UC1, CV_32SC1, CV_32FC1};
     ImGui::PushItemWidth(width - ImGui::CalcTextSize("height").x - ImGui::GetStyle().ItemSpacing.x);
