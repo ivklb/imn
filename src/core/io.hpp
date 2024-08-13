@@ -25,6 +25,8 @@ struct ImportConfig {
     bool little_endian;
 };
 
+ImportConfig parse_filename(const std::string& file_path);
+
 bool is_image(const std::filesystem::path& file_path);
 
 std::shared_ptr<cv::Mat>

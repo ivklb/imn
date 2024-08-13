@@ -117,6 +117,18 @@ void VolumeLoaderNode::_draw_body() {
         imn::fs::openFileBrowser(imn::fs::DialogMode::Open, {}, [this](const char* p) {
             file_str = p;
             file_path = utf8::utf8to16(file_str);
+            config = io::parse_filename(file_str);
+            if (config.image_type == CV_8UC1) {
+                _item_current = 0;
+            } else if (config.image_type == CV_16UC1) {
+                _item_current = 1;
+            } else if (config.image_type == CV_32SC1) {
+                _item_current = 2;
+            } else if (config.image_type == CV_32FC1) {
+                _item_current = 3;
+            } else {
+                _item_current = 0;
+            }
         });
     }
 
@@ -131,19 +143,18 @@ void VolumeLoaderNode::_draw_body() {
     status = NodeStatus::WaitingUserInput;
     const char* combo_items[] = {"uint8", "uint16", "uint32", "float32"};
     const int combo_values[] = {CV_8UC1, CV_16UC1, CV_32SC1, CV_32FC1};
-    static int item_current = 0;
     ImGui::PushItemWidth(width - ImGui::CalcTextSize("height").x - ImGui::GetStyle().ItemSpacing.x);
-    ImGui::Combo("type", &item_current, combo_items, IM_ARRAYSIZE(combo_items));
+    ImGui::Combo("type", &_item_current, combo_items, IM_ARRAYSIZE(combo_items));
     ImGui::InputInt("offset", &config.offset);
     ImGui::InputInt("width", &config.width);
     ImGui::InputInt("height", &config.height);
     ImGui::InputInt("depth", &config.depth);
     ImGui::PopItemWidth();
-    config.image_type = combo_values[item_current];
+    config.image_type = combo_values[_item_current];
 
     if (ImGui::Button("load")) {
         if (file_str.empty()) {
-            ImGui::InsertNotification({ImGuiToastType::Warning, 3000, "! %s", "Please select a file"});
+            ImGui::InsertNotification({ImGuiToastType::Warning, 3000, "Please select a file"});
         } else {
             status = NodeStatus::Processing;
             pool::enqueue([this]() {

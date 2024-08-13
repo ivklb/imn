@@ -33,6 +33,7 @@ struct VolumeLoaderNode : public Node {
     std::filesystem::path file_path;  // used to access file with unicode path
     imn::io::ImportConfig config;
     std::shared_ptr<cv::Mat> volume;
+    int _item_current;
 
     VolumeLoaderNode();
     std::any get_output(int pid) override;
