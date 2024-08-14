@@ -28,7 +28,7 @@ class ImageViewer : public BaseWindow {
     ~ImageViewer();
     void set_image(std::shared_ptr<cv::Mat> image);
     void set_images(std::vector<std::shared_ptr<cv::Mat>> images);
-    void show() override;
+    void show(ImVec2 size = ImVec2(0, 0)) override;
     void show_toolbar(bool show);
 
    private:

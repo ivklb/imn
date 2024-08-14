@@ -60,7 +60,7 @@ void VolumeViewer::set_colormap(std::vector<std::pair<float, ImColor>> colormap)
     _opacity_tf->Modified();
 }
 
-void VolumeViewer::show() {
+void VolumeViewer::show(const ImVec2 size) {
     std::lock_guard<std::mutex> lock(_mutex);
     // ImGui::Begin("Vtk", nullptr, VtkViewer::NoScrollFlags());
     render();
@@ -68,7 +68,7 @@ void VolumeViewer::show() {
 }
 
 void VolumeViewer::_setup() {
-    _vol_mapper = vtkSmartPointer<vtkSmartVolumeMapper>::New();
+    _vol_mapper = vtkSmartPointer<vtkOpenGLGPUVolumeRayCastMapper>::New();
     _color_tf = vtkSmartPointer<vtkColorTransferFunction>::New();
     _opacity_tf = vtkSmartPointer<vtkPiecewiseFunction>::New();
     _volume = vtkSmartPointer<vtkVolume>::New();

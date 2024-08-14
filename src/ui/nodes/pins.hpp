@@ -22,5 +22,9 @@ struct ImagePin : public Pin {
     ImagePin(const char* name, PinKind kind);
 };
 
+struct VolumePin : public Pin {
+    VolumePin(const char* name, PinKind kind);
+};
+
 }  // namespace imn::ui
 #endif

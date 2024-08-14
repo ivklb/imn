@@ -21,4 +21,5 @@ target_link_libraries(nodes
     imgui::imgui
     utf8::cpp
     utf8cpp::utf8cpp
+    ${VTK_LIBRARIES}
 )

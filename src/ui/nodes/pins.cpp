@@ -41,3 +41,7 @@ void IntPin::draw_frame() {
 ImagePin::ImagePin(const char* name, PinKind kind)
     : Pin(name, kind, ColorTheme::Red) {
 }
+
+VolumePin::VolumePin(const char* name, PinKind kind)
+    : Pin(name, kind, ColorTheme::Cyan) {
+}

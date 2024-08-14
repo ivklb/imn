@@ -10,6 +10,7 @@
 #include "core/io.hpp"
 #include "ui/image_viewer.hpp"
 #include "ui/nodes/struct.hpp"
+#include "ui/volume_viewer.hpp"
 
 namespace imn::ui {
 
@@ -51,9 +52,9 @@ struct ImagePreviewNode : public Node {
 };
 
 struct VolumePreviewNode : public Node {
-    std::shared_ptr<Pin> in_image;
+    std::shared_ptr<Pin> pin_vol;
     bool show_window;
-    std::shared_ptr<ImageViewer> viewer;
+    std::shared_ptr<VolumeViewer> viewer;
 
     VolumePreviewNode();
     void _draw_body() override;

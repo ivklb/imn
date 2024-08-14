@@ -32,7 +32,7 @@ void NodeWindow::setup() {
     ImNodes::GetStyle().GridSpacing = get_style().font_size * 2;
 }
 
-void NodeWindow::show() {
+void NodeWindow::show(ImVec2 size) {
     auto flags = ImGuiWindowFlags_MenuBar;
     ImGui::Begin("node editor", NULL, flags);
 
@@ -128,6 +128,11 @@ void NodeWindow::_handle_new_nodes() {
         }
         if (ImGui::MenuItem("image preview")) {
             auto node = std::make_shared<ImagePreviewNode>();
+            _graph.insert_node(node);
+            ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
+        }
+        if (ImGui::MenuItem("volume preview")) {
+            auto node = std::make_shared<VolumePreviewNode>();
             _graph.insert_node(node);
             ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
         }

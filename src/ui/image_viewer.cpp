@@ -42,7 +42,7 @@ void ImageViewer::set_images(std::vector<std::shared_ptr<cv::Mat>> images) {
     _img_idx = 0;
 }
 
-void ImageViewer::show() {
+void ImageViewer::show(ImVec2 size) {
     std::lock_guard<std::mutex> lock(_mutex);
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));

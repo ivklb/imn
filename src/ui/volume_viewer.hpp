@@ -13,7 +13,6 @@
 #include <vtkOutlineFilter.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkPolyDataMapper.h>
-#include <vtkSmartVolumeMapper.h>
 #include <vtkTransform.h>
 #include <vtkVolume.h>
 #include <vtkVolumeProperty.h>
@@ -37,7 +36,7 @@ class VolumeViewer : public BaseWindow, public VtkViewer {
     ~VolumeViewer();
     void set_volume(std::shared_ptr<cv::Mat> vol);
     void set_colormap(std::vector<std::pair<float, ImColor>> colormap);
-    void show() override;
+    void show(const ImVec2 size = ImVec2(0, 0)) override;
 
    private:
     void _setup();
@@ -46,7 +45,6 @@ class VolumeViewer : public BaseWindow, public VtkViewer {
     std::shared_ptr<cv::Mat> _mat;
 
     vtkSmartPointer<vtkVolume> _volume;
-    // vtkSmartPointer<vtkSmartVolumeMapper> _vol_mapper;
     vtkSmartPointer<vtkOpenGLGPUVolumeRayCastMapper> _vol_mapper;
     vtkSmartPointer<vtkColorTransferFunction> _color_tf;
     vtkSmartPointer<vtkPiecewiseFunction> _opacity_tf;

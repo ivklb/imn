@@ -22,7 +22,7 @@ class NodeWindow : public BaseWindow {
     NodeWindow();
     ~NodeWindow();
     void setup();
-    void show() override;
+    void show(ImVec2 size = ImVec2(0, 0)) override;
 
    private:
     void _show_menu_bar();
