@@ -14,6 +14,8 @@ struct Style {
 
 Style& get_style();
 
+float font_size();
+
 }  // namespace ui
 }  // namespace imn
 

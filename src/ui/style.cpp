@@ -21,3 +21,7 @@ imn::ui::Style& imn::ui::get_style() {
     };
     return style;
 }
+
+float imn::ui::font_size() {
+    return get_style().font_size;
+}

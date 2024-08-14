@@ -93,7 +93,7 @@ void ImageLoaderNode::_draw_body() {
 }
 
 VolumeLoaderNode::VolumeLoaderNode() : Node("Volume Loader", ColorTheme::Red), config({}) {
-    auto p = std::make_shared<ImagePin>("volume", PinKind::Out);
+    auto p = std::make_shared<VolumePin>("volume", PinKind::Out);
     outputs[p->id] = p;
     _build_pins();
 
@@ -200,7 +200,8 @@ VolumePreviewNode::VolumePreviewNode()
 }
 
 void VolumePreviewNode::_draw_body() {
-    viewer->show();
+    auto size = ui::font_size();
+    viewer->show({size * 15, size * 15});
 }
 
 void VolumePreviewNode::_process() {

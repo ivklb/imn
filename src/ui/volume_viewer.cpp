@@ -63,7 +63,7 @@ void VolumeViewer::set_colormap(std::vector<std::pair<float, ImColor>> colormap)
 void VolumeViewer::show(const ImVec2 size) {
     std::lock_guard<std::mutex> lock(_mutex);
     // ImGui::Begin("Vtk", nullptr, VtkViewer::NoScrollFlags());
-    render();
+    render(size);
     // ImGui::End();
 }
 
