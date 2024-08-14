@@ -9,6 +9,7 @@
 #include <vtkColorTransferFunction.h>
 #include <vtkImageData.h>
 #include <vtkImagePlaneWidget.h>
+#include <vtkOpenGLGPUVolumeRayCastMapper.h>
 #include <vtkOutlineFilter.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkPolyDataMapper.h>
@@ -22,6 +23,7 @@
 #include <mutex>
 #include <opencv2/opencv.hpp>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 #include "base_window.hpp"
@@ -34,25 +36,24 @@ class VolumeViewer : public BaseWindow, public VtkViewer {
     VolumeViewer();
     ~VolumeViewer();
     void set_volume(std::shared_ptr<cv::Mat> vol);
+    void set_colormap(std::vector<std::pair<float, ImColor>> colormap);
     void show() override;
 
    private:
-    std::string _id;
+    void _setup();
 
     std::mutex _mutex;
-    std::shared_ptr<cv::Mat> _vol;
+    std::shared_ptr<cv::Mat> _mat;
 
-    vtkSmartPointer<vtkImageData> _image_data;
     vtkSmartPointer<vtkVolume> _volume;
-    vtkSmartPointer<vtkSmartVolumeMapper> _vol_mapper;
-
-    vtkSmartPointer<vtkPiecewiseFunction> _opacity_tf;
+    // vtkSmartPointer<vtkSmartVolumeMapper> _vol_mapper;
+    vtkSmartPointer<vtkOpenGLGPUVolumeRayCastMapper> _vol_mapper;
     vtkSmartPointer<vtkColorTransferFunction> _color_tf;
+    vtkSmartPointer<vtkPiecewiseFunction> _opacity_tf;
     vtkSmartPointer<vtkTransform> _volume_transform;
-
     vtkSmartPointer<vtkOutlineFilter> _vol_outline_filter;
-    vtkSmartPointer<vtkActor> _vol_outline;
     vtkSmartPointer<vtkPolyDataMapper> _vol_outline_mapper;
+    vtkSmartPointer<vtkActor> _vol_outline;
 };
 
 }  // namespace imn::ui
