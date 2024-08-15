@@ -4,6 +4,9 @@
 
 #include <imgui.h>
 
+#include <format>
+#include <memory>
+
 #include "core/backend.hpp"
 #include "util/common.hpp"
 
@@ -14,6 +17,33 @@ float _default_font_size() {
     return height * 0.02f;
 }
 }  // namespace impl
+
+int IDGenerator::_next_id = 0;
+int IDGenerator::next() {
+    return _next_id++;
+}
+
+void IDGenerator::set_next(int id) {
+    _next_id = id;
+}
+
+WrapperWindow::WrapperWindow(std::shared_ptr<BaseWidget> widget, const std::string& title, const ImVec2& size)
+    : BaseWindow() {
+    _widget = widget;
+    _id = IDGenerator::next();
+}
+
+void WrapperWindow::show(ImVec2 size) {
+    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
+
+    std::string name = std::format("##{}", _id);
+
+    ImGui::Begin(name.c_str());
+    _widget->show();
+    ImGui::End();
+}
 
 Style& get_style() {
     auto size = impl::_default_font_size();

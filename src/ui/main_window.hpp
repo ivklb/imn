@@ -18,10 +18,9 @@
 #include <vector>
 
 #include "core/setting.hpp"
-#include "ui/image_viewer.hpp"
 #include "ui/imgui_vtk_demo.h"
-#include "ui/node_window.hpp"
-#include "ui/vtk_viewer.hpp"
+#include "ui/widgets/node_widget.hpp"
+#include "ui/widgets/vtk_viewer.hpp"
 
 namespace imn {
 namespace ui {
@@ -41,7 +40,7 @@ class MainWindow {
     void _cleanup();
 
    private:
-    NodeWindow _node_window;
+    NodeWidget _node_window;
 
     std::mutex _mutex_win;
     std::vector<std::shared_ptr<BaseWindow>> _windows;

@@ -11,18 +11,19 @@
 #include <tuple>
 #include <vector>
 
-#include "base_window.hpp"
 #include "ext/node_editor/imnodes.h"
+#include "ui/base_window.hpp"
 #include "ui/nodes/struct.hpp"
 
 namespace imn::ui {
 
-class NodeWindow : public BaseWindow {
+class NodeWidget : public BaseWindow {
    public:
-    NodeWindow();
-    ~NodeWindow();
+    NodeWidget();
+    ~NodeWidget();
     void setup();
     void show(ImVec2 size = ImVec2(0, 0)) override;
+    void process();
 
    private:
     void _show_menu_bar();

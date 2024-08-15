@@ -4,9 +4,18 @@
 
 #include <imgui.h>
 
-#include <functional>
-#include <memory>
 #include <string>
+
+namespace imn::ui {
+
+class BaseWidget {
+   public:
+    virtual ~BaseWidget() {}
+    virtual void show(ImVec2 size = ImVec2(0, 0)) {}
+
+   protected:
+   private:
+};
 
 class BaseWindow {
    public:
@@ -17,4 +26,5 @@ class BaseWindow {
    private:
 };
 
+}  // namespace imn::ui
 #endif

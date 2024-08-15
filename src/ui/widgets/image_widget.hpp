@@ -12,7 +12,7 @@
 #include <tuple>
 #include <vector>
 
-#include "base_window.hpp"
+#include "ui/base_window.hpp"
 
 namespace imn::ui {
 
@@ -22,10 +22,10 @@ enum MouseMode {
     kRect,
 };
 
-class ImageViewer : public BaseWindow {
+class ImageWidget : public BaseWidget {
    public:
-    ImageViewer();
-    ~ImageViewer();
+    ImageWidget();
+    ~ImageWidget();
     void set_image(std::shared_ptr<cv::Mat> image);
     void set_images(std::vector<std::shared_ptr<cv::Mat>> images);
     void show(ImVec2 size = ImVec2(0, 0)) override;

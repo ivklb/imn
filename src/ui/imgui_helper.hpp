@@ -4,9 +4,31 @@
 
 #include <imgui.h>
 
+#include <memory>
 #include <string>
 
+#include "ui/base_window.hpp"
+
 namespace imn::ui {
+
+class IDGenerator {
+   public:
+    static int next();
+    static void set_next(int id);
+
+   private:
+    static int _next_id;
+};
+
+class WrapperWindow : public BaseWindow {
+   public:
+    WrapperWindow(std::shared_ptr<BaseWidget> widget, const std::string& title = {}, const ImVec2& size = ImVec2(0, 0));
+    void show(ImVec2 size = ImVec2(0, 0)) override;
+
+   private:
+    std::shared_ptr<BaseWidget> _widget;
+    int _id;
+};
 
 struct Style {
     float font_size;

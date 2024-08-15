@@ -24,15 +24,15 @@
 #include <utility>
 #include <vector>
 
-#include "base_window.hpp"
-#include "vtk_viewer.hpp"
+#include "ui/base_window.hpp"
+#include "ui/widgets/vtk_viewer.hpp"
 
 namespace imn::ui {
 
-class VolumeViewer : public BaseWindow, public VtkViewer {
+class VolumeWidget : public BaseWindow, public VtkViewer {
    public:
-    VolumeViewer();
-    ~VolumeViewer();
+    VolumeWidget();
+    ~VolumeWidget();
     void set_volume(std::shared_ptr<cv::Mat> vol);
     void set_colormap(std::vector<std::pair<float, ImColor>> colormap);
     void show(const ImVec2 size = ImVec2(0, 0)) override;

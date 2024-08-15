@@ -1,14 +1,11 @@
 
 add_library(ui
-    image_viewer.cpp
     imgui_helper.cpp
     main_window.cpp
-    node_window.cpp
-    volume_viewer.cpp
-    vtk_viewer.cpp
 )
 add_subdirectory(dialog)
 add_subdirectory(nodes)
+add_subdirectory(widgets)
 
 target_include_directories(ui PUBLIC ${SRC_ROOT})
 
@@ -21,6 +18,7 @@ target_link_libraries(ui
     dialogs
     node_editor
     nodes
+    widgets
 )
 
 vtk_module_autoinit(

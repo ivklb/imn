@@ -20,10 +20,10 @@
 #include "core/setting.hpp"
 #include "ext/imgui_notify/ImGuiNotify.hpp"
 #include "include/def.hpp"
-#include "ui/image_viewer.hpp"
 #include "ui/imgui_helper.hpp"
 #include "ui/imgui_vtk_demo.h"  // Actor generator for this demo
-#include "ui/vtk_viewer.hpp"
+#include "ui/widgets/image_widget.hpp"
+#include "ui/widgets/vtk_viewer.hpp"
 
 using namespace imn::ui;
 
@@ -78,9 +78,9 @@ void MainWindow::_setup() {
     // disable warning window in release mode
     vtkObject::GlobalWarningDisplayOff();
 #endif
-    lambda::store("ADD_WINDOW", [this](std::shared_ptr<BaseWindow> w) {
+    lambda::store("ADD_WINDOW", [this](std::shared_ptr<BaseWidget> w) {
         std::lock_guard<std::mutex> lock(_mutex_win);
-        _windows.push_back(w);
+        _windows.push_back(std::make_shared<WrapperWindow>(w));
     });
     _node_window.setup();
 }
@@ -106,7 +106,11 @@ void MainWindow::_on_frame() {
         ImGui::End();
         vtkViewer1.removeActor(actor);
     }
+
+    ImGui::Begin("node editor");
     _node_window.show();
+    ImGui::End();
+    _node_window.process();
 
     {
         std::lock_guard<std::mutex> lock(_mutex_win);

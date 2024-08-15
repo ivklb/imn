@@ -1,5 +1,5 @@
 
-#include "node_window.hpp"
+#include "node_widget.hpp"
 
 #include <imgui.h>
 #include <implot.h>
@@ -15,34 +15,37 @@
 
 using namespace imn::ui;
 
-NodeWindow::NodeWindow() {
+NodeWidget::NodeWidget() {
     // TODO: load from settings
 }
 
-NodeWindow::~NodeWindow() {
+NodeWidget::~NodeWidget() {
     // TODO: serialize
     ImNodes::DestroyContext();
 }
 
-void NodeWindow::setup() {
+void NodeWidget::setup() {
     ImNodes::CreateContext();
     ImNodes::GetIO().EmulateThreeButtonMouse.Modifier = &ImGui::GetIO().KeyAlt;
     ImNodes::GetStyle().GridSpacing = get_style().font_size * 2;
 }
 
-void NodeWindow::show(ImVec2 size) {
-    auto flags = ImGuiWindowFlags_MenuBar;
-    ImGui::Begin("node editor", NULL, flags);
+void NodeWidget::show(ImVec2 size) {
+    // auto flags = ImGuiWindowFlags_MenuBar;
+    // ImGui::Begin("node editor", NULL, flags);
 
     _show_menu_bar();
     _show_info();
     _show_node_editor();
 
-    ImGui::End();
+    // ImGui::End();
+}
+
+void NodeWidget::process() {
     _graph.process();
 }
 
-void NodeWindow::_show_menu_bar() {
+void NodeWidget::_show_menu_bar() {
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("Style")) {
             if (ImGui::MenuItem("Classic")) {
@@ -63,13 +66,13 @@ void NodeWindow::_show_menu_bar() {
     }
 }
 
-void NodeWindow::_show_info() {
+void NodeWidget::_show_info() {
     ImGui::TextUnformatted("Right click -- add node");
     ImGui::TextUnformatted("Del -- delete selected node or link");
     ImGui::TextUnformatted("Alt + mouse -- drag canvas");
 }
 
-void NodeWindow::_show_node_editor() {
+void NodeWidget::_show_node_editor() {
     ImNodes::BeginNodeEditor();
     // Handle new nodes
     // These are driven by the user, so we place this code before rendering the nodes
@@ -95,7 +98,7 @@ void NodeWindow::_show_node_editor() {
     _handle_deleted_links();
 }
 
-void NodeWindow::_handle_new_nodes() {
+void NodeWidget::_handle_new_nodes() {
     const bool open_popup = ImNodes::IsEditorHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right);
 
     if (!ImGui::IsAnyItemHovered() && open_popup) {
@@ -138,7 +141,7 @@ void NodeWindow::_handle_new_nodes() {
     }
 }
 
-void NodeWindow::_handle_new_links() {
+void NodeWidget::_handle_new_links() {
     int start_attr, end_attr;
     if (ImNodes::IsLinkCreated(&start_attr, &end_attr)) {
         auto input_pin = _graph.pin(start_attr);
@@ -158,7 +161,7 @@ void NodeWindow::_handle_new_links() {
     }
 }
 
-void NodeWindow::_handle_deleted_links() {
+void NodeWidget::_handle_deleted_links() {
     {
         int link_id;
         if (ImNodes::IsLinkDestroyed(&link_id)) {

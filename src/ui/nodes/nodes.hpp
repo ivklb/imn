@@ -8,9 +8,9 @@
 #include <opencv2/opencv.hpp>
 
 #include "core/io.hpp"
-#include "ui/image_viewer.hpp"
 #include "ui/nodes/struct.hpp"
-#include "ui/volume_viewer.hpp"
+#include "ui/widgets/image_widget.hpp"
+#include "ui/widgets/volume_widget.hpp"
 
 namespace imn::ui {
 
@@ -44,7 +44,7 @@ struct VolumeLoaderNode : public Node {
 struct ImagePreviewNode : public Node {
     std::shared_ptr<Pin> in_image;
     bool show_window;
-    std::shared_ptr<ImageViewer> viewer;
+    std::shared_ptr<ImageWidget> viewer;
 
     ImagePreviewNode();
     void _draw_body() override;
@@ -54,7 +54,7 @@ struct ImagePreviewNode : public Node {
 struct VolumePreviewNode : public Node {
     std::shared_ptr<Pin> pin_vol;
     bool show_window;
-    std::shared_ptr<VolumeViewer> viewer;
+    std::shared_ptr<VolumeWidget> viewer;
 
     VolumePreviewNode();
     void _draw_body() override;

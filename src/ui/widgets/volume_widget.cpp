@@ -1,5 +1,5 @@
 
-#include "volume_viewer.hpp"
+#include "volume_widget.hpp"
 
 #include <imgui.h>
 #include <implot.h>
@@ -18,14 +18,14 @@
 
 using namespace imn::ui;
 
-VolumeViewer::VolumeViewer() : BaseWindow(), VtkViewer() {
+VolumeWidget::VolumeWidget() : BaseWindow(), VtkViewer() {
     _setup();
 }
 
-VolumeViewer::~VolumeViewer() {
+VolumeWidget::~VolumeWidget() {
 }
 
-void VolumeViewer::set_volume(std::shared_ptr<cv::Mat> vol) {
+void VolumeWidget::set_volume(std::shared_ptr<cv::Mat> vol) {
     _mat = vol;
 
     auto shape = vol->size;
@@ -48,7 +48,7 @@ void VolumeViewer::set_volume(std::shared_ptr<cv::Mat> vol) {
     getRenderer()->ResetCamera();
 }
 
-void VolumeViewer::set_colormap(std::vector<std::pair<float, ImColor>> colormap) {
+void VolumeWidget::set_colormap(std::vector<std::pair<float, ImColor>> colormap) {
     std::lock_guard<std::mutex> lock(_mutex);
     double min_v, max_v;
     cv::minMaxLoc(*_mat, &min_v, &max_v);
@@ -70,14 +70,14 @@ void VolumeViewer::set_colormap(std::vector<std::pair<float, ImColor>> colormap)
     _opacity_tf->Modified();
 }
 
-void VolumeViewer::show(const ImVec2 size) {
+void VolumeWidget::show(const ImVec2 size) {
     std::lock_guard<std::mutex> lock(_mutex);
     // ImGui::Begin("Vtk", nullptr, VtkViewer::NoScrollFlags());
     render(size);
     // ImGui::End();
 }
 
-void VolumeViewer::_setup() {
+void VolumeWidget::_setup() {
     _vol_mapper = vtkSmartPointer<vtkOpenGLGPUVolumeRayCastMapper>::New();
     _color_tf = vtkSmartPointer<vtkColorTransferFunction>::New();
     _opacity_tf = vtkSmartPointer<vtkPiecewiseFunction>::New();

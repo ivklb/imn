@@ -285,15 +285,6 @@ void Graph::process() {
     }
 }
 
-int IDGenerator::_next_id = 0;
-int IDGenerator::next() {
-    return _next_id++;
-}
-
-void IDGenerator::set_next(int id) {
-    _next_id = id;
-}
-
 ImColor imn::ui::get_normal_color(ColorTheme color) {
     return std::get<1>(color_theme_map.at(color));
 }

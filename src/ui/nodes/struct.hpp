@@ -130,14 +130,6 @@ struct Graph {
     void process();
 };
 
-struct IDGenerator {
-    static int next();
-    static void set_next(int id);
-
-   private:
-    static int _next_id;
-};
-
 ImColor get_normal_color(ColorTheme color);
 ImColor get_highlight_color(ColorTheme color);
 
