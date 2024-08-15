@@ -82,7 +82,7 @@ void MainWindow::_setup() {
         std::lock_guard<std::mutex> lock(_mutex_win);
         _windows.push_back(std::make_shared<WrapperWindow>(w));
     });
-    _node_window.setup();
+    _node_widget.setup();
 }
 
 void MainWindow::_on_frame() {
@@ -106,11 +106,6 @@ void MainWindow::_on_frame() {
         ImGui::End();
         vtkViewer1.removeActor(actor);
     }
-
-    ImGui::Begin("node editor");
-    _node_window.show();
-    ImGui::End();
-    _node_window.process();
 
     {
         std::lock_guard<std::mutex> lock(_mutex_win);
@@ -185,7 +180,10 @@ void MainWindow::_create_dock_space_and_menubar() {
         ImGui::EndMenuBar();
     }
 
+    _node_widget.show();
+
     ImGui::End();
+    _node_widget.process();
 }
 
 void MainWindow::_show_dialog() {

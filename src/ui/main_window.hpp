@@ -40,7 +40,7 @@ class MainWindow {
     void _cleanup();
 
    private:
-    NodeWidget _node_window;
+    NodeWidget _node_widget;
 
     std::mutex _mutex_win;
     std::vector<std::shared_ptr<BaseWindow>> _windows;
