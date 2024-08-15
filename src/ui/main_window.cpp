@@ -4,6 +4,8 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include <implot.h>
 #include <spdlog/spdlog.h>
 #include <vtkActor.h>
@@ -27,7 +29,8 @@
 
 using namespace imn::ui;
 
-MainWindow::MainWindow() {
+MainWindow::MainWindow()
+    : _show_imgui_demo(false), _show_implot_demo(false), _show_style_editor(false) {
     _setup();
 }
 
@@ -88,11 +91,6 @@ void MainWindow::_setup() {
 void MainWindow::_on_frame() {
     _create_dock_space_and_menubar();
     _show_dialog();
-
-#ifndef NDEBUG
-    ImGui::ShowDemoWindow();
-    ImPlot::ShowDemoWindow();
-#endif
 
     {
         // Setup pipeline
@@ -175,6 +173,16 @@ void MainWindow::_create_dock_space_and_menubar() {
                 }
                 ImGui::EndMenu();
             }
+            if (ImGui::MenuItem(I18N_STR("show imgui demo"))) {
+                _show_imgui_demo = true;
+            }
+            if (ImGui::MenuItem(I18N_STR("show implot demo"))) {
+                _show_implot_demo = true;
+            }
+            if (ImGui::MenuItem(I18N_STR("show style editor"))) {
+                _show_style_editor = true;
+            }
+
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
@@ -188,6 +196,17 @@ void MainWindow::_create_dock_space_and_menubar() {
 
 void MainWindow::_show_dialog() {
     ImGui::RenderNotifications();
+    if (_show_imgui_demo) {
+        ImGui::ShowDemoWindow(&_show_imgui_demo);
+    }
+    if (_show_implot_demo) {
+        ImPlot::ShowDemoWindow(&_show_implot_demo);
+    }
+    if (_show_style_editor) {
+        ImGui::Begin("Style Editor", &_show_style_editor);
+        ImGui::ShowStyleEditor();
+        ImGui::End();
+    }
 }
 
 void MainWindow::_cleanup() {

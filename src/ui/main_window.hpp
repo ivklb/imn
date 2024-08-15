@@ -2,11 +2,7 @@
 #ifndef UI__MAIN_WINDOW_HPP
 #define UI__MAIN_WINDOW_HPP
 
-#include <GL/gl3w.h>
-#include <GLFW/glfw3.h>
 #include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 #include <implot.h>
 #include <vtkActor.h>
 #include <vtkSmartPointer.h>
@@ -47,6 +43,10 @@ class MainWindow {
 
     std::vector<std::string> _files_to_open;
     bool _load_as_volume;
+
+    bool _show_imgui_demo;
+    bool _show_implot_demo;
+    bool _show_style_editor;
 };
 
 }  // namespace ui
