@@ -71,6 +71,7 @@ Node::Node(const char* name, ColorTheme color)
       progress_cur(0),
       progress_max(0) {
     id = IDGenerator::next();
+    body_id = IDGenerator::next();
 
     auto name_width = ImGui::CalcTextSize(name).x * 1.2f;
     auto default_width = ui::get_style().font_size * 6.0f;
@@ -94,7 +95,10 @@ void Node::draw_frame() {
 
     _draw_pins();
     _draw_process_bar();
+
+    ImNodes::BeginStaticAttribute(body_id);
     _draw_body();
+    ImNodes::EndStaticAttribute();
 
     ImNodes::EndNode();
 

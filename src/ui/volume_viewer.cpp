@@ -47,6 +47,7 @@ void VolumeViewer::set_volume(std::shared_ptr<cv::Mat> vol) {
     std::lock_guard<std::mutex> lock(_mutex);
     _vol_mapper->SetInputData(shrinked);
     _vol_outline_filter->SetInputData(shrinked);
+
     getRenderer()->ResetCamera();
 }
 
@@ -116,6 +117,6 @@ void VolumeViewer::_setup() {
     _vol_outline->SetMapper(_vol_outline_mapper);
     _vol_outline->GetProperty()->SetColor(0.5, 0.5, 0.5);
 
-    getRenderer()->AddActor(_volume);
-    getRenderer()->AddActor(_vol_outline);
+    getRenderer()->AddViewProp(_volume);
+    getRenderer()->AddViewProp(_vol_outline);
 }

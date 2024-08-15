@@ -64,6 +64,7 @@ struct Pin {
 struct Node {
     Graph* graph;
     int id;
+    int body_id;
     std::string name;
     std::map<int, std::shared_ptr<Pin>> inputs;
     std::map<int, std::shared_ptr<Pin>> outputs;
