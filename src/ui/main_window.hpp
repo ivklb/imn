@@ -30,12 +30,12 @@ namespace ui {
 class MainWindow {
    public:
     MainWindow();
+    ~MainWindow();
 
     void show();
 
    private:
     void _setup();
-    void _setup_gl();
     void _setup_imgui();
     void _on_frame();
     void _create_dock_space_and_menubar();

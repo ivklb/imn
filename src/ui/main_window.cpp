@@ -12,12 +12,14 @@
 #include <vtkSmartPointer.h>
 
 #include <algorithm>
+#include <functional>
 #include <iostream>
 
 #include "core/app.hpp"
+#include "core/backend_gl.hpp"
+#include "core/i18n.hpp"
 #include "core/lambda.hpp"
 #include "core/setting.hpp"
-#include "core/i18n.hpp"
 #include "ext/imgui_notify/ImGuiNotify.hpp"
 #include "include/def.hpp"
 #include "ui/image_viewer.hpp"
@@ -29,52 +31,16 @@
 
 using namespace imn::ui;
 
-static void _glfw_error_callback(int error, const char* description) {
-    SPDLOG_ERROR("Glfw Error {}: {}", error, description);
-}
-
 MainWindow::MainWindow() {
     _setup();
 }
 
-void MainWindow::show() {
-    auto window = App::app()->main_window_handle();
-
-    // Main loop
-    while (!glfwWindowShouldClose(window)) {
-        // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-        glfwPollEvents();
-
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        _on_frame();
-
-        ///////////////////////////////////////////////////
-        // Render dear imgui into screen
-        ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClear(GL_COLOR_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        // Update and Render additional Platform Windows
-        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-            GLFWwindow* backup_current_context = glfwGetCurrentContext();
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backup_current_context);
-        }
-        glfwSwapBuffers(window);
-    }
+MainWindow::~MainWindow() {
     _cleanup();
+}
+
+void MainWindow::show() {
+    backend::show(std::bind(&MainWindow::_on_frame, this));
 }
 
 void MainWindow::_setup() {
@@ -86,37 +52,8 @@ void MainWindow::_setup() {
         std::lock_guard<std::mutex> lock(_mutex_win);
         _windows.push_back(w);
     });
-    _setup_gl();
+    backend::setup();
     _setup_imgui();
-}
-
-void MainWindow::_setup_gl() {
-    // Setup window
-    glfwSetErrorCallback(_glfw_error_callback);
-    if (!glfwInit()) {
-        return;
-    }
-
-    // Use GL 3.2 (All Platforms)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-    // Create window with graphics context
-    auto _window = glfwCreateWindow(1280, 720, kAppName.c_str(), NULL, NULL);
-    if (_window == NULL) {
-        SPDLOG_ERROR("Failed to create GLFW window");
-        return;
-    }
-    App::app()->set_main_window_handle(_window);
-    glfwMakeContextCurrent(_window);
-    glfwSwapInterval(1);  // Enable vsync
-
-    if (gl3wInit() != 0) {
-        SPDLOG_ERROR("Failed to initialize OpenGL loader!");
-        return;
-    }
 }
 
 void MainWindow::_setup_imgui() {
@@ -155,7 +92,7 @@ void MainWindow::_setup_imgui() {
     // style.FramePadding = ImVec2(4, 4);
 
     // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(App::app()->main_window_handle(), true);
+    ImGui_ImplGlfw_InitForOpenGL(backend::window, true);
     ImGui_ImplOpenGL3_Init(_glsl_version);
 
     // Our state
@@ -270,8 +207,6 @@ void MainWindow::_cleanup() {
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    glfwDestroyWindow(App::app()->main_window_handle());
-    glfwTerminate();
-
+    backend::cleanup();
     setting::dump_setting();
 }
