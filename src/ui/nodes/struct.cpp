@@ -147,7 +147,8 @@ void Node::_build_pins() {
 }
 
 void Node::_draw_titlebar_tooltip() {
-    ImGui::TextUnformatted(name.c_str());
+    ImGui::Text("name: %s", name.c_str());
+    ImGui::Text("id: %d", id);
 }
 
 void Node::_draw_pins() {
