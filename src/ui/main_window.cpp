@@ -4,8 +4,6 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 #include <implot.h>
 #include <spdlog/spdlog.h>
 #include <vtkActor.h>
@@ -88,12 +86,9 @@ void MainWindow::_setup_imgui() {
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     auto& style = ImGui::GetStyle();
-    // style.WindowPadding = ImVec2(0, 0);
-    // style.FramePadding = ImVec2(4, 4);
 
     // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(backend::window, true);
-    ImGui_ImplOpenGL3_Init(_glsl_version);
+    backend::setup_imgui_gl();
 
     // Our state
     _node_window.setup();

@@ -43,7 +43,6 @@ class MainWindow {
     void _cleanup();
 
    private:
-    const char* _glsl_version = "#version 130";
     NodeWindow _node_window;
 
     std::mutex _mutex_win;
