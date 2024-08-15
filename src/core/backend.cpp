@@ -96,8 +96,6 @@ void show(std::function<void()> frame_callback) {
     }
 }
 
-
-
 ImTextureID load_texture_2d(const std::string& img, bool nearest_sample) {
     if (Cache::has(img)) {
         return Cache::get<ImTextureID>(img);
