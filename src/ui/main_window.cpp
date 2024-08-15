@@ -14,18 +14,16 @@
 #include <iostream>
 
 #include "core/app.hpp"
-#include "core/backend_gl.hpp"
+#include "core/backend.hpp"
 #include "core/i18n.hpp"
 #include "core/lambda.hpp"
 #include "core/setting.hpp"
 #include "ext/imgui_notify/ImGuiNotify.hpp"
 #include "include/def.hpp"
 #include "ui/image_viewer.hpp"
+#include "ui/imgui_helper.hpp"
 #include "ui/imgui_vtk_demo.h"  // Actor generator for this demo
-#include "ui/style.hpp"
 #include "ui/vtk_viewer.hpp"
-#include "ui/widget/common_widgets.hpp"
-#include "util/imgui_util.hpp"
 
 using namespace imn::ui;
 
@@ -42,24 +40,14 @@ void MainWindow::show() {
 }
 
 void MainWindow::_setup() {
-#ifdef NDEBUG
-    // disable warning window in release mode
-    vtkObject::GlobalWarningDisplayOff();
-#endif
-    lambda::store("ADD_WINDOW", [this](std::shared_ptr<BaseWindow> w) {
-        std::lock_guard<std::mutex> lock(_mutex_win);
-        _windows.push_back(w);
-    });
-    backend::setup();
-    _setup_imgui();
-}
-
-void MainWindow::_setup_imgui() {
     auto& g_setting = setting::global_setting();
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     auto ctx = ImGui::CreateContext();
     ImPlot::CreateContext();
+
+    backend::setup();
+
     ImGuiIO& io = ImGui::GetIO();
     // io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
@@ -71,7 +59,6 @@ void MainWindow::_setup_imgui() {
     config.MergeMode = true;
     io.Fonts->AddFontFromFileTTF(font_file, font_size, nullptr, io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
     io.Fonts->AddFontFromFileTTF(font_file, font_size, &config, GetGlyphRangesGreek());
-    // ImGui::MergeIconsWithLatestFont(font_size - 6, false);
 
     // merge in icons from Font Awesome
     float iconFontSize = font_size * 2.0f / 3.0f;  // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
@@ -85,12 +72,16 @@ void MainWindow::_setup_imgui() {
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    auto& style = ImGui::GetStyle();
-
-    // Setup Platform/Renderer backends
-    backend::setup_imgui_gl();
 
     // Our state
+#ifdef NDEBUG
+    // disable warning window in release mode
+    vtkObject::GlobalWarningDisplayOff();
+#endif
+    lambda::store("ADD_WINDOW", [this](std::shared_ptr<BaseWindow> w) {
+        std::lock_guard<std::mutex> lock(_mutex_win);
+        _windows.push_back(w);
+    });
     _node_window.setup();
 }
 

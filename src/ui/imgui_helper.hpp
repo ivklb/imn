@@ -1,10 +1,23 @@
 
-#ifndef UI__WIDGET__COMMON_WIDGETS_HPP
-#define UI__WIDGET__COMMON_WIDGETS_HPP
+#ifndef UI__IMGUI_HELPER_HPP
+#define UI__IMGUI_HELPER_HPP
 
 #include <imgui.h>
 
 #include <string>
+
+namespace imn::ui {
+
+struct Style {
+    float font_size;
+    ImVec2 image_button_size;
+};
+
+Style& get_style();
+
+float font_size();
+
+const ImWchar* GetGlyphRangesGreek();
 
 bool ImageButton(
     const char* str_id,
@@ -17,5 +30,7 @@ bool ImageButton(
     const ImVec4& tint_col = ImVec4(1, 1, 1, 1));
 
 bool ImageButtonWithText(ImTextureID texture, const std::string& text, float x, float y, float w, float h);
+
+}  // namespace imn::ui
 
 #endif

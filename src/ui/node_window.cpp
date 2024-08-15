@@ -9,11 +9,9 @@
 
 #include "core/setting.hpp"
 #include "include/def.hpp"
+#include "ui/imgui_helper.hpp"
 #include "ui/nodes/nodes.hpp"
-#include "ui/style.hpp"
-#include "ui/widget/common_widgets.hpp"
 #include "util/common.hpp"
-#include "util/imgui_util.hpp"
 
 using namespace imn::ui;
 

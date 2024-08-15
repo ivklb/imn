@@ -5,12 +5,11 @@
 #include <implot.h>
 #include <spdlog/spdlog.h>
 
+#include "core/backend.hpp"
 #include "core/setting.hpp"
 #include "include/def.hpp"
-#include "ui/style.hpp"
-#include "ui/widget/common_widgets.hpp"
+#include "ui/imgui_helper.hpp"
 #include "util/common.hpp"
-#include "util/imgui_util.hpp"
 
 using namespace imn::ui;
 
@@ -152,7 +151,7 @@ void ImageViewer::_show_image(ImVec2 region) {
         } catch (const std::exception& e) {
             SPDLOG_ERROR("{}", e.what());
         }
-        _tex_id_map[_img_idx] = load_texture_2d(_images[_img_idx].get());
+        _tex_id_map[_img_idx] = backend::load_texture_2d(_images[_img_idx].get());
         // }
         ImPlot::PlotImage("##image", _tex_id_map[_img_idx], _bounds_min, _bounds_max);
         if (_show_horizontal_line) {

@@ -7,7 +7,7 @@
 
 #include "core/thread_pool.hpp"
 #include "ext/node_editor/imnodes.h"
-#include "ui/style.hpp"
+#include "ui/imgui_helper.hpp"
 
 using namespace imn::ui;
 

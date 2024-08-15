@@ -14,9 +14,8 @@
 #include "core/thread_pool.hpp"
 #include "ext/imgui_notify/ImGuiNotify.hpp"
 #include "pins.hpp"
-#include "ui/style.hpp"
+#include "ui/imgui_helper.hpp"
 #include "util/fs.hpp"
-#include "util/imgui_util.hpp"
 
 using namespace imn::ui;
 

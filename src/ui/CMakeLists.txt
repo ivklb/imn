@@ -1,13 +1,12 @@
 
 add_library(ui
     image_viewer.cpp
+    imgui_helper.cpp
     main_window.cpp
     node_window.cpp
-    style.cpp
     volume_viewer.cpp
     vtk_viewer.cpp
 )
-add_subdirectory(widget)
 add_subdirectory(dialog)
 add_subdirectory(nodes)
 
@@ -19,7 +18,6 @@ target_link_libraries(ui
     glfw
     imgui::imgui
     ${VTK_LIBRARIES}
-    common_widgets
     dialogs
     node_editor
     nodes

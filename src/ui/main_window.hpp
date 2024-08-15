@@ -22,7 +22,6 @@
 #include "ui/imgui_vtk_demo.h"
 #include "ui/node_window.hpp"
 #include "ui/vtk_viewer.hpp"
-#include "util/imgui_util.hpp"
 
 namespace imn {
 namespace ui {
@@ -36,7 +35,6 @@ class MainWindow {
 
    private:
     void _setup();
-    void _setup_imgui();
     void _on_frame();
     void _create_dock_space_and_menubar();
     void _show_dialog();
