@@ -5,9 +5,11 @@
 #include <implot.h>
 #include <spdlog/spdlog.h>
 #include <vtkImageData.h>
+#include <vtkImageShrink3D.h>
 #include <vtkPointData.h>
 #include <vtkProperty.h>
 
+#include <algorithm>
 #include <ranges>
 
 #include "core/setting.hpp"
@@ -27,7 +29,6 @@ VolumeViewer::~VolumeViewer() {
 }
 
 void VolumeViewer::set_volume(std::shared_ptr<cv::Mat> vol) {
-    std::lock_guard<std::mutex> lock(_mutex);
     _mat = vol;
 
     auto shape = vol->size;
@@ -35,8 +36,17 @@ void VolumeViewer::set_volume(std::shared_ptr<cv::Mat> vol) {
     image_data->GetPointData()->SetScalars(get_vtk_view(vol.get()));
     image_data->SetDimensions(shape[2], shape[1], shape[0]);
 
-    _vol_mapper->SetInputData(image_data);
-    _vol_outline_filter->SetInputData(image_data);
+    int shrink_factor = *std::max_element(vol->size.p, vol->size.p + vol->size.dims()) / 256;
+
+    vtkNew<vtkImageShrink3D> shrink_filter;
+    shrink_filter->SetInputData(image_data);
+    shrink_filter->SetShrinkFactors(shrink_factor, shrink_factor, shrink_factor);
+    shrink_filter->Update();
+    auto shrinked = shrink_filter->GetOutput();
+
+    std::lock_guard<std::mutex> lock(_mutex);
+    _vol_mapper->SetInputData(shrinked);
+    _vol_outline_filter->SetInputData(shrinked);
     getRenderer()->ResetCamera();
 }
 
