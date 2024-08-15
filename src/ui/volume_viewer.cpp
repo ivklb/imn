@@ -4,6 +4,7 @@
 #include <imgui.h>
 #include <implot.h>
 #include <spdlog/spdlog.h>
+#include <vtkImageData.h>
 #include <vtkPointData.h>
 #include <vtkProperty.h>
 
@@ -36,6 +37,7 @@ void VolumeViewer::set_volume(std::shared_ptr<cv::Mat> vol) {
 
     _vol_mapper->SetInputData(image_data);
     _vol_outline_filter->SetInputData(image_data);
+    getRenderer()->ResetCamera();
 }
 
 void VolumeViewer::set_colormap(std::vector<std::pair<float, ImColor>> colormap) {
@@ -103,4 +105,7 @@ void VolumeViewer::_setup() {
     _vol_outline_mapper->SetInputConnection(_vol_outline_filter->GetOutputPort());
     _vol_outline->SetMapper(_vol_outline_mapper);
     _vol_outline->GetProperty()->SetColor(0.5, 0.5, 0.5);
+
+    getRenderer()->AddActor(_volume);
+    getRenderer()->AddActor(_vol_outline);
 }

@@ -7,7 +7,6 @@
 #include <vtkActor.h>
 #include <vtkBoxWidget.h>
 #include <vtkColorTransferFunction.h>
-#include <vtkImageData.h>
 #include <vtkImagePlaneWidget.h>
 #include <vtkOpenGLGPUVolumeRayCastMapper.h>
 #include <vtkOutlineFilter.h>
