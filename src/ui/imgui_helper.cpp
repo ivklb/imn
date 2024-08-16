@@ -28,22 +28,22 @@ void IDGenerator::set_next(int id) {
 }
 
 WrapperWindow::WrapperWindow(std::shared_ptr<BaseWidget> widget, const std::string& title, const ImVec2& size)
-    : BaseWindow() {
-    _widget = widget;
+    : BaseWindow(), _widget(widget), _title(title), _open(true) {
     _id = IDGenerator::next();
-    _open = true;
 }
 
 void WrapperWindow::show(ImVec2 size) {
-    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-    ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
-    ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
+    if (_open) {
+        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
+        ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Once);
 
-    std::string name = std::format("##{}", _id);
+        std::string name = std::format("{}##{}", _title, _id);
 
-    ImGui::Begin(name.c_str(), &_open, ImGuiWindowFlags_NoCollapse);
-    _widget->show();
-    ImGui::End();
+        ImGui::Begin(name.c_str(), &_open, ImGuiWindowFlags_NoCollapse);
+        _widget->show();
+        ImGui::End();
+    }
 }
 
 Style& get_style() {

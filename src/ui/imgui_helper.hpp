@@ -22,12 +22,13 @@ class IDGenerator {
 
 class WrapperWindow : public BaseWindow {
    public:
-    WrapperWindow(std::shared_ptr<BaseWidget> widget, const std::string& title = {}, const ImVec2& size = ImVec2(0, 0));
+    WrapperWindow(std::shared_ptr<BaseWidget> widget, const std::string& title, const ImVec2& size = ImVec2(0, 0));
     void show(ImVec2 size = ImVec2(0, 0)) override;
     void open(bool open = true) { _open = open; }
 
    private:
     std::shared_ptr<BaseWidget> _widget;
+    std::string _title;
     int _id;
     bool _open;
 };
