@@ -55,6 +55,9 @@ void setup() {
 }
 
 void cleanup() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+
     glfwDestroyWindow(window);
     glfwTerminate();
 }

@@ -1,11 +1,7 @@
 
 #include "main_window.hpp"
 
-#include <GL/gl3w.h>
-#include <GLFW/glfw3.h>
 #include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 #include <implot.h>
 #include <spdlog/spdlog.h>
 #include <vtkActor.h>
@@ -222,10 +218,7 @@ void MainWindow::_show_dialog() {
 }
 
 void MainWindow::_cleanup() {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
     backend::cleanup();
+    ImGui::DestroyContext();
     setting::dump_setting();
 }
