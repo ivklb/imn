@@ -91,19 +91,6 @@ void MainWindow::_on_frame() {
     _create_dock_space_and_menubar();
     _show_dialog();
 
-    {
-        // Setup pipeline
-        static auto actor = SetupDemoPipeline();
-        static VtkViewer vtkViewer1;
-        vtkViewer1.addActor(actor);
-
-        ImGui::SetNextWindowSize(ImVec2(360, 240), ImGuiCond_FirstUseEver);
-        ImGui::Begin("Vtk Viewer 1", nullptr, VtkViewer::NoScrollFlags());
-        vtkViewer1.render();
-        ImGui::End();
-        vtkViewer1.removeActor(actor);
-    }
-
     ImGui::Begin("Node Editor");
     _node_widget.show();
     ImGui::End();

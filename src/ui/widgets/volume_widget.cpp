@@ -34,6 +34,7 @@ void VolumeWidget::set_volume(std::shared_ptr<cv::Mat> vol) {
     image_data->SetDimensions(shape[2], shape[1], shape[0]);
 
     int shrink_factor = *std::max_element(vol->size.p, vol->size.p + vol->size.dims()) / 256;
+    shrink_factor = std::max(1, shrink_factor);
 
     vtkNew<vtkImageShrink3D> shrink_filter;
     shrink_filter->SetInputData(image_data);
