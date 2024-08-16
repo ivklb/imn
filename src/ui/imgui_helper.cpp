@@ -42,6 +42,9 @@ void WrapperWindow::show(ImVec2 size) {
 
         ImGui::Begin(name.c_str(), &_open, ImGuiWindowFlags_NoCollapse);
         _widget->show();
+        if (ImGui::IsWindowFocused()) {
+            _widget->on_activated();
+        }
         ImGui::End();
     }
 }

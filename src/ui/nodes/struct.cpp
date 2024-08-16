@@ -107,6 +107,10 @@ void Node::draw_frame() {
     ImNodes::PopColorStyle();
 }
 
+void Node::on_activated() {
+    ImNodes::EditorContextCenterNode(id);
+}
+
 std::any Node::get_input(int pid) {
     if (!graph) {
         SPDLOG_DEBUG("Node {} has no graph", name);

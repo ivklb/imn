@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "ui/base_window.hpp"
+#include "ui/nodes/struct.hpp"
 #include "ui/widgets/vtk_viewer.hpp"
 
 namespace imn::ui {
@@ -33,15 +34,18 @@ class VolumeWidget : public BaseWidget, public VtkViewer {
    public:
     VolumeWidget();
     ~VolumeWidget();
+    void set_node(Node* node) { _node = node; }
     void set_volume(std::shared_ptr<cv::Mat> vol);
     void set_colormap(std::vector<std::pair<float, ImColor>> colormap);
     void show(const ImVec2 size = ImVec2(0, 0)) override;
+    void on_activated() override;
 
    private:
     void _setup();
 
     std::mutex _mutex;
     std::shared_ptr<cv::Mat> _mat;
+    Node* _node;
 
     vtkSmartPointer<vtkVolume> _volume;
     vtkSmartPointer<vtkOpenGLGPUVolumeRayCastMapper> _vol_mapper;

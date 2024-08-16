@@ -18,7 +18,7 @@
 
 using namespace imn::ui;
 
-VolumeWidget::VolumeWidget() : BaseWidget(), VtkViewer() {
+VolumeWidget::VolumeWidget() : BaseWidget(), VtkViewer(), _node(nullptr) {
     _setup();
 }
 
@@ -75,6 +75,12 @@ void VolumeWidget::show(const ImVec2 size) {
     // ImGui::Begin("Vtk", nullptr, VtkViewer::NoScrollFlags());
     render();
     // ImGui::End();
+}
+
+void VolumeWidget::on_activated() {
+    if (_node) {
+        _node->on_activated();
+    }
 }
 
 void VolumeWidget::_setup() {

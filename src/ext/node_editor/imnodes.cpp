@@ -2058,6 +2058,17 @@ void EditorContextMoveToNode(const int node_id)
     editor.Panning.y = -node.Origin.y;
 }
 
+void EditorContextCenterNode(const int node_id)
+{
+    ImNodesEditorContext& editor = EditorContextGet();
+    ImVec2 node_size = GetNodeDimensions(node_id);
+    ImVec2 node_pos = ImNodes::GetNodeGridSpacePos(node_id);
+    ImVec2 target = node_pos + node_size * 0.5f;
+
+    ImVec2 center = GImNodes->CanvasRectScreenSpace.GetSize() * 0.5f;
+    editor.Panning = ImFloor(center - target);
+}
+
 void SetImGuiContext(ImGuiContext* ctx) { ImGui::SetCurrentContext(ctx); }
 
 ImNodesIO& GetIO() { return GImNodes->Io; }

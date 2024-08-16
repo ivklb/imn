@@ -214,6 +214,7 @@ void VolumePreviewNode::_process() {
     auto mat = get_input<std::shared_ptr<cv::Mat>>(pin_vol->id);
     if (!viewer_window) {
         viewer_widget = std::make_shared<ui::VolumeWidget>();
+        viewer_widget->set_node(this);
         viewer_window = std::make_shared<WrapperWindow>(viewer_widget, "Volume Preview");
         lambda::call("ADD_WINDOW", std::shared_ptr<BaseWindow>(viewer_window));
     }

@@ -12,6 +12,7 @@ class BaseWidget {
    public:
     virtual ~BaseWidget() {}
     virtual void show(ImVec2 size = ImVec2(0, 0)) {}
+    virtual void on_activated() {}
 
    protected:
    private:
