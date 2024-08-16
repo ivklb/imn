@@ -31,6 +31,7 @@ WrapperWindow::WrapperWindow(std::shared_ptr<BaseWidget> widget, const std::stri
     : BaseWindow() {
     _widget = widget;
     _id = IDGenerator::next();
+    _open = true;
 }
 
 void WrapperWindow::show(ImVec2 size) {
@@ -40,7 +41,7 @@ void WrapperWindow::show(ImVec2 size) {
 
     std::string name = std::format("##{}", _id);
 
-    ImGui::Begin(name.c_str());
+    ImGui::Begin(name.c_str(), &_open, ImGuiWindowFlags_NoCollapse);
     _widget->show();
     ImGui::End();
 }

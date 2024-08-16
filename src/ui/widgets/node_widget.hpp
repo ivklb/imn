@@ -17,7 +17,7 @@
 
 namespace imn::ui {
 
-class NodeWidget : public BaseWindow {
+class NodeWidget : public BaseWidget {
    public:
     NodeWidget();
     ~NodeWidget();

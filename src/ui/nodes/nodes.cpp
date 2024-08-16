@@ -180,12 +180,14 @@ void ImagePreviewNode::_draw_body() {
 
 void ImagePreviewNode::_process() {
     auto mat = get_input<std::shared_ptr<cv::Mat>>(in_image->id);
-    if (!viewer) {
-        viewer = std::make_shared<ui::ImageWidget>();
-        viewer->show_toolbar(false);
-        lambda::call("ADD_WINDOW", std::shared_ptr<BaseWidget>(viewer));
+    if (!viewer_window) {
+        viewer_widget = std::make_shared<ui::ImageWidget>();
+        viewer_widget->show_toolbar(false);
+        viewer_window = std::make_shared<WrapperWindow>(viewer_widget);
+        lambda::call("ADD_WINDOW", std::shared_ptr<BaseWindow>(viewer_window));
     }
-    viewer->set_image(mat);
+    viewer_widget->set_image(mat);
+    viewer_window->open();
 }
 
 VolumePreviewNode::VolumePreviewNode()
@@ -193,20 +195,22 @@ VolumePreviewNode::VolumePreviewNode()
     pin_vol = std::make_shared<VolumePin>("volume", PinKind::In);
     inputs[pin_vol->id] = pin_vol;
     _build_pins();
-    viewer = std::make_shared<ui::VolumeWidget>();
 
     status = NodeStatus::Pending;
 }
 
 void VolumePreviewNode::_draw_body() {
-    auto size = ui::font_size();
-    viewer->show({size * 15, size * 15});
+    // auto size = ui::font_size();
+    // viewer->show({size * 15, size * 15});
 }
 
 void VolumePreviewNode::_process() {
     auto mat = get_input<std::shared_ptr<cv::Mat>>(pin_vol->id);
-    if (!viewer) {
-        // lambda::call("ADD_WINDOW", std::shared_ptr<BaseWindow>(viewer));
+    if (!viewer_window) {
+        viewer_widget = std::make_shared<ui::VolumeWidget>();
+        viewer_window = std::make_shared<WrapperWindow>(viewer_widget);
+        lambda::call("ADD_WINDOW", std::shared_ptr<BaseWindow>(viewer_window));
     }
-    viewer->set_volume(mat);
+    viewer_widget->set_volume(mat);
+    viewer_window->open();
 }

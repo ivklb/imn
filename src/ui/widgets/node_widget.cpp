@@ -15,7 +15,7 @@
 
 using namespace imn::ui;
 
-NodeWidget::NodeWidget() {
+NodeWidget::NodeWidget() : BaseWidget() {
     // TODO: load from settings
 }
 

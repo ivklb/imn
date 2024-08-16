@@ -18,7 +18,7 @@
 
 using namespace imn::ui;
 
-VolumeWidget::VolumeWidget() : BaseWindow(), VtkViewer() {
+VolumeWidget::VolumeWidget() : BaseWidget(), VtkViewer() {
     _setup();
 }
 

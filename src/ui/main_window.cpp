@@ -80,9 +80,9 @@ void MainWindow::_setup() {
     // disable warning window in release mode
     vtkObject::GlobalWarningDisplayOff();
 #endif
-    lambda::store("ADD_WINDOW", [this](std::shared_ptr<BaseWidget> w) {
+    lambda::store("ADD_WINDOW", [this](std::shared_ptr<BaseWindow> w) {
         std::lock_guard<std::mutex> lock(_mutex_win);
-        _windows.push_back(std::make_shared<WrapperWindow>(w));
+        _windows.push_back(w);
     });
     _node_widget.setup();
 }

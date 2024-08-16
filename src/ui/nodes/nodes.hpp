@@ -8,6 +8,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "core/io.hpp"
+#include "ui/imgui_helper.hpp"
 #include "ui/nodes/struct.hpp"
 #include "ui/widgets/image_widget.hpp"
 #include "ui/widgets/volume_widget.hpp"
@@ -44,7 +45,8 @@ struct VolumeLoaderNode : public Node {
 struct ImagePreviewNode : public Node {
     std::shared_ptr<Pin> in_image;
     bool show_window;
-    std::shared_ptr<ImageWidget> viewer;
+    std::shared_ptr<ImageWidget> viewer_widget;
+    std::shared_ptr<WrapperWindow> viewer_window;
 
     ImagePreviewNode();
     void _draw_body() override;
@@ -54,7 +56,8 @@ struct ImagePreviewNode : public Node {
 struct VolumePreviewNode : public Node {
     std::shared_ptr<Pin> pin_vol;
     bool show_window;
-    std::shared_ptr<VolumeWidget> viewer;
+    std::shared_ptr<VolumeWidget> viewer_widget;
+    std::shared_ptr<WrapperWindow> viewer_window;
 
     VolumePreviewNode();
     void _draw_body() override;

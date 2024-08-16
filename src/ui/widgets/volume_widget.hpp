@@ -29,7 +29,7 @@
 
 namespace imn::ui {
 
-class VolumeWidget : public BaseWindow, public VtkViewer {
+class VolumeWidget : public BaseWidget, public VtkViewer {
    public:
     VolumeWidget();
     ~VolumeWidget();
