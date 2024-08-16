@@ -173,16 +173,21 @@ void MainWindow::_create_dock_space_and_menubar() {
                 }
                 ImGui::EndMenu();
             }
-            if (ImGui::MenuItem(I18N_STR("show imgui demo"))) {
-                _show_imgui_demo = true;
+            if (ImGui::BeginMenu(I18N_STR("window"))) {
+                if (ImGui::MenuItem(I18N_STR("imgui demo"))) {
+                    _show_imgui_demo = true;
+                }
+                if (ImGui::MenuItem(I18N_STR("implot demo"))) {
+                    _show_implot_demo = true;
+                }
+                if (ImGui::MenuItem(I18N_STR("style editor"))) {
+                    _show_style_editor = true;
+                }
+                if (ImGui::MenuItem(I18N_STR("help"))) {
+                    _show_help = true;
+                }
+                ImGui::EndMenu();
             }
-            if (ImGui::MenuItem(I18N_STR("show implot demo"))) {
-                _show_implot_demo = true;
-            }
-            if (ImGui::MenuItem(I18N_STR("show style editor"))) {
-                _show_style_editor = true;
-            }
-
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
@@ -205,6 +210,13 @@ void MainWindow::_show_dialog() {
     if (_show_style_editor) {
         ImGui::Begin("Style Editor", &_show_style_editor);
         ImGui::ShowStyleEditor();
+        ImGui::End();
+    }
+    if (_show_help) {
+        ImGui::Begin("help", &_show_help);
+        ImGui::TextUnformatted("Right click -- add node");
+        ImGui::TextUnformatted("Del -- delete selected node or link");
+        ImGui::TextUnformatted("Alt + mouse -- drag canvas");
         ImGui::End();
     }
 }

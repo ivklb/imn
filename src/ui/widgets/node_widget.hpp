@@ -26,9 +26,7 @@ class NodeWidget : public BaseWindow {
     void process();
 
    private:
-    void _show_menu_bar();
     void _show_node_editor();
-    void _show_info();
 
     void _handle_new_nodes();
     void _handle_new_links();

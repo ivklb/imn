@@ -47,6 +47,7 @@ class MainWindow {
     bool _show_imgui_demo;
     bool _show_implot_demo;
     bool _show_style_editor;
+    bool _show_help;
 };
 
 }  // namespace ui

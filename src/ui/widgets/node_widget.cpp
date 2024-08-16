@@ -31,45 +31,11 @@ void NodeWidget::setup() {
 }
 
 void NodeWidget::show(ImVec2 size) {
-    // auto flags = ImGuiWindowFlags_MenuBar;
-    // ImGui::Begin("node editor", NULL, flags);
-
-    _show_menu_bar();
-    _show_info();
     _show_node_editor();
-
-    // ImGui::End();
 }
 
 void NodeWidget::process() {
     _graph.process();
-}
-
-void NodeWidget::_show_menu_bar() {
-    if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("Style")) {
-            if (ImGui::MenuItem("Classic")) {
-                ImGui::StyleColorsClassic();
-                ImNodes::StyleColorsClassic();
-            }
-            if (ImGui::MenuItem("Dark")) {
-                ImGui::StyleColorsDark();
-                ImNodes::StyleColorsDark();
-            }
-            if (ImGui::MenuItem("Light")) {
-                ImGui::StyleColorsLight();
-                ImNodes::StyleColorsLight();
-            }
-            ImGui::EndMenu();
-        }
-        ImGui::EndMenuBar();
-    }
-}
-
-void NodeWidget::_show_info() {
-    ImGui::TextUnformatted("Right click -- add node");
-    ImGui::TextUnformatted("Del -- delete selected node or link");
-    ImGui::TextUnformatted("Alt + mouse -- drag canvas");
 }
 
 void NodeWidget::_show_node_editor() {
