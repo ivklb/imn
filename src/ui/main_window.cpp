@@ -104,6 +104,11 @@ void MainWindow::_on_frame() {
         vtkViewer1.removeActor(actor);
     }
 
+    ImGui::Begin("Node Editor");
+    _node_widget.show();
+    ImGui::End();
+    _node_widget.process();
+
     {
         std::lock_guard<std::mutex> lock(_mutex_win);
         for (auto& viewer : _windows) {
@@ -191,11 +196,7 @@ void MainWindow::_create_dock_space_and_menubar() {
         }
         ImGui::EndMenuBar();
     }
-
-    _node_widget.show();
-
     ImGui::End();
-    _node_widget.process();
 }
 
 void MainWindow::_show_dialog() {
