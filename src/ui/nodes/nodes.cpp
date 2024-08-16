@@ -199,6 +199,12 @@ VolumePreviewNode::VolumePreviewNode()
     status = NodeStatus::Pending;
 }
 
+void VolumePreviewNode::on_double_click() {
+    if (viewer_window) {
+        viewer_window->open();
+    }
+}
+
 void VolumePreviewNode::_draw_body() {
     // auto size = ui::font_size();
     // viewer->show({size * 15, size * 15});

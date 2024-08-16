@@ -77,6 +77,8 @@ struct Node {
     Node(const char* name, ColorTheme color = ColorTheme::Blue);
     virtual ~Node() {}
     virtual void draw_frame();
+    virtual void on_click() {}
+    virtual void on_double_click() {}
     virtual std::any get_input(int pid);
     template <typename T>
     T get_input(int pid);

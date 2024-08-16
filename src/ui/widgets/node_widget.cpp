@@ -56,6 +56,13 @@ void NodeWidget::_show_node_editor() {
     ImNodes::MiniMap(0.2f, ImNodesMiniMapLocation_BottomRight);
     ImNodes::EndNodeEditor();
 
+    int node_id;
+    if (ImNodes::IsNodeHovered(&node_id)) {
+        if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+            _graph.nodes[node_id]->on_double_click();
+        }
+    }
+
     // Handle new links
     // These are driven by Imnodes, so we place the code after EndNodeEditor().
     _handle_new_links();

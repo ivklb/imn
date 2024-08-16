@@ -60,6 +60,7 @@ struct VolumePreviewNode : public Node {
     std::shared_ptr<WrapperWindow> viewer_window;
 
     VolumePreviewNode();
+    void on_double_click() override;
     void _draw_body() override;
     void _process() override;
 };
