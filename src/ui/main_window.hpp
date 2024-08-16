@@ -18,8 +18,7 @@
 #include "ui/widgets/node_widget.hpp"
 #include "ui/widgets/vtk_viewer.hpp"
 
-namespace imn {
-namespace ui {
+namespace imn::ui {
 
 class MainWindow {
    public:
@@ -50,6 +49,5 @@ class MainWindow {
     bool _show_help;
 };
 
-}  // namespace ui
-}  // namespace imn
+}  // namespace imn::ui
 #endif

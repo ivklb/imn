@@ -26,7 +26,10 @@
 using namespace imn::ui;
 
 MainWindow::MainWindow()
-    : _show_imgui_demo(false), _show_implot_demo(false), _show_style_editor(false) {
+    : _show_imgui_demo(false),
+      _show_implot_demo(false),
+      _show_style_editor(false),
+      _show_help(false) {
     _setup();
 }
 
