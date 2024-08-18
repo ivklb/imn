@@ -9,10 +9,12 @@
 #include <atomic>
 #include <map>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <tuple>
 #include <vector>
 
+using json = nlohmann::json;
 namespace imn::ui {
 
 // https://hackernoon.com/zh/%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E9%A2%9C%E8%89%B2%E5%B9%B6%E7%A1%AE%E5%AE%9A%E4%B8%8D%E5%90%8C%E7%8A%B6%E6%80%81%E7%9A%84%E8%89%B2%E8%B0%83%E6%82%AC%E5%81%9C%E6%B4%BB%E5%8A%A8%E6%8C%89%E4%B8%8B%E7%A6%81%E7%94%A8
@@ -65,17 +67,17 @@ struct Node {
     Graph* graph;
     int id;
     int body_id;
-    std::string name;
     std::map<int, std::shared_ptr<Pin>> inputs;
     std::map<int, std::shared_ptr<Pin>> outputs;
-    ColorTheme color;
     NodeStatus status;
     float width;
     std::atomic_int progress_cur;
     std::atomic_int progress_max;
 
-    Node(const char* name, ColorTheme color = ColorTheme::Blue);
+    Node(int id = 0);
     virtual ~Node() {}
+    virtual std::string name() { return "Node"; }
+    virtual ColorTheme color() { return ColorTheme::Blue; }
     virtual void draw_frame();
     virtual void on_activated();
     virtual void on_click() {}
@@ -85,6 +87,8 @@ struct Node {
     T get_input(int pid);
     virtual std::any get_output(int pid);
     virtual void process();
+    virtual json serialize();
+    virtual void deserialize(json);
 
    protected:
     virtual void _process() {}

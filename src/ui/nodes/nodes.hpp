@@ -26,6 +26,8 @@ struct ImageLoaderNode : public Node {
     std::shared_ptr<cv::Mat> image;
 
     ImageLoaderNode();
+    std::string name() override { return "Image Loader"; }
+    ColorTheme color() override { return ColorTheme::Red; }
     std::any get_output(int pid) override;
     void _draw_body() override;
 };
@@ -38,6 +40,8 @@ struct VolumeLoaderNode : public Node {
     int _item_current;
 
     VolumeLoaderNode();
+    std::string name() override { return "Volume Loader"; }
+    ColorTheme color() override { return ColorTheme::Red; }
     std::any get_output(int pid) override;
     void _draw_body() override;
 };
@@ -49,6 +53,8 @@ struct ImagePreviewNode : public Node {
     std::shared_ptr<WrapperWindow> viewer_window;
 
     ImagePreviewNode();
+    std::string name() override { return "Image Preview"; }
+    ColorTheme color() override { return ColorTheme::Orange; }
     void _draw_body() override;
     void _process() override;
 };
@@ -60,6 +66,8 @@ struct VolumePreviewNode : public Node {
     std::shared_ptr<WrapperWindow> viewer_window;
 
     VolumePreviewNode();
+    std::string name() override { return "Volume Preview"; }
+    ColorTheme color() override { return ColorTheme::Orange; }
     void on_double_click() override;
     void _draw_body() override;
     void _process() override;

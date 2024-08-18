@@ -3,6 +3,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <ranges>
 #include <vector>
 
 #include "core/thread_pool.hpp"
@@ -64,29 +65,32 @@ void Pin::draw_frame() {
     ImNodes::PopColorStyle();
 }
 
-Node::Node(const char* name, ColorTheme color)
-    : name(name),
-      color(color),
-      status(NodeStatus::Created),
+Node::Node(int id)
+    : status(NodeStatus::Created),
       progress_cur(0),
       progress_max(0) {
-    id = IDGenerator::next();
-    body_id = IDGenerator::next();
+    if (id) {
+        this->id = id;
+        body_id = id + 1;
+    } else {
+        this->id = IDGenerator::next();
+        body_id = IDGenerator::next();
+    }
 
-    auto name_width = ImGui::CalcTextSize(name).x * 1.2f;
+    auto name_width = ImGui::CalcTextSize(name().c_str()).x * 1.2f;
     auto default_width = ui::get_style().font_size * 6.0f;
     width = std::max(name_width, default_width);
 }
 
 void Node::draw_frame() {
-    ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, get_highlight_color(color));
-    ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, get_highlight_color(color));
-    ImNodes::PushColorStyle(ImNodesCol_TitleBar, get_normal_color(color));
+    ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, get_highlight_color(color()));
+    ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, get_highlight_color(color()));
+    ImNodes::PushColorStyle(ImNodesCol_TitleBar, get_normal_color(color()));
 
     ImNodes::BeginNode(id);
 
     ImNodes::BeginNodeTitleBar();
-    ImGui::TextUnformatted(name.c_str());
+    ImGui::TextUnformatted(name().c_str());
     ImNodes::EndNodeTitleBar();
     if (ImGui::BeginItemTooltip()) {
         _draw_titlebar_tooltip();
@@ -113,12 +117,12 @@ void Node::on_activated() {
 
 std::any Node::get_input(int pid) {
     if (!graph) {
-        SPDLOG_DEBUG("Node {} has no graph", name);
+        SPDLOG_DEBUG("Node {} has no graph", name());
         return {};
     }
     auto node = graph->get_upstream_node(pid);
     if (!node) {
-        SPDLOG_DEBUG("Node {} has no upstream node", name);
+        SPDLOG_DEBUG("Node {} has no upstream node", name());
         return {};
     }
     return node->get_output(pid);
@@ -135,10 +139,16 @@ void Node::process() {
             _process();
             status = NodeStatus::Done;
         } catch (const std::exception& e) {
-            SPDLOG_ERROR("Node {} process error: {}", name, e.what());
+            SPDLOG_ERROR("Node {} process error: {}", name(), e.what());
             status = NodeStatus::Error;
         }
     });
+}
+
+json Node::serialize() {
+}
+
+void Node::deserialize(json) {
 }
 
 void Node::_build_pins() {
@@ -151,7 +161,7 @@ void Node::_build_pins() {
 }
 
 void Node::_draw_titlebar_tooltip() {
-    ImGui::Text("name: %s", name.c_str());
+    ImGui::Text("name: %s", name().c_str());
     ImGui::Text("id: %d", id);
 }
 
@@ -296,3 +306,4 @@ ImColor imn::ui::get_normal_color(ColorTheme color) {
 ImColor imn::ui::get_highlight_color(ColorTheme color) {
     return std::get<0>(color_theme_map.at(color));
 }
+
