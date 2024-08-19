@@ -8,6 +8,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "core/io.hpp"
+#include "core/object.hpp"
 #include "ui/imgui_helper.hpp"
 #include "ui/nodes/struct.hpp"
 #include "ui/widgets/image_widget.hpp"
@@ -19,20 +20,21 @@ struct DemoNode : public Node {
     DemoNode(const char* name, ColorTheme color = ColorTheme::Blue);
 };
 
-struct ImageLoaderNode : public Node {
+struct ImageLoaderNode : public Node, public core::AutoRegistered<ImageLoaderNode, Node> {
     std::string file_str;             // used to display in the UI
     std::filesystem::path file_path;  // used to access file with unicode path
     imn::io::ImportConfig config;
     std::shared_ptr<cv::Mat> image;
 
     ImageLoaderNode();
-    std::string name() override { return "Image Loader"; }
+    static std::string registered_name() { return "image_loader"; }
+    std::string name() override { return registered_name(); }
     ColorTheme color() override { return ColorTheme::Red; }
     std::any get_output(int pid) override;
     void _draw_body() override;
 };
 
-struct VolumeLoaderNode : public Node {
+struct VolumeLoaderNode : public Node, public core::AutoRegistered<VolumeLoaderNode, Node> {
     std::string file_str;             // used to display in the UI
     std::filesystem::path file_path;  // used to access file with unicode path
     imn::io::ImportConfig config;
@@ -40,33 +42,36 @@ struct VolumeLoaderNode : public Node {
     int _item_current;
 
     VolumeLoaderNode();
-    std::string name() override { return "Volume Loader"; }
+    static std::string registered_name() { return "volume_loader"; }
+    std::string name() override { return registered_name(); }
     ColorTheme color() override { return ColorTheme::Red; }
     std::any get_output(int pid) override;
     void _draw_body() override;
 };
 
-struct ImagePreviewNode : public Node {
+struct ImagePreviewNode : public Node, public core::AutoRegistered<ImagePreviewNode, Node> {
     std::shared_ptr<Pin> in_image;
     bool show_window;
     std::shared_ptr<ImageWidget> viewer_widget;
     std::shared_ptr<WrapperWindow> viewer_window;
 
     ImagePreviewNode();
-    std::string name() override { return "Image Preview"; }
+    static std::string registered_name() { return "image_preview"; }
+    std::string name() override { return registered_name(); }
     ColorTheme color() override { return ColorTheme::Orange; }
     void _draw_body() override;
     void _process() override;
 };
 
-struct VolumePreviewNode : public Node {
+struct VolumePreviewNode : public Node, public core::AutoRegistered<VolumePreviewNode, Node> {
     std::shared_ptr<Pin> pin_vol;
     bool show_window;
     std::shared_ptr<VolumeWidget> viewer_widget;
     std::shared_ptr<WrapperWindow> viewer_window;
 
     VolumePreviewNode();
-    std::string name() override { return "Volume Preview"; }
+    static std::string registered_name() { return "volume_preview"; }
+    std::string name() override { return registered_name(); }
     ColorTheme color() override { return ColorTheme::Orange; }
     void on_double_click() override;
     void _draw_body() override;

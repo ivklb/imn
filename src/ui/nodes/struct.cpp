@@ -145,11 +145,11 @@ void Node::process() {
     });
 }
 
-json Node::serialize() {
-}
+// json Node::serialize() {
+// }
 
-void Node::deserialize(json) {
-}
+// void Node::deserialize(json) {
+// }
 
 void Node::_build_pins() {
     for (auto& [id, pin] : inputs) {

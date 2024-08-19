@@ -19,12 +19,10 @@
 
 using namespace imn::ui;
 
-DemoNode::DemoNode(const char* name, ColorTheme color) : Node(name, color) {
+DemoNode::DemoNode(const char* name, ColorTheme color) : Node() {
     auto pa = std::make_shared<IntPin>("a", PinKind::In, ColorTheme::Green);
     auto pb = std::make_shared<IntPin>("b", PinKind::In, ColorTheme::Red);
     auto pc = std::make_shared<IntPin>("c", PinKind::Out, ColorTheme::Blue);
-
-    this->color = ColorTheme::Blue;
 
     inputs[pa->id] = pa;
     inputs[pb->id] = pb;
@@ -34,7 +32,7 @@ DemoNode::DemoNode(const char* name, ColorTheme color) : Node(name, color) {
     status = NodeStatus::Processing;
 }
 
-ImageLoaderNode::ImageLoaderNode() : Node("Image Loader", ColorTheme::Red), config({}) {
+ImageLoaderNode::ImageLoaderNode() : Node(), config({}) {
     auto p = std::make_shared<ImagePin>("image", PinKind::Out);
     outputs[p->id] = p;
     _build_pins();
@@ -91,7 +89,7 @@ void ImageLoaderNode::_draw_body() {
     }
 }
 
-VolumeLoaderNode::VolumeLoaderNode() : Node("Volume Loader", ColorTheme::Red), config({}) {
+VolumeLoaderNode::VolumeLoaderNode() : Node(), config({}) {
     auto p = std::make_shared<VolumePin>("volume", PinKind::Out);
     outputs[p->id] = p;
     _build_pins();
@@ -165,8 +163,7 @@ void VolumeLoaderNode::_draw_body() {
     }
 }
 
-ImagePreviewNode::ImagePreviewNode()
-    : Node("Image Preview", ColorTheme::Orange), show_window(false) {
+ImagePreviewNode::ImagePreviewNode() : Node(), show_window(false) {
     in_image = std::make_shared<ImagePin>("image", PinKind::In);
     inputs[in_image->id] = in_image;
     _build_pins();
@@ -190,8 +187,7 @@ void ImagePreviewNode::_process() {
     viewer_window->open();
 }
 
-VolumePreviewNode::VolumePreviewNode()
-    : Node("Volume Preview", ColorTheme::Orange), show_window(false) {
+VolumePreviewNode::VolumePreviewNode() : Node(), show_window(false) {
     pin_vol = std::make_shared<VolumePin>("volume", PinKind::In);
     inputs[pin_vol->id] = pin_vol;
     _build_pins();

@@ -14,6 +14,8 @@
 #include <tuple>
 #include <vector>
 
+#include "core/object.hpp"
+
 using json = nlohmann::json;
 namespace imn::ui {
 
@@ -87,8 +89,8 @@ struct Node {
     T get_input(int pid);
     virtual std::any get_output(int pid);
     virtual void process();
-    virtual json serialize();
-    virtual void deserialize(json);
+    // virtual json serialize();
+    // virtual void deserialize(json);
 
    protected:
     virtual void _process() {}
