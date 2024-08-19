@@ -19,8 +19,8 @@ using json = nlohmann::json;
 
 namespace imn::i18n {
 namespace impl {
-std::map<std::string, json> lang_map;
-bool init = false;
+inline std::map<std::string, json> lang_map;
+inline bool init = false;
 
 inline json parse_file(const std::string& filename) {
     std::ifstream ifs(filename);

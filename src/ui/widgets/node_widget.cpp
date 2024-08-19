@@ -7,6 +7,8 @@
 
 #include <optional>
 
+#include "core/i18n.hpp"
+#include "core/object.hpp"
 #include "core/setting.hpp"
 #include "include/def.hpp"
 #include "ui/imgui_helper.hpp"
@@ -80,35 +82,13 @@ void NodeWidget::_handle_new_nodes() {
 
     if (ImGui::BeginPopup("add node")) {
         const ImVec2 click_pos = ImGui::GetMousePosOnOpeningCurrentPopup();
-        if (ImGui::MenuItem("add")) {
-            auto node = std::make_shared<DemoNode>("add");
-            _graph.insert_node(node);
-            ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
-        }
-        if (ImGui::MenuItem("multiply")) {
-            auto node = std::make_shared<DemoNode>("multiply");
-            _graph.insert_node(node);
-            ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
-        }
-        if (ImGui::MenuItem("image loader")) {
-            auto node = std::make_shared<ImageLoaderNode>();
-            _graph.insert_node(node);
-            ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
-        }
-        if (ImGui::MenuItem("volume loader")) {
-            auto node = std::make_shared<VolumeLoaderNode>();
-            _graph.insert_node(node);
-            ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
-        }
-        if (ImGui::MenuItem("image preview")) {
-            auto node = std::make_shared<ImagePreviewNode>();
-            _graph.insert_node(node);
-            ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
-        }
-        if (ImGui::MenuItem("volume preview")) {
-            auto node = std::make_shared<VolumePreviewNode>();
-            _graph.insert_node(node);
-            ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
+        auto name_list = core::ObjectFactory<Node>::entries();
+        for (auto& name : name_list) {
+            if (ImGui::MenuItem(I18N_STR(name))) {
+                auto node = core::ObjectFactory<Node>::create(name);
+                _graph.insert_node(node);
+                ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
+            }
         }
         ImGui::EndPopup();
     }
