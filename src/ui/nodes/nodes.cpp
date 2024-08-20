@@ -42,8 +42,8 @@ std::any ImageLoaderNode::get_output(int pid) {
 }
 
 void ImageLoaderNode::_draw_body() {
-    auto button_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.3f;
-    auto text_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.7f;
+    auto button_width = (width() - ImGui::GetStyle().ItemSpacing.x) * 0.3f;
+    auto text_width = (width() - ImGui::GetStyle().ItemSpacing.x) * 0.7f;
 
     if (ImGui::Button("...", ImVec2(button_width, 0))) {
         imn::fs::openFileBrowser(
@@ -67,7 +67,7 @@ void ImageLoaderNode::_draw_body() {
         const char* combo_items[] = {"uint8", "uint16", "uint32", "float32"};
         const int combo_values[] = {CV_8UC1, CV_16UC1, CV_32SC1, CV_32FC1};
         static int item_current = 0;
-        ImGui::PushItemWidth(width - ImGui::CalcTextSize("height").x - ImGui::GetStyle().ItemSpacing.x);
+        ImGui::PushItemWidth(width() - ImGui::CalcTextSize("height").x - ImGui::GetStyle().ItemSpacing.x);
         ImGui::Combo("type", &item_current, combo_items, IM_ARRAYSIZE(combo_items));
         ImGui::InputInt("offset", &config.offset);
         ImGui::InputInt("width", &config.width);
@@ -91,7 +91,6 @@ VolumeLoaderNode::VolumeLoaderNode() : Node(), config({}) {
     auto p = std::make_shared<VolumePin>(this, "volume", PinKind::Out);
     outputs[p->name] = p;
 
-    width = ui::get_style().font_size * 8.0f;
     _item_current = 0;
 }
 
@@ -101,6 +100,8 @@ std::any VolumeLoaderNode::get_output(int pid) {
 }
 
 void VolumeLoaderNode::_draw_body() {
+
+    auto width = ui::get_style().font_size * 8.0f;
     auto button_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.3f;
     auto text_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.7f;
 

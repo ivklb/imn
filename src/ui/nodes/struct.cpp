@@ -45,7 +45,7 @@ Pin::Pin(Node* node, const char* name, PinKind kind, ColorTheme color)
 }
 
 void Pin::draw_frame() {
-    const float node_width = node->width;
+    const float node_width = node->width();
     const float label_width = ImGui::CalcTextSize(name.c_str()).x;
 
     ImNodes::PushColorStyle(ImNodesCol_PinHovered, get_highlight_color(color));
@@ -70,10 +70,6 @@ Node::Node()
       progress_max(0) {
     id = IDGenerator::next();
     body_id = IDGenerator::next();
-
-    auto name_width = ImGui::CalcTextSize(name().c_str()).x * 1.2f;
-    auto default_width = ui::get_style().font_size * 6.0f;
-    width = std::max(name_width, default_width);
 }
 
 void Node::fit_json(json j_node) {
@@ -110,6 +106,12 @@ json Node::to_json() {
     rv["pos_x"] = pos.x;
     rv["pos_y"] = pos.y;
     return rv;
+}
+
+float Node::width() {
+    auto name_width = ImGui::CalcTextSize(name().c_str()).x * 1.2f;
+    auto default_width = ui::get_style().font_size * 6.0f;
+    return std::max(name_width, default_width);
 }
 
 void Node::draw_frame() {
@@ -204,10 +206,10 @@ void Node::_draw_process_bar() {
     if (status == NodeStatus::Processing) {
         auto font_size = ui::get_style().font_size;
         if (progress_max == 0) {
-            ImGui::ProgressBar(-1.0f * (float)ImGui::GetTime(), ImVec2(width, font_size * 0.2f), "");
+            ImGui::ProgressBar(-1.0f * (float)ImGui::GetTime(), ImVec2(width(), font_size * 0.2f), "");
         } else {
             float fraction = float(progress_cur) / progress_max;
-            ImGui::ProgressBar(fraction, ImVec2(width, font_size * 0.2f), "");
+            ImGui::ProgressBar(fraction, ImVec2(width(), font_size * 0.2f), "");
         }
     }
 }

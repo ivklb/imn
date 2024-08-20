@@ -5,6 +5,9 @@
 #include <implot.h>
 #include <spdlog/spdlog.h>
 
+#include <filesystem>
+#include <fstream>
+#include <nlohmann/json.hpp>
 #include <optional>
 
 #include "core/i18n.hpp"
@@ -16,13 +19,22 @@
 #include "util/common.hpp"
 
 using namespace imn::ui;
+using json = nlohmann::json;
+namespace fs = std::filesystem;
+
+const static std::string kSaveFilePath = "asset/user/graph.json";
 
 NodeWidget::NodeWidget() : BaseWidget() {
-    // TODO: load from settings
 }
 
 NodeWidget::~NodeWidget() {
-    // TODO: serialize
+    if (!fs::is_directory(fs::path(kSaveFilePath).parent_path())) {
+        fs::create_directories(fs::path(kSaveFilePath).parent_path());
+    }
+    json data = _graph.to_json();
+    std::ofstream o(kSaveFilePath);
+    o << std::setw(4) << data << std::endl;
+
     ImNodes::DestroyContext();
 }
 
@@ -30,6 +42,13 @@ void NodeWidget::setup() {
     ImNodes::CreateContext();
     ImNodes::GetIO().EmulateThreeButtonMouse.Modifier = &ImGui::GetIO().KeyAlt;
     ImNodes::GetStyle().GridSpacing = get_style().font_size * 2;
+
+    // TODO: load from settings
+    if (std::filesystem::exists(kSaveFilePath)) {
+        std::ifstream file(kSaveFilePath);
+        auto data = json::parse(file);
+        _graph = Graph::from_json(data);
+    }
 }
 
 void NodeWidget::show(ImVec2 size) {

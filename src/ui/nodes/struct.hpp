@@ -71,7 +71,6 @@ struct Node {
     std::map<std::string, std::shared_ptr<Pin>> inputs;  // name -> pin
     std::map<std::string, std::shared_ptr<Pin>> outputs;  // name -> pin
     NodeStatus status;
-    float width;
     std::atomic_int progress_cur;
     std::atomic_int progress_max;
 
@@ -81,6 +80,8 @@ struct Node {
     virtual json to_json();
     virtual std::string name() { return "Node"; }
     virtual ColorTheme color() { return ColorTheme::Blue; }
+    // TODO: rename to node_width()
+    virtual float width();
     virtual void draw_frame();
     virtual void on_activated();
     virtual void on_click() {}
