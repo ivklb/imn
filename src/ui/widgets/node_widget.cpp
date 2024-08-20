@@ -100,17 +100,9 @@ void NodeWidget::_handle_new_links() {
         auto start_pin = _graph.get_pin(start_pid, PinKind::Out);
         auto end_pin = _graph.get_pin(end_pid, PinKind::In);
 
-        // TODO: check for valid link
-
-        // const bool valid_link = start_type != end_type;
-        // if (valid_link) {
-        //     // Ensure the edge is always directed from the value to
-        //     // whatever produces the value
-        //     if (start_type != NodeType::value) {
-        //         std::swap(start_attr, end_attr);
-        //     }
-        // }
-        _graph.insert_link(start_pid, end_pid);
+        if (typeid(*start_pin) == typeid(*end_pin)) {
+            _graph.insert_link(start_pid, end_pid);
+        }
     }
 }
 
