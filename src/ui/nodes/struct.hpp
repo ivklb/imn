@@ -58,9 +58,8 @@ struct Pin {
     std::string name;
     PinKind kind;
     ColorTheme color;
-    int connect_count;
 
-    Pin(const char* name, PinKind kind, ColorTheme color = ColorTheme::Blue);
+    Pin(Node* node, const char* name, PinKind kind, ColorTheme color = ColorTheme::Blue);
     virtual ~Pin() {}
     virtual void draw_frame();
 };
@@ -69,15 +68,17 @@ struct Node {
     Graph* graph;
     int id;
     int body_id;
-    std::map<int, std::shared_ptr<Pin>> inputs;
-    std::map<int, std::shared_ptr<Pin>> outputs;
+    std::map<std::string, std::shared_ptr<Pin>> inputs;  // name -> pin
+    std::map<std::string, std::shared_ptr<Pin>> outputs;  // name -> pin
     NodeStatus status;
     float width;
     std::atomic_int progress_cur;
     std::atomic_int progress_max;
 
-    Node(int id = 0);
+    Node();
     virtual ~Node() {}
+    virtual void fit_json(json data);
+    virtual json to_json();
     virtual std::string name() { return "Node"; }
     virtual ColorTheme color() { return ColorTheme::Blue; }
     virtual void draw_frame();
@@ -89,12 +90,10 @@ struct Node {
     T get_input(int pid);
     virtual std::any get_output(int pid);
     virtual void process();
-    // virtual json serialize();
-    // virtual void deserialize(json);
+    int max_id();
 
    protected:
     virtual void _process() {}
-    virtual void _build_pins();
     virtual void _draw_titlebar_tooltip();
     virtual void _draw_pins();
     virtual void _draw_process_bar();
@@ -123,8 +122,13 @@ struct Graph {
     std::map<int, std::shared_ptr<Link>> end_pin_to_link;
     std::map<int, std::vector<std::shared_ptr<Link>>> start_pin_to_links;
 
+    // Ctors
+    Graph() {}
+    static Graph from_json(json data);
+    json to_json();
+
     // Element Access
-    std::shared_ptr<Pin> pin(int pid) const;
+    std::shared_ptr<Pin> get_pin(int pid, PinKind kind) const;
 
     // Capacity
     std::shared_ptr<Node> get_upstream_node(int pin_id) const;
@@ -133,7 +137,7 @@ struct Graph {
     // Modifiers
     int insert_node(const std::shared_ptr<Node>& node);
     void erase_node(int node_id);
-    int insert_link(int start_pid, int end_pid);
+    std::shared_ptr<Link> insert_link(int start_pid, int end_pid);
     void erase_link(int link_id);
 
     void process();

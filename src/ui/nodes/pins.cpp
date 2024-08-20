@@ -5,8 +5,8 @@
 
 using namespace imn::ui;
 
-IntPin::IntPin(const char* name, PinKind kind, ColorTheme color)
-    : Pin(name, kind, color),
+IntPin::IntPin(Node* node, const char* name, PinKind kind, ColorTheme color)
+    : Pin(node, name, kind, color),
       value(0) {
 }
 
@@ -19,7 +19,8 @@ void IntPin::draw_frame() {
     if (kind == PinKind::In) {
         ImNodes::BeginInputAttribute(id);
         ImGui::TextUnformatted(name.c_str());
-        if (connect_count == 0) {
+        bool connected = node->graph->end_pin_to_link.contains(id);
+        if (!connected) {
             ImGui::SameLine();
             auto w = node_width - label_width - ImGui::GetStyle().ItemSpacing.x;
             ImGui::PushItemWidth(w);
@@ -38,10 +39,10 @@ void IntPin::draw_frame() {
     ImNodes::PopColorStyle();
 }
 
-ImagePin::ImagePin(const char* name, PinKind kind)
-    : Pin(name, kind, ColorTheme::Red) {
+ImagePin::ImagePin(Node* node, const char* name, PinKind kind)
+    : Pin(node, name, kind, ColorTheme::Red) {
 }
 
-VolumePin::VolumePin(const char* name, PinKind kind)
-    : Pin(name, kind, ColorTheme::Cyan) {
+VolumePin::VolumePin(Node* node, const char* name, PinKind kind)
+    : Pin(node, name, kind, ColorTheme::Cyan) {
 }

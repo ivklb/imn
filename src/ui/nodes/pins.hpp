@@ -14,16 +14,16 @@ namespace imn::ui {
 struct IntPin : public Pin {
     int value;
 
-    IntPin(const char* name, PinKind kind, ColorTheme color = ColorTheme::Blue);
+    IntPin(Node* node, const char* name, PinKind kind, ColorTheme color = ColorTheme::Blue);
     void draw_frame() override;
 };
 
 struct ImagePin : public Pin {
-    ImagePin(const char* name, PinKind kind);
+    ImagePin(Node* node, const char* name, PinKind kind);
 };
 
 struct VolumePin : public Pin {
-    VolumePin(const char* name, PinKind kind);
+    VolumePin(Node* node, const char* name, PinKind kind);
 };
 
 }  // namespace imn::ui

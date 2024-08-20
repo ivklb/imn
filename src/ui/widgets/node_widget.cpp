@@ -86,8 +86,8 @@ void NodeWidget::_handle_new_nodes() {
         for (auto& name : name_list) {
             if (ImGui::MenuItem(I18N_STR(name))) {
                 auto node = core::ObjectFactory<Node>::create(name);
-                _graph.insert_node(node);
                 ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
+                _graph.insert_node(node);
             }
         }
         ImGui::EndPopup();
@@ -95,10 +95,10 @@ void NodeWidget::_handle_new_nodes() {
 }
 
 void NodeWidget::_handle_new_links() {
-    int start_attr, end_attr;
-    if (ImNodes::IsLinkCreated(&start_attr, &end_attr)) {
-        auto input_pin = _graph.pin(start_attr);
-        auto output_pin = _graph.pin(end_attr);
+    int start_pid, end_pid;
+    if (ImNodes::IsLinkCreated(&start_pid, &end_pid)) {
+        auto start_pin = _graph.get_pin(start_pid, PinKind::Out);
+        auto end_pin = _graph.get_pin(end_pid, PinKind::In);
 
         // TODO: check for valid link
 
@@ -110,7 +110,7 @@ void NodeWidget::_handle_new_links() {
         //         std::swap(start_attr, end_attr);
         //     }
         // }
-        _graph.insert_link(start_attr, end_attr);
+        _graph.insert_link(start_pid, end_pid);
     }
 }
 

@@ -20,22 +20,20 @@
 using namespace imn::ui;
 
 DemoNode::DemoNode(const char* name, ColorTheme color) : Node() {
-    auto pa = std::make_shared<IntPin>("a", PinKind::In, ColorTheme::Green);
-    auto pb = std::make_shared<IntPin>("b", PinKind::In, ColorTheme::Red);
-    auto pc = std::make_shared<IntPin>("c", PinKind::Out, ColorTheme::Blue);
+    auto pa = std::make_shared<IntPin>(this, "a", PinKind::In, ColorTheme::Green);
+    auto pb = std::make_shared<IntPin>(this, "b", PinKind::In, ColorTheme::Red);
+    auto pc = std::make_shared<IntPin>(this, "c", PinKind::Out, ColorTheme::Blue);
 
-    inputs[pa->id] = pa;
-    inputs[pb->id] = pb;
-    outputs[pc->id] = pc;
+    inputs[pa->name] = pa;
+    inputs[pb->name] = pb;
+    outputs[pc->name] = pc;
 
-    _build_pins();
     status = NodeStatus::Processing;
 }
 
 ImageLoaderNode::ImageLoaderNode() : Node(), config({}) {
-    auto p = std::make_shared<ImagePin>("image", PinKind::Out);
-    outputs[p->id] = p;
-    _build_pins();
+    auto p = std::make_shared<ImagePin>(this, "image", PinKind::Out);
+    outputs[p->name] = p;
 }
 
 std::any ImageLoaderNode::get_output(int pid) {
@@ -90,9 +88,8 @@ void ImageLoaderNode::_draw_body() {
 }
 
 VolumeLoaderNode::VolumeLoaderNode() : Node(), config({}) {
-    auto p = std::make_shared<VolumePin>("volume", PinKind::Out);
-    outputs[p->id] = p;
-    _build_pins();
+    auto p = std::make_shared<VolumePin>(this, "volume", PinKind::Out);
+    outputs[p->name] = p;
 
     width = ui::get_style().font_size * 8.0f;
     _item_current = 0;
@@ -164,9 +161,8 @@ void VolumeLoaderNode::_draw_body() {
 }
 
 ImagePreviewNode::ImagePreviewNode() : Node(), show_window(false) {
-    in_image = std::make_shared<ImagePin>("image", PinKind::In);
-    inputs[in_image->id] = in_image;
-    _build_pins();
+    in_image = std::make_shared<ImagePin>(this, "image", PinKind::In);
+    inputs[in_image->name] = in_image;
 
     status = NodeStatus::Pending;
 }
@@ -188,9 +184,8 @@ void ImagePreviewNode::_process() {
 }
 
 VolumePreviewNode::VolumePreviewNode() : Node(), show_window(false) {
-    pin_vol = std::make_shared<VolumePin>("volume", PinKind::In);
-    inputs[pin_vol->id] = pin_vol;
-    _build_pins();
+    pin_vol = std::make_shared<VolumePin>(this, "volume", PinKind::In);
+    inputs[pin_vol->name] = pin_vol;
 
     status = NodeStatus::Pending;
 }

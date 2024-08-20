@@ -36,12 +36,11 @@ std::map<ColorTheme, std::tuple<ImColor, ImColor>> color_theme_map = {
     {ColorTheme::Gray, {ImColor(149, 165, 166), ImColor(127, 140, 141)}},
 };
 
-Pin::Pin(const char* name, PinKind kind, ColorTheme color)
-    : node(nullptr),
+Pin::Pin(Node* node, const char* name, PinKind kind, ColorTheme color)
+    : node(node),
       name(name),
       kind(kind),
-      color(color),
-      connect_count(0) {
+      color(color) {
     id = IDGenerator::next();
 }
 
@@ -65,21 +64,52 @@ void Pin::draw_frame() {
     ImNodes::PopColorStyle();
 }
 
-Node::Node(int id)
+Node::Node()
     : status(NodeStatus::Created),
       progress_cur(0),
       progress_max(0) {
-    if (id) {
-        this->id = id;
-        body_id = id + 1;
-    } else {
-        this->id = IDGenerator::next();
-        body_id = IDGenerator::next();
-    }
+    id = IDGenerator::next();
+    body_id = IDGenerator::next();
 
     auto name_width = ImGui::CalcTextSize(name().c_str()).x * 1.2f;
     auto default_width = ui::get_style().font_size * 6.0f;
     width = std::max(name_width, default_width);
+}
+
+void Node::fit_json(json j_node) {
+    // fit id
+    id = j_node["id"].get<int>();
+    body_id = j_node["body_id"].get<int>();
+    for (auto& [name, pin] : inputs) {
+        pin->id = j_node["inputs"][name]["id"].get<int>();
+    }
+    for (auto& [name, pin] : outputs) {
+        pin->id = j_node["outputs"][name]["id"].get<int>();
+    }
+
+    // fit position
+    auto pos_x = j_node["pos_x"].get<float>();
+    auto pos_y = j_node["pos_y"].get<float>();
+    ImNodes::SetNodeScreenSpacePos(id, ImVec2(pos_x, pos_y));
+}
+
+json Node::to_json() {
+    json rv;
+    rv["name"] = name();
+
+    rv["id"] = id;
+    rv["body_id"] = body_id;
+    for (auto& [name, pin] : inputs) {
+        rv["inputs"][name]["id"] = pin->id;
+    }
+    for (auto& [name, pin] : outputs) {
+        rv["outputs"][name]["id"] = pin->id;
+    }
+
+    auto pos = ImNodes::GetNodeScreenSpacePos(id);
+    rv["pos_x"] = pos.x;
+    rv["pos_y"] = pos.y;
+    return rv;
 }
 
 void Node::draw_frame() {
@@ -145,19 +175,15 @@ void Node::process() {
     });
 }
 
-// json Node::serialize() {
-// }
-
-// void Node::deserialize(json) {
-// }
-
-void Node::_build_pins() {
-    for (auto& [id, pin] : inputs) {
-        pin->node = this;
+int Node::max_id() {
+    int max_ = std::max(id, body_id);
+    for (auto& [name, pin] : inputs) {
+        max_ = std::max(max_, pin->id);
     }
-    for (auto& [id, pin] : outputs) {
-        pin->node = this;
+    for (auto& [name, pin] : outputs) {
+        max_ = std::max(max_, pin->id);
     }
+    return max_;
 }
 
 void Node::_draw_titlebar_tooltip() {
@@ -194,13 +220,61 @@ Link::Link(int start_nid, int start_pid, int end_nid, int end_pid)
     id = IDGenerator::next();
 }
 
-std::shared_ptr<Pin> Graph::pin(int pid) const {
+Graph Graph::from_json(json data) {
+    Graph graph;
+    int max_id = 0;
+    for (auto& node_json : data["nodes"]) {
+        auto name = node_json["name"].get<std::string>();
+        auto node = core::ObjectFactory<Node>::create(name);
+        node->fit_json(node_json);
+        graph.insert_node(node);
+        max_id = std::max(max_id, node->max_id());
+    }
+    for (auto& edge_json : data["edges"]) {
+        // { id: 0, start_nid: 1, start_pid: 2, to_nid: 3, to_pid: 4 }
+        auto link = graph.insert_link(
+            edge_json["start_pid"].get<int>(),
+            edge_json["end_pid"].get<int>());
+        link->id = edge_json["id"].get<int>();
+        max_id = std::max(max_id, link->id);
+    }
+    IDGenerator::set_next(max_id + 1);
+    return graph;
+}
+
+json Graph::to_json() {
+    json rv;
     for (auto& [id, node] : nodes) {
-        if (node->inputs.count(pid)) {
-            return node->inputs.at(pid);
-        }
-        if (node->outputs.count(pid)) {
-            return node->outputs.at(pid);
+        json j_node = node->to_json();
+        rv["nodes"].push_back(j_node);
+    }
+    for (auto& [id, link] : links) {
+        json j_link;
+        j_link["id"] = link->id;
+        j_link["start_nid"] = link->start_nid;
+        j_link["start_pid"] = link->start_pid;
+        j_link["end_nid"] = link->end_nid;
+        j_link["end_pid"] = link->end_pid;
+        rv["edges"].push_back(j_link);
+    }
+    return rv;
+}
+
+// TODO: find a better way to do this
+std::shared_ptr<Pin> Graph::get_pin(int pid, PinKind kind) const {
+    for (auto& [id, node] : nodes) {
+        if (kind == PinKind::In) {
+            for (auto& [name, pin] : node->inputs) {
+                if (pin->id == pid) {
+                    return pin;
+                }
+            }
+        } else if (kind == PinKind::Out) {
+            for (auto& [name, pin] : node->outputs) {
+                if (pin->id == pid) {
+                    return pin;
+                }
+            }
         }
     }
     return nullptr;
@@ -243,16 +317,15 @@ void Graph::erase_node(int node_id) {
     nodes.erase(node_id);
 }
 
-int Graph::insert_link(int start_pid, int end_pid) {
-    auto from_pin = pin(start_pid);
-    auto to_pin = pin(end_pid);
-    if (to_pin->connect_count > 0) {
+std::shared_ptr<Link> Graph::insert_link(int start_pid, int end_pid) {
+    if (end_pin_to_link.contains(end_pid)) {
         // TODO: break existing link?
-        return -1;
+        return nullptr;
     }
 
-    from_pin->connect_count++;
-    to_pin->connect_count++;
+    auto from_pin = get_pin(start_pid, PinKind::Out);
+    auto to_pin = get_pin(end_pid, PinKind::In);
+
     auto link = std::make_shared<Link>(from_pin->node->id, start_pid, to_pin->node->id, end_pid);
     links[link->id] = link;
     end_pin_to_link[to_pin->id] = link;
@@ -260,23 +333,21 @@ int Graph::insert_link(int start_pid, int end_pid) {
         start_pin_to_links[start_pid] = std::vector<std::shared_ptr<Link>>();
     }
     start_pin_to_links[start_pid].push_back(link);
-    return link->id;
+    return link;
 }
 
 void Graph::erase_link(int link_id) {
     auto link = links.at(link_id);
-    nodes[link->start_nid]->outputs[link->start_pid]->connect_count--;
-    nodes[link->end_nid]->inputs[link->end_pid]->connect_count--;
-    links.erase(link_id);
     end_pin_to_link.erase(link->end_pid);
     std::erase_if(start_pin_to_links[link->start_pid], [=](const auto& l) { return l->id == link_id; });
+    links.erase(link_id);
 }
 
 void Graph::process() {
     for (auto& [nid, node] : nodes) {
         if (node->status == NodeStatus::Dirty) {
-            for (auto& [pid, pin] : node->outputs) {
-                auto ns = get_downstream_nodes(pid);
+            for (auto& [name, pin] : node->outputs) {
+                auto ns = get_downstream_nodes(pin->id);
                 for (auto& n : ns) {
                     n->status = NodeStatus::Pending;
                 }
@@ -285,8 +356,8 @@ void Graph::process() {
         }
         if (node->status == NodeStatus::Pending) {
             bool inputs_ready = true;
-            for (auto& [pid, pin] : node->inputs) {
-                auto n = get_upstream_node(pid);
+            for (auto& [name, pin] : node->inputs) {
+                auto n = get_upstream_node(pin->id);
                 if (n == nullptr || n->status != NodeStatus::Done) {
                     inputs_ready = false;
                     break;
@@ -306,4 +377,3 @@ ImColor imn::ui::get_normal_color(ColorTheme color) {
 ImColor imn::ui::get_highlight_color(ColorTheme color) {
     return std::get<0>(color_theme_map.at(color));
 }
-
