@@ -14,7 +14,6 @@
 #include <vector>
 
 #include "core/setting.hpp"
-#include "ui/imgui_vtk_demo.h"
 #include "ui/widgets/node_widget.hpp"
 #include "ui/widgets/vtk_viewer.hpp"
 

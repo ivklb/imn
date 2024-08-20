@@ -19,7 +19,6 @@
 #include "ext/imgui_notify/ImGuiNotify.hpp"
 #include "include/def.hpp"
 #include "ui/imgui_helper.hpp"
-#include "ui/imgui_vtk_demo.h"  // Actor generator for this demo
 #include "ui/widgets/image_widget.hpp"
 #include "ui/widgets/vtk_viewer.hpp"
 
