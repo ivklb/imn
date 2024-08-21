@@ -122,7 +122,7 @@ void VolumeLoaderNode::fit_json(json data) {
     config.width = data.value("config.width", 0);
     config.height = data.value("config.height", 0);
     config.depth = data.value("config.depth", 0);
-    config.image_type = data.value("config.image_type", CV_8UC1);
+    _item_current = data.value("config.selected_type", 0);
 }
 
 json VolumeLoaderNode::to_json() {
@@ -132,7 +132,7 @@ json VolumeLoaderNode::to_json() {
     rv["config.width"] = config.width;
     rv["config.height"] = config.height;
     rv["config.depth"] = config.depth;
-    rv["config.image_type"] = config.image_type;
+    rv["config.selected_type"] = _item_current;
     return rv;
 }
 
