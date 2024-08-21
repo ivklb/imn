@@ -36,6 +36,18 @@ ImageLoaderNode::ImageLoaderNode() : Node(), config({}) {
     outputs[p->name] = p;
 }
 
+void ImageLoaderNode::fit_json(json data) {
+    Node::fit_json(data);
+    file_str = data.value("file_str", "");
+    file_path = utf8::utf8to16(file_str);
+}
+
+json ImageLoaderNode::to_json() {
+    json rv = Node::to_json();
+    rv["file_str"] = file_str;
+    return rv;
+}
+
 std::any ImageLoaderNode::get_output(int pid) {
     assert(status == NodeStatus::Done && "ImageLoaderNode::get_output() called before processing is done");
     return image;
@@ -94,13 +106,24 @@ VolumeLoaderNode::VolumeLoaderNode() : Node(), config({}) {
     _item_current = 0;
 }
 
+void VolumeLoaderNode::fit_json(json data) {
+    Node::fit_json(data);
+    file_str = data.value("file_str", "");
+    file_path = utf8::utf8to16(file_str);
+}
+
+json VolumeLoaderNode::to_json() {
+    json rv = Node::to_json();
+    rv["file_str"] = file_str;
+    return rv;
+}
+
 std::any VolumeLoaderNode::get_output(int pid) {
     assert(status == NodeStatus::Done && "ImageLoaderNode::get_output() called before processing is done");
     return volume;
 }
 
 void VolumeLoaderNode::_draw_body() {
-
     auto width = ui::get_style().font_size * 8.0f;
     auto button_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.3f;
     auto text_width = (width - ImGui::GetStyle().ItemSpacing.x) * 0.7f;

@@ -27,6 +27,8 @@ struct ImageLoaderNode : public Node, public core::AutoRegistered<ImageLoaderNod
     std::shared_ptr<cv::Mat> image;
 
     ImageLoaderNode();
+    void fit_json(json data) override;
+    json to_json() override;
     static std::string registered_name() { return "image_loader"; }
     std::string name() override { return registered_name(); }
     ColorTheme color() override { return ColorTheme::Red; }
@@ -42,6 +44,8 @@ struct VolumeLoaderNode : public Node, public core::AutoRegistered<VolumeLoaderN
     int _item_current;
 
     VolumeLoaderNode();
+    void fit_json(json data) override;
+    json to_json() override;
     static std::string registered_name() { return "volume_loader"; }
     std::string name() override { return registered_name(); }
     ColorTheme color() override { return ColorTheme::Red; }

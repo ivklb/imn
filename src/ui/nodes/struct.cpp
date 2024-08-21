@@ -222,19 +222,19 @@ Link::Link(int start_nid, int start_pid, int end_nid, int end_pid)
     id = IDGenerator::next();
 }
 
-Graph Graph::from_json(json data) {
-    Graph graph;
+std::shared_ptr<Graph> Graph::from_json(json data) {
+    auto graph = std::make_shared<Graph>();
     int max_id = 0;
     for (auto& node_json : data["nodes"]) {
         auto name = node_json["name"].get<std::string>();
         auto node = core::ObjectFactory<Node>::create(name);
         node->fit_json(node_json);
-        graph.insert_node(node);
+        graph->insert_node(node);
         max_id = std::max(max_id, node->max_id());
     }
     for (auto& edge_json : data["edges"]) {
         // { id: 0, start_nid: 1, start_pid: 2, to_nid: 3, to_pid: 4 }
-        auto link = graph.insert_link(
+        auto link = graph->insert_link(
             edge_json["start_pid"].get<int>(),
             edge_json["end_pid"].get<int>());
         link->id = edge_json["id"].get<int>();

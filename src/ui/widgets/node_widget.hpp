@@ -33,7 +33,7 @@ class NodeWidget : public BaseWidget {
     void _handle_new_links();
     void _handle_deleted_links();
 
-    Graph _graph;
+    std::shared_ptr<Graph> _graph;
 
     ImVec2 _mouse_pos;
 };

@@ -125,7 +125,8 @@ struct Graph {
 
     // Ctors
     Graph() {}
-    static Graph from_json(json data);
+
+    static std::shared_ptr<Graph> from_json(json data);
     json to_json();
 
     // Element Access
