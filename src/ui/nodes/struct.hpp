@@ -86,7 +86,10 @@ struct Node {
     virtual void on_activated();
     virtual void on_click() {}
     virtual void on_double_click() {}
+    virtual std::any get_input(const std::string& pin_name);
     virtual std::any get_input(int pid);
+    template <typename T>
+    T get_input(const std::string& pin_name);
     template <typename T>
     T get_input(int pid);
     virtual std::any get_output(int pid);
@@ -100,6 +103,11 @@ struct Node {
     virtual void _draw_process_bar();
     virtual void _draw_body() {}
 };
+
+template <typename T>
+T Node::get_input(const std::string& pin_name) {
+    return std::any_cast<T>(get_input(pin_name));
+}
 
 template <typename T>
 T Node::get_input(int pid) {

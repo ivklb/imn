@@ -147,6 +147,10 @@ void Node::on_activated() {
     ImNodes::EditorContextCenterNode(id);
 }
 
+std::any Node::get_input(const std::string& pin_name) {
+    return get_input(inputs[pin_name]->id);
+}
+
 std::any Node::get_input(int pid) {
     if (!graph) {
         SPDLOG_DEBUG("Node {} has no graph", name());
