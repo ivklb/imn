@@ -6,6 +6,7 @@
 #include <utf8.h>
 #include <utf8/cpp20.h>
 
+#include <algorithm>
 #include <cassert>
 #include <opencv2/opencv.hpp>
 
@@ -29,6 +30,97 @@ DemoNode::DemoNode(const char* name, ColorTheme color) : Node() {
     outputs[pc->name] = pc;
 
     status = NodeStatus::Processing;
+}
+
+UnaryOperatorNode::UnaryOperatorNode() {
+    auto p_in = std::make_shared<ImagePin>(this, "mat", PinKind::In);
+    auto p_out = std::make_shared<ImagePin>(this, "mat", PinKind::Out);
+    inputs[p_in->name] = p_in;
+    outputs[p_out->name] = p_out;
+}
+
+void UnaryOperatorNode::fit_json(json data) {
+    Node::fit_json(data);
+    op = data.value("op", 0);
+}
+
+json UnaryOperatorNode::to_json() {
+    json rv = Node::to_json();
+    rv["op"] = op;
+    return rv;
+}
+
+std::any UnaryOperatorNode::get_output(int pid) {
+    assert(status == NodeStatus::Done && "UnaryOperatorNode::get_output() called before processing is done");
+    return result;
+}
+
+void UnaryOperatorNode::_draw_body() {
+    auto button_width = (width() - ImGui::GetStyle().ItemSpacing.x) * 0.3f;
+    auto text_width = (width() - ImGui::GetStyle().ItemSpacing.x) * 0.7f;
+
+    /*
+    Negation,
+        Log,
+        Transpose,
+        FlipLR,
+        FlipUD,
+        Rotate90,
+        Rotate180,
+        Rotate270,
+    */
+    const char* combo_items[] = {"uint8", "uint16", "uint32", "float32"};
+    const int combo_values[] = {CV_8UC1, CV_16UC1, CV_32SC1, CV_32FC1};
+    static int item_current = 0;
+    ImGui::PushItemWidth(width() - ImGui::CalcTextSize("height").x - ImGui::GetStyle().ItemSpacing.x);
+    ImGui::Combo("type", &item_current, combo_items, IM_ARRAYSIZE(combo_items));
+    ImGui::InputInt("offset", &config.offset);
+    ImGui::InputInt("width", &config.width);
+    ImGui::InputInt("height", &config.height);
+    ImGui::PopItemWidth();
+    config.image_type = combo_values[item_current];
+
+
+
+    if (ImGui::Button("load")) {
+        if (file_str.empty()) {
+            ImGui::InsertNotification({ImGuiToastType::Warning, 3000, "! %s", "Please select a file"});
+        } else {
+            status = NodeStatus::Processing;
+            image = imn::io::load_image(file_path, config);
+            status = NodeStatus::Dirty;
+        }
+    }
+}
+
+void UnaryOperatorNode::_process() {
+    auto op_ = static_cast<Operator>(op);
+    auto in_mat = get_input<std::shared_ptr<cv::Mat>>("mat");
+    result = std::make_shared<cv::Mat>();
+
+    if (op_ == Operator::Negation) {
+        in_mat->convertTo(*result, CV_32FC1);
+        *result = -(*result);
+    } else if (op_ == Operator::Log) {
+        in_mat->convertTo(*result, CV_32FC1);
+        std::transform(
+            result->begin<float>(),
+            result->end<float>(),
+            result->begin<float>(),
+            [](float x) { return std::log(x); });
+    } else if (op_ == Operator::Transpose) {
+        *result = in_mat->t();
+    } else if (op_ == Operator::FlipLR) {
+        cv::flip(*in_mat, *result, 1);
+    } else if (op_ == Operator::FlipUD) {
+        cv::flip(*in_mat, *result, 0);
+    } else if (op_ == Operator::Rotate90) {
+        cv::rotate(*in_mat, *result, cv::ROTATE_90_CLOCKWISE);
+    } else if (op_ == Operator::Rotate180) {
+        cv::rotate(*in_mat, *result, cv::ROTATE_180);
+    } else if (op_ == Operator::Rotate270) {
+        cv::rotate(*in_mat, *result, cv::ROTATE_90_COUNTERCLOCKWISE);
+    }
 }
 
 ImageLoaderNode::ImageLoaderNode() : Node(), config({}) {

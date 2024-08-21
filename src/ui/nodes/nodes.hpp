@@ -20,6 +20,33 @@ struct DemoNode : public Node {
     DemoNode(const char* name, ColorTheme color = ColorTheme::Blue);
 };
 
+struct UnaryOperatorNode : public Node, public core::AutoRegistered<UnaryOperatorNode, Node> {
+    enum class Operator {
+        Negation,
+        Log,
+        Transpose,
+        FlipLR,
+        FlipUD,
+        Rotate90,
+        Rotate180,
+        Rotate270,
+    };
+
+    std::shared_ptr<cv::Mat> input_mat;
+    std::shared_ptr<cv::Mat> result;
+    int op;
+
+    UnaryOperatorNode();
+    void fit_json(json data) override;
+    json to_json() override;
+    static std::string registered_name() { return "unary_operator"; }
+    std::string name() override { return registered_name(); }
+    ColorTheme color() override { return ColorTheme::Red; }
+    std::any get_output(int pid) override;
+    void _draw_body() override;
+    void _process() override;
+};
+
 struct ImageLoaderNode : public Node, public core::AutoRegistered<ImageLoaderNode, Node> {
     std::string file_str;             // used to display in the UI
     std::filesystem::path file_path;  // used to access file with unicode path
