@@ -34,7 +34,7 @@ NodeWidget::~NodeWidget() {
     }
     json data = _graph->to_json();
     std::ofstream o(kSaveFilePath);
-    o << std::setw(4) << data << std::endl;
+    o << std::setw(2) << data << std::endl;
 
     ImNodes::DestroyContext();
 }
@@ -44,7 +44,6 @@ void NodeWidget::setup() {
     ImNodes::GetIO().EmulateThreeButtonMouse.Modifier = &ImGui::GetIO().KeyAlt;
     ImNodes::GetStyle().GridSpacing = get_style().font_size * 2;
 
-    // TODO: load from settings
     if (std::filesystem::exists(kSaveFilePath)) {
         std::ifstream file(kSaveFilePath);
         auto data = json::parse(file);
@@ -61,6 +60,7 @@ void NodeWidget::process() {
 }
 
 void NodeWidget::_show_node_editor() {
+    auto pos = ImNodes::EditorContextGetPanning();
     ImNodes::BeginNodeEditor();
     // Handle new nodes
     // These are driven by the user, so we place this code before rendering the nodes

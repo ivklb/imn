@@ -86,7 +86,7 @@ void Node::fit_json(json j_node) {
     // fit position
     auto pos_x = j_node["pos_x"].get<float>();
     auto pos_y = j_node["pos_y"].get<float>();
-    ImNodes::SetNodeScreenSpacePos(id, ImVec2(pos_x, pos_y));
+    ImNodes::SetNodeEditorSpacePos(id, ImVec2(pos_x, pos_y));
 }
 
 json Node::to_json() {
@@ -102,7 +102,7 @@ json Node::to_json() {
         rv["outputs"][name]["id"] = pin->id;
     }
 
-    auto pos = ImNodes::GetNodeScreenSpacePos(id);
+    auto pos = ImNodes::GetNodeEditorSpacePos(id);
     rv["pos_x"] = pos.x;
     rv["pos_y"] = pos.y;
     return rv;

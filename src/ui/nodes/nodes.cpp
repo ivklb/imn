@@ -40,11 +40,19 @@ void ImageLoaderNode::fit_json(json data) {
     Node::fit_json(data);
     file_str = data.value("file_str", "");
     file_path = utf8::utf8to16(file_str);
+    config.offset = data.value("config.offset", 0);
+    config.width = data.value("config.width", 0);
+    config.height = data.value("config.height", 0);
+    config.image_type = data.value("config.image_type", CV_8UC1);
 }
 
 json ImageLoaderNode::to_json() {
     json rv = Node::to_json();
     rv["file_str"] = file_str;
+    rv["config.offset"] = config.offset;
+    rv["config.width"] = config.width;
+    rv["config.height"] = config.height;
+    rv["config.image_type"] = config.image_type;
     return rv;
 }
 
@@ -110,16 +118,26 @@ void VolumeLoaderNode::fit_json(json data) {
     Node::fit_json(data);
     file_str = data.value("file_str", "");
     file_path = utf8::utf8to16(file_str);
+    config.offset = data.value("config.offset", 0);
+    config.width = data.value("config.width", 0);
+    config.height = data.value("config.height", 0);
+    config.depth = data.value("config.depth", 0);
+    config.image_type = data.value("config.image_type", CV_8UC1);
 }
 
 json VolumeLoaderNode::to_json() {
     json rv = Node::to_json();
     rv["file_str"] = file_str;
+    rv["config.offset"] = config.offset;
+    rv["config.width"] = config.width;
+    rv["config.height"] = config.height;
+    rv["config.depth"] = config.depth;
+    rv["config.image_type"] = config.image_type;
     return rv;
 }
 
 std::any VolumeLoaderNode::get_output(int pid) {
-    assert(status == NodeStatus::Done && "ImageLoaderNode::get_output() called before processing is done");
+    assert(status == NodeStatus::Done && "VolumeLoaderNode::get_output() called before processing is done");
     return volume;
 }
 
