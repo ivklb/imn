@@ -13,7 +13,7 @@
 
 using namespace imn::ui;
 
-ImageWidget::ImageWidget() {
+ImageWidget::ImageWidget() : BaseWidget(), _node(nullptr) {
     _id = get_unique_id();
 }
 
@@ -71,6 +71,12 @@ void ImageWidget::show(ImVec2 size) {
 
 void ImageWidget::show_toolbar(bool show) {
     _show_toolbar = show;
+}
+
+void ImageWidget::on_activated() {
+    if (_node) {
+        _node->on_activated();
+    }
 }
 
 void ImageWidget::_show_toolbar_func() {

@@ -17,6 +17,9 @@ imn is a low code platform for image / volume processing. It is designed to prov
 
 - [ ] add more built-in nodes
 - [ ] add support for i18n
-- [ ] add support for other 4k screen
+- [ ] add image interaction
+- [ ] add volume interaction
+- [ ] add volume segmentation
+- [ ] add support for 4k screen
 - [ ] add support for python node
 

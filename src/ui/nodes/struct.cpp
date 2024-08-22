@@ -173,7 +173,8 @@ void Node::process() {
     pool::enqueue([this]() {
         try {
             _process();
-            status = NodeStatus::Done;
+            // status = NodeStatus::Done;
+            status = NodeStatus::Dirty;
         } catch (const std::exception& e) {
             SPDLOG_ERROR("Node {} process error: {}", name(), e.what());
             status = NodeStatus::Error;

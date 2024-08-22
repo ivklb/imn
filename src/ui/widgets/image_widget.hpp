@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "ui/base_window.hpp"
+#include "ui/nodes/struct.hpp"
 
 namespace imn::ui {
 
@@ -26,10 +27,12 @@ class ImageWidget : public BaseWidget {
    public:
     ImageWidget();
     ~ImageWidget();
+    void set_node(Node* node) { _node = node; }
     void set_image(std::shared_ptr<cv::Mat> image);
     void set_images(std::vector<std::shared_ptr<cv::Mat>> images);
     void show(ImVec2 size = ImVec2(0, 0)) override;
     void show_toolbar(bool show);
+    void on_activated() override;
 
    private:
     void _show_toolbar_func();
@@ -42,6 +45,7 @@ class ImageWidget : public BaseWidget {
     std::vector<std::shared_ptr<cv::Mat>> _images;
     std::map<int, ImTextureID> _tex_id_map;
     int _img_idx;
+    Node* _node;
 
     ImVec2 _last_canvas_size;  // used to check if resize event happened
     ImVec2 _bounds_min;

@@ -73,13 +73,11 @@ void UnaryOperatorNode::_draw_body() {
     };
 
     ImGui::PushItemWidth(width() - ImGui::CalcTextSize("height").x - ImGui::GetStyle().ItemSpacing.x);
-    ImGui::Combo("operator", &selected_op, [](void* data, int n) {
-        auto self = static_cast<UnaryOperatorNode*>(data);
-        return op_names.at(n).c_str(); }, this, int(op_names.size()));
+    ImGui::Combo("operator", &selected_op, [](void* data, int n) { return op_names.at(n).c_str(); }, nullptr, int(op_names.size()));
     ImGui::PopItemWidth();
 
     if (selected_op != old_selected_op) {
-        status = NodeStatus::Dirty;
+        status = NodeStatus::Pending;
         old_selected_op = selected_op;
     }
 }
@@ -87,31 +85,32 @@ void UnaryOperatorNode::_draw_body() {
 void UnaryOperatorNode::_process() {
     auto op_ = static_cast<Operator>(selected_op);
     auto in_mat = get_input<std::shared_ptr<cv::Mat>>("mat");
-    result = std::make_shared<cv::Mat>();
+    auto rv = std::make_shared<cv::Mat>();
 
     if (op_ == Operator::Negation) {
-        in_mat->convertTo(*result, CV_32FC1);
-        *result = -(*result);
+        in_mat->convertTo(*rv, CV_32FC1);
+        *rv = -(*rv);
     } else if (op_ == Operator::Log) {
-        in_mat->convertTo(*result, CV_32FC1);
+        in_mat->convertTo(*rv, CV_32FC1);
         std::transform(
-            result->begin<float>(),
-            result->end<float>(),
-            result->begin<float>(),
+            rv->begin<float>(),
+            rv->end<float>(),
+            rv->begin<float>(),
             [](float x) { return std::log(x); });
     } else if (op_ == Operator::Transpose) {
-        *result = in_mat->t();
+        *rv = in_mat->t();
     } else if (op_ == Operator::FlipLR) {
-        cv::flip(*in_mat, *result, 1);
+        cv::flip(*in_mat, *rv, 1);
     } else if (op_ == Operator::FlipUD) {
-        cv::flip(*in_mat, *result, 0);
+        cv::flip(*in_mat, *rv, 0);
     } else if (op_ == Operator::Rotate90) {
-        cv::rotate(*in_mat, *result, cv::ROTATE_90_CLOCKWISE);
+        cv::rotate(*in_mat, *rv, cv::ROTATE_90_CLOCKWISE);
     } else if (op_ == Operator::Rotate180) {
-        cv::rotate(*in_mat, *result, cv::ROTATE_180);
+        cv::rotate(*in_mat, *rv, cv::ROTATE_180);
     } else if (op_ == Operator::Rotate270) {
-        cv::rotate(*in_mat, *result, cv::ROTATE_90_COUNTERCLOCKWISE);
+        cv::rotate(*in_mat, *rv, cv::ROTATE_90_COUNTERCLOCKWISE);
     }
+    result = rv;
 }
 
 ImageLoaderNode::ImageLoaderNode() : Node(), config({}), _item_current(0) {
@@ -287,8 +286,6 @@ void VolumeLoaderNode::_draw_body() {
 ImagePreviewNode::ImagePreviewNode() : Node(), show_window(false) {
     in_image = std::make_shared<ImagePin>(this, "image", PinKind::In);
     inputs[in_image->name] = in_image;
-
-    status = NodeStatus::Pending;
 }
 
 void ImagePreviewNode::_draw_body() {
@@ -299,6 +296,7 @@ void ImagePreviewNode::_process() {
     auto mat = get_input<std::shared_ptr<cv::Mat>>(in_image->id);
     if (!viewer_window) {
         viewer_widget = std::make_shared<ui::ImageWidget>();
+        viewer_widget->set_node(this);
         viewer_widget->show_toolbar(false);
         viewer_window = std::make_shared<WrapperWindow>(viewer_widget, "Image Preview");
         lambda::call("ADD_WINDOW", std::shared_ptr<BaseWindow>(viewer_window));
@@ -310,8 +308,6 @@ void ImagePreviewNode::_process() {
 VolumePreviewNode::VolumePreviewNode() : Node(), show_window(false) {
     pin_vol = std::make_shared<VolumePin>(this, "volume", PinKind::In);
     inputs[pin_vol->name] = pin_vol;
-
-    status = NodeStatus::Pending;
 }
 
 void VolumePreviewNode::on_double_click() {
