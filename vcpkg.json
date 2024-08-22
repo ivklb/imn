@@ -15,6 +15,7 @@
         { "name": "implot" },
         { "name": "nlohmann-json" },
         { "name": "opencv4", "features": ["eigen", "tiff"] },
+        { "name": "pybind11" },
         { "name": "spdlog" },
         { "name": "utfcpp" },
         { "name": "vtk", "features": ["opengl"] }

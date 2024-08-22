@@ -32,3 +32,17 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/asset
     $<TARGET_FILE_DIR:${PROJECT_NAME}>/asset)
+
+if(ENABLE_PYTHON)
+    get_filename_component(PY_DIR "${Python_EXECUTABLE}" DIRECTORY)
+    message(STATUS "Python executable: ${Python_EXECUTABLE}")
+    add_custom_command(TARGET ${PROJECT_NAME}
+        PRE_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        -DTARGET_DIR=$<TARGET_FILE_DIR:${PROJECT_NAME}>
+        -DPY_DIR=${PY_DIR}
+        -P ${CMAKE_SOURCE_DIR}/cmake/install_python.cmake
+        COMMENT "installing python..."
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    )
+endif()
