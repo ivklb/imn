@@ -34,14 +34,16 @@ struct UnaryOperatorNode : public Node, public core::AutoRegistered<UnaryOperato
 
     std::shared_ptr<cv::Mat> input_mat;
     std::shared_ptr<cv::Mat> result;
-    int op;
+    int selected_op;
+    int old_selected_op;
 
     UnaryOperatorNode();
     void fit_json(json data) override;
     json to_json() override;
     static std::string registered_name() { return "unary_operator"; }
     std::string name() override { return registered_name(); }
-    ColorTheme color() override { return ColorTheme::Red; }
+    ColorTheme color() override { return ColorTheme::Green; }
+    float width() override;
     std::any get_output(int pid) override;
     void _draw_body() override;
     void _process() override;
@@ -52,6 +54,7 @@ struct ImageLoaderNode : public Node, public core::AutoRegistered<ImageLoaderNod
     std::filesystem::path file_path;  // used to access file with unicode path
     imn::io::ImportConfig config;
     std::shared_ptr<cv::Mat> image;
+    int _item_current;
 
     ImageLoaderNode();
     void fit_json(json data) override;

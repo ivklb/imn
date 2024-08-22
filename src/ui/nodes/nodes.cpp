@@ -32,7 +32,7 @@ DemoNode::DemoNode(const char* name, ColorTheme color) : Node() {
     status = NodeStatus::Processing;
 }
 
-UnaryOperatorNode::UnaryOperatorNode() {
+UnaryOperatorNode::UnaryOperatorNode() : Node(), selected_op(0), old_selected_op(0) {
     auto p_in = std::make_shared<ImagePin>(this, "mat", PinKind::In);
     auto p_out = std::make_shared<ImagePin>(this, "mat", PinKind::Out);
     inputs[p_in->name] = p_in;
@@ -41,13 +41,18 @@ UnaryOperatorNode::UnaryOperatorNode() {
 
 void UnaryOperatorNode::fit_json(json data) {
     Node::fit_json(data);
-    op = data.value("op", 0);
+    selected_op = data.value("op", 0);
+    old_selected_op = selected_op;
 }
 
 json UnaryOperatorNode::to_json() {
     json rv = Node::to_json();
-    rv["op"] = op;
+    rv["op"] = selected_op;
     return rv;
+}
+
+float UnaryOperatorNode::width() {
+    return ui::get_style().font_size * 8.0f;
 }
 
 std::any UnaryOperatorNode::get_output(int pid) {
@@ -56,45 +61,31 @@ std::any UnaryOperatorNode::get_output(int pid) {
 }
 
 void UnaryOperatorNode::_draw_body() {
-    auto button_width = (width() - ImGui::GetStyle().ItemSpacing.x) * 0.3f;
-    auto text_width = (width() - ImGui::GetStyle().ItemSpacing.x) * 0.7f;
+    static const std::map<int, std::string> op_names = {
+        {int(Operator::Negation), "Negation"},
+        {int(Operator::Log), "Log"},
+        {int(Operator::Transpose), "Transpose"},
+        {int(Operator::FlipLR), "FlipLR"},
+        {int(Operator::FlipUD), "FlipUD"},
+        {int(Operator::Rotate90), "Rotate90"},
+        {int(Operator::Rotate180), "Rotate180"},
+        {int(Operator::Rotate270), "Rotate270"},
+    };
 
-    /*
-    Negation,
-        Log,
-        Transpose,
-        FlipLR,
-        FlipUD,
-        Rotate90,
-        Rotate180,
-        Rotate270,
-    */
-    const char* combo_items[] = {"uint8", "uint16", "uint32", "float32"};
-    const int combo_values[] = {CV_8UC1, CV_16UC1, CV_32SC1, CV_32FC1};
-    static int item_current = 0;
     ImGui::PushItemWidth(width() - ImGui::CalcTextSize("height").x - ImGui::GetStyle().ItemSpacing.x);
-    ImGui::Combo("type", &item_current, combo_items, IM_ARRAYSIZE(combo_items));
-    ImGui::InputInt("offset", &config.offset);
-    ImGui::InputInt("width", &config.width);
-    ImGui::InputInt("height", &config.height);
+    ImGui::Combo("operator", &selected_op, [](void* data, int n) {
+        auto self = static_cast<UnaryOperatorNode*>(data);
+        return op_names.at(n).c_str(); }, this, int(op_names.size()));
     ImGui::PopItemWidth();
-    config.image_type = combo_values[item_current];
 
-
-
-    if (ImGui::Button("load")) {
-        if (file_str.empty()) {
-            ImGui::InsertNotification({ImGuiToastType::Warning, 3000, "! %s", "Please select a file"});
-        } else {
-            status = NodeStatus::Processing;
-            image = imn::io::load_image(file_path, config);
-            status = NodeStatus::Dirty;
-        }
+    if (selected_op != old_selected_op) {
+        status = NodeStatus::Dirty;
+        old_selected_op = selected_op;
     }
 }
 
 void UnaryOperatorNode::_process() {
-    auto op_ = static_cast<Operator>(op);
+    auto op_ = static_cast<Operator>(selected_op);
     auto in_mat = get_input<std::shared_ptr<cv::Mat>>("mat");
     result = std::make_shared<cv::Mat>();
 
@@ -123,7 +114,7 @@ void UnaryOperatorNode::_process() {
     }
 }
 
-ImageLoaderNode::ImageLoaderNode() : Node(), config({}) {
+ImageLoaderNode::ImageLoaderNode() : Node(), config({}), _item_current(0) {
     auto p = std::make_shared<ImagePin>(this, "image", PinKind::Out);
     outputs[p->name] = p;
 }
@@ -178,14 +169,13 @@ void ImageLoaderNode::_draw_body() {
     if (!file_str.empty() && !imn::io::is_image(file_path)) {
         const char* combo_items[] = {"uint8", "uint16", "uint32", "float32"};
         const int combo_values[] = {CV_8UC1, CV_16UC1, CV_32SC1, CV_32FC1};
-        static int item_current = 0;
         ImGui::PushItemWidth(width() - ImGui::CalcTextSize("height").x - ImGui::GetStyle().ItemSpacing.x);
-        ImGui::Combo("type", &item_current, combo_items, IM_ARRAYSIZE(combo_items));
+        ImGui::Combo("type", &_item_current, combo_items, IM_ARRAYSIZE(combo_items));
         ImGui::InputInt("offset", &config.offset);
         ImGui::InputInt("width", &config.width);
         ImGui::InputInt("height", &config.height);
         ImGui::PopItemWidth();
-        config.image_type = combo_values[item_current];
+        config.image_type = combo_values[_item_current];
     }
 
     if (ImGui::Button("load")) {
