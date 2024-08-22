@@ -88,15 +88,15 @@ void UnaryOperatorNode::_process() {
     auto rv = std::make_shared<cv::Mat>();
 
     if (op_ == Operator::Negation) {
-        in_mat->convertTo(*rv, CV_32FC1);
+        in_mat->convertTo(*rv, CV_32F);
         *rv = -(*rv);
     } else if (op_ == Operator::Log) {
-        in_mat->convertTo(*rv, CV_32FC1);
-        std::transform(
-            rv->begin<float>(),
-            rv->end<float>(),
-            rv->begin<float>(),
-            [](float x) { return std::log(x); });
+        in_mat->convertTo(*rv, CV_32F);
+        size_t count = rv->total() * rv->channels();
+        std::for_each(
+            (float*)(rv->data),
+            (float*)(rv->data) + count,
+            [](float& x) { x = std::log(x); });
     } else if (op_ == Operator::Transpose) {
         *rv = in_mat->t();
     } else if (op_ == Operator::FlipLR) {

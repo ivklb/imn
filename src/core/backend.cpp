@@ -142,6 +142,9 @@ ImTextureID load_texture_2d(const cv::Mat* img, bool nearest_sample) {
     } else if (img->type() == CV_32FC1) {
         // TODO: review me
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, img->cols, img->rows, 0, GL_RED, GL_FLOAT, img->data);
+    } else if (img->type() == CV_32FC3) {
+        // TODO: review me
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, img->cols, img->rows, 0, GL_RGB, GL_FLOAT, img->data);
     } else {
         SPDLOG_ERROR("unsupported image type {}", img->type());
     }
