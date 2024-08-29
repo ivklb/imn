@@ -4,14 +4,13 @@
 
 #include <memory>
 
-namespace imn {
+namespace imn::app {
 
-class App {
-   public:
-    static App* app();
-    void init();
-    void destroy();
-};
-}  // namespace imn
+void init();
+
+bool is_running();
+void stop();
+
+}  // namespace imn::app
 
 #endif
