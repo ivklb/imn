@@ -2,10 +2,13 @@
 #ifndef CORE__OBJECT_HPP
 #define CORE__OBJECT_HPP
 
+#include <spdlog/spdlog.h>
+
 #include <functional>
 #include <map>
 #include <memory>
 #include <ranges>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
 
@@ -20,7 +23,8 @@ class ObjectFactory {
     static std::shared_ptr<T> create(const std::string& name) {
         auto& map = _get_map();
         if (!map.contains(name)) {
-            throw std::runtime_error("No creator for " + name);
+            SPDLOG_WARN("No creator for {}", name);
+            return nullptr;
         }
         return map[name]();
     }

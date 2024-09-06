@@ -122,15 +122,15 @@ void Node::draw_frame() {
     ImNodes::BeginNode(id);
 
     ImNodes::BeginNodeTitleBar();
-    ImGui::TextUnformatted(name().c_str());
+    _draw_titlebar();
     ImNodes::EndNodeTitleBar();
     if (ImGui::BeginItemTooltip()) {
         _draw_titlebar_tooltip();
         ImGui::EndTooltip();
     }
 
-    _draw_pins();
     _draw_process_bar();
+    _draw_pins();
 
     ImNodes::BeginStaticAttribute(body_id);
     _draw_body();
@@ -193,18 +193,13 @@ int Node::max_id() {
     return max_;
 }
 
+void Node::_draw_titlebar() {
+    ImGui::TextUnformatted(name().c_str());
+}
+
 void Node::_draw_titlebar_tooltip() {
     ImGui::Text("name: %s", name().c_str());
     ImGui::Text("id: %d", id);
-}
-
-void Node::_draw_pins() {
-    for (auto& [id, pin] : inputs) {
-        pin->draw_frame();
-    }
-    for (auto& [id, pin] : outputs) {
-        pin->draw_frame();
-    }
 }
 
 void Node::_draw_process_bar() {
@@ -216,6 +211,15 @@ void Node::_draw_process_bar() {
             float fraction = float(progress_cur) / progress_max;
             ImGui::ProgressBar(fraction, ImVec2(width(), font_size * 0.2f), "");
         }
+    }
+}
+
+void Node::_draw_pins() {
+    for (auto& [id, pin] : inputs) {
+        pin->draw_frame();
+    }
+    for (auto& [id, pin] : outputs) {
+        pin->draw_frame();
     }
 }
 
@@ -233,9 +237,11 @@ std::shared_ptr<Graph> Graph::from_json(json data) {
     for (auto& node_json : data["nodes"]) {
         auto name = node_json["name"].get<std::string>();
         auto node = core::ObjectFactory<Node>::create(name);
-        node->fit_json(node_json);
-        graph->insert_node(node);
-        max_id = std::max(max_id, node->max_id());
+        if (node) {
+            node->fit_json(node_json);
+            graph->insert_node(node);
+            max_id = std::max(max_id, node->max_id());
+        }
     }
     for (auto& edge_json : data["edges"]) {
         // { id: 0, start_nid: 1, start_pid: 2, to_nid: 3, to_pid: 4 }

@@ -3,6 +3,7 @@ add_library(
     nodes
     nodes.cpp
     pins.cpp
+    python_nodes.cpp
     struct.cpp
 )
 

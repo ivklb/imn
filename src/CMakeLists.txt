@@ -29,9 +29,9 @@ if(MSVC)
 endif()
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/asset
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>/asset)
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/asset $<TARGET_FILE_DIR:${PROJECT_NAME}>/asset
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/src/python $<TARGET_FILE_DIR:${PROJECT_NAME}>/python
+)
 
 if(ENABLE_PYTHON)
     get_filename_component(PY_DIR "${Python_EXECUTABLE}" DIRECTORY)

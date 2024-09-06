@@ -8,5 +8,7 @@ int main(int argc, char* argv[]) {
 
     imn::ui::MainWindow window;
     window.show();
+
+    imn::app::stop();
     return 0;
 }

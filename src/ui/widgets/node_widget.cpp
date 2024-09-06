@@ -16,6 +16,7 @@
 #include "include/def.hpp"
 #include "ui/imgui_helper.hpp"
 #include "ui/nodes/nodes.hpp"
+#include "ui/nodes/python_nodes.hpp"
 #include "util/common.hpp"
 
 using namespace imn::ui;
@@ -97,19 +98,36 @@ void NodeWidget::_handle_new_nodes() {
     const bool open_popup = ImNodes::IsEditorHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Right);
 
     if (!ImGui::IsAnyItemHovered() && open_popup) {
-        ImGui::OpenPopup("add node");
+        ImGui::OpenPopup("show_context_menu");
     }
 
-    if (ImGui::BeginPopup("add node")) {
+    if (ImGui::BeginPopup("show_context_menu")) {
         const ImVec2 click_pos = ImGui::GetMousePosOnOpeningCurrentPopup();
-        auto name_list = core::ObjectFactory<Node>::entries();
-        for (auto& name : name_list) {
-            if (ImGui::MenuItem(I18N_STR(name))) {
-                auto node = core::ObjectFactory<Node>::create(name);
-                ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
-                _graph->insert_node(node);
+
+        if (ImGui::BeginMenu(I18N_STR("add_node"))) {
+            auto name_list = core::ObjectFactory<Node>::entries();
+            for (auto& name : name_list) {
+                if (ImGui::MenuItem(I18N_STR(name))) {
+                    auto node = core::ObjectFactory<Node>::create(name);
+                    ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
+                    _graph->insert_node(node);
+                }
             }
+            if (ImGui::BeginMenu(I18N_STR("custom_node"))) {
+                auto py_nodes = find_python_nodes();
+                for (auto& name : py_nodes) {
+                    if (ImGui::MenuItem(name.c_str())) {
+                        auto node = core::ObjectFactory<Node>::create(PythonNode::registered_name());
+                        dynamic_pointer_cast<PythonNode>(node)->set_filename(name);
+                        ImNodes::SetNodeScreenSpacePos(node->id, click_pos);
+                        _graph->insert_node(node);
+                    }
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenu();
         }
+
         ImGui::EndPopup();
     }
 }
