@@ -126,7 +126,7 @@ void init() {
     pool::enqueue(_run);
 }
 
-size_t exec_sync(const std::function<void()>& func) {
+size_t exec_async(const std::function<void()>& func) {
     std::lock_guard guard(_mutex);
     auto task_id = _next_id++;
     _queue_id.push(task_id);
@@ -145,8 +145,8 @@ void wait_done(size_t task_id) {
     }
 }
 
-void exec_async(const std::function<void()>& func) {
-    auto task_id = exec_sync(func);
+void exec_sync(const std::function<void()>& func) {
+    auto task_id = exec_async(func);
     wait_done(task_id);
 }
 
@@ -157,7 +157,7 @@ load_pins(const std::string& filename) {
     // decltype(load_pins_impl(filename)) rv;
     std::map<std::string, std::string> in_pins;
     std::vector<std::string> out_pins;
-    exec_async([&]() {
+    exec_sync([&]() {
         auto [in_pins_, out_pins_] = load_pins_impl(filename);
         in_pins = in_pins_;
         out_pins = out_pins_;

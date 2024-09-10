@@ -143,6 +143,7 @@ struct Graph {
 
     // Capacity
     std::shared_ptr<Node> get_upstream_node(int pin_id) const;
+    std::shared_ptr<Pin> get_upstream_pin(int pin_id) const;
     std::vector<std::shared_ptr<Node>> get_downstream_nodes(int pin_id) const;
 
     // Modifiers

@@ -1,26 +1,21 @@
 import numpy as np
 import typing
+# import imn
 
 
-def run(a: int, b: np.ndarray) -> tuple[int, np.ndarray]:
-    """
-    This is a test function
-    """
-    return [a + 1, b + 1]
+def run(image: np.ndarray) -> tuple[np.ndarray]:
+    return np.transpose(image)
+    # dtype = 'uint8'
+    # if image.dtype == np.uint8:
+    #     pass
+    # elif image.dtype == np.uint16:
+    #     dtype = 'uint16'
+    # elif image.dtype == np.uint32:
+    #     dtype = 'uint32'
+    # elif image.dtype == np.float32:
+    #     dtype = 'float32'
 
-def run2() :
-    pass
+    # rv = imn.create_array(tmp.shape, dtype)
+    # rv[:] = tmp
+    # return rv
 
-# {}
-print(typing.get_type_hints(run2))
-
-
-a = typing.get_type_hints(run)
-
-# {'a': <class 'int'>, 'b': <class 'numpy.ndarray'>, 'return': tuple[int, numpy.ndarray]}
-print(a)
-
-# (<class 'int'>, <class 'int'>)
-print(a["return"].__args__)
-print(a["return"].__args__[0] == int)  # True
-print(a["return"].__args__[1] == np.ndarray)  # True

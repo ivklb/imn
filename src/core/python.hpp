@@ -11,10 +11,10 @@
 namespace imn::python {
 
 void init();
-size_t exec_sync(const std::function<void()>& func);
+size_t exec_async(const std::function<void()>& func);
+void exec_sync(const std::function<void()>& func);
 bool is_done(size_t task_id);
 void wait_done(size_t task_id);
-void exec_async(const std::function<void()>& func);
 
 std::tuple<
     std::map<std::string, std::string>,

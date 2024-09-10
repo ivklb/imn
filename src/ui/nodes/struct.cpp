@@ -156,12 +156,12 @@ std::any Node::get_input(int pid) {
         SPDLOG_DEBUG("Node {} has no graph", name());
         return {};
     }
-    auto node = graph->get_upstream_node(pid);
-    if (!node) {
-        SPDLOG_DEBUG("Node {} has no upstream node", name());
+    auto pin = graph->get_upstream_pin(pid);
+    if (!pin) {
+        SPDLOG_DEBUG("Node {} has no upstream pin", name());
         return {};
     }
-    return node->get_output(pid);
+    return pin->node->get_output(pin->id);
 }
 
 std::any Node::get_output(int pid) {
@@ -297,6 +297,14 @@ std::shared_ptr<Node> Graph::get_upstream_node(int pin_id) const {
     if (end_pin_to_link.count(pin_id)) {
         auto link = end_pin_to_link.at(pin_id);
         return nodes.at(link->start_nid);
+    }
+    return nullptr;
+}
+
+std::shared_ptr<Pin> Graph::get_upstream_pin(int pin_id) const {
+    if (end_pin_to_link.count(pin_id)) {
+        auto link = end_pin_to_link.at(pin_id);
+        return get_pin(link->start_pid, PinKind::Out);
     }
     return nullptr;
 }

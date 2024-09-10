@@ -20,6 +20,7 @@ target_link_libraries(nodes
     unofficial::gl3w::gl3w
     glfw
     imgui::imgui
+    pybind11::embed
     utf8::cpp
     utf8cpp::utf8cpp
     ${VTK_LIBRARIES}
