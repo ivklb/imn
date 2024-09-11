@@ -138,10 +138,10 @@ void ImageWidget::_show_image(ImVec2 region) {
             _rect[3] = region.y * 0.75;
         } else {
         }
-        // ImPlot::SetupAxes(NULL, NULL,
-        //     ImPlotAxisFlags_NoDecorations,
-        //     ImPlotAxisFlags_NoDecorations
-        // );
+        ImPlot::SetupAxes(NULL, NULL,
+            ImPlotAxisFlags_NoDecorations,
+            ImPlotAxisFlags_NoDecorations
+        );
         // if (!_tex_id_map.contains(_img_idx)) {
         //     _tex_id_map[_img_idx] = load_texture_2d(_images[_img_idx].get());
         // } else {

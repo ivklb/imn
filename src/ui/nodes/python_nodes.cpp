@@ -120,7 +120,11 @@ void PythonNode::_process() {
             auto pname = output_order[i];
             auto pin = outputs[pname];
             if (auto img_pin = std::dynamic_pointer_cast<ImagePin>(pin)) {
-                py::buffer buf = rv[i];
+                // rv = np.copy(rv, order='C')
+                py::module_ np = py::module_::import("numpy");
+                py::buffer buf = np.attr("copy")(rv[i], "C");
+
+                // py::buffer buf = rv[i];
                 py::buffer_info info = buf.request(true);
 
                 auto p = static_cast<float*>(info.ptr);
