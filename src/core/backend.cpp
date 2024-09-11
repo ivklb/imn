@@ -128,8 +128,10 @@ ImTextureID load_texture_2d(const cv::Mat* img, bool nearest_sample) {
     glPixelStorei(GL_UNPACK_ALIGNMENT, (img->step & 3) ? 1 : 4);
 
     if (img->type() == CV_8UC1) {
-        // TODO: review me
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, img->cols, img->rows, 0, GL_RED, GL_UNSIGNED_BYTE, img->data);
+        // https://www.khronos.org/opengl/wiki/Texture#Swizzle_mask
+        GLint swizzleMask[] = {GL_RED, GL_RED, GL_RED, GL_ONE};
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
     } else if (img->type() == CV_8UC3) {
         // jpeg
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->cols, img->rows, 0, GL_BGR, GL_UNSIGNED_BYTE, img->data);
@@ -139,9 +141,13 @@ ImTextureID load_texture_2d(const cv::Mat* img, bool nearest_sample) {
     } else if (img->type() == CV_16UC1) {
         // TODO: review me
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, img->cols, img->rows, 0, GL_RED, GL_UNSIGNED_SHORT, img->data);
+        GLint swizzleMask[] = {GL_RED, GL_RED, GL_RED, GL_ONE};
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
     } else if (img->type() == CV_32FC1) {
         // TODO: review me
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, img->cols, img->rows, 0, GL_RED, GL_FLOAT, img->data);
+        GLint swizzleMask[] = {GL_RED, GL_RED, GL_RED, GL_ONE};
+        glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
     } else if (img->type() == CV_32FC3) {
         // TODO: review me
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, img->cols, img->rows, 0, GL_RGB, GL_FLOAT, img->data);

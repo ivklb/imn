@@ -1,8 +1,11 @@
 
 #include "python_nodes.hpp"
 
+#include <pybind11/eigen.h>
 #include <pybind11/embed.h>
+#include <spdlog/spdlog.h>
 
+#include <eigen3/Eigen/Dense>
 #include <filesystem>
 
 #include "core/python.hpp"
@@ -19,6 +22,14 @@ PythonNode::PythonNode() : Node(), filename("") {
 void PythonNode::fit_json(json data) {
     Node::fit_json(data);
     set_filename(data.value("filename", ""));
+
+    // reset pin ids
+    for (auto& [name, pin] : inputs) {
+        pin->id = data["inputs"][name]["id"].get<int>();
+    }
+    for (auto& [name, pin] : outputs) {
+        pin->id = data["outputs"][name]["id"].get<int>();
+    }
 }
 
 json PythonNode::to_json() {
@@ -81,8 +92,8 @@ void PythonNode::_process() {
                 std::vector<int64_t> strides(mat->dims);
                 size_t total = 1;
                 for (int i = shape.size() - 1; i >= 0; i--) {
-                    strides[i] = total;
-                    total *= shape[i] * bpp;
+                    strides[i] = total * bpp;
+                    total *= shape[i];
                 }
 
                 bool read_only = false;
@@ -114,6 +125,7 @@ void PythonNode::_process() {
 
                 auto p = static_cast<float*>(info.ptr);
                 std::vector<int> sizes{info.shape.begin(), info.shape.end()};
+                SPDLOG_INFO("py shape: {} {} {}", info.ndim, info.shape[0], info.shape[1]);
                 if (info.format == py::format_descriptor<float>::format()) {
                     results[pname] = std::make_shared<cv::Mat>(sizes, CV_32FC1, info.ptr);
                 } else if (info.format == py::format_descriptor<uint8_t>::format()) {
@@ -125,6 +137,7 @@ void PythonNode::_process() {
                 }
             } else if (auto int_pin = std::dynamic_pointer_cast<IntPin>(pin)) {
                 results[pname] = rv[i].cast<int>();
+                SPDLOG_INFO("out int : {} {}", pname, rv[i].cast<int>());
             }
         }
     });
