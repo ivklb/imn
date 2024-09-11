@@ -125,16 +125,21 @@ void PythonNode::_process() {
 
                 auto p = static_cast<float*>(info.ptr);
                 std::vector<int> sizes{info.shape.begin(), info.shape.end()};
-                SPDLOG_INFO("py shape: {} {} {}", info.ndim, info.shape[0], info.shape[1]);
+
+                std::shared_ptr<cv::Mat> mat;
                 if (info.format == py::format_descriptor<float>::format()) {
-                    results[pname] = std::make_shared<cv::Mat>(sizes, CV_32FC1, info.ptr);
+                    // mat = std::make_shared<cv::Mat>(sizes, CV_32FC1, info.ptr);
+                    mat = std::make_shared<cv::Mat>(sizes, CV_32FC1);
                 } else if (info.format == py::format_descriptor<uint8_t>::format()) {
-                    results[pname] = std::make_shared<cv::Mat>(sizes, CV_8UC1, info.ptr);
+                    mat = std::make_shared<cv::Mat>(sizes, CV_8UC1);
                 } else if (info.format == py::format_descriptor<uint16_t>::format()) {
-                    results[pname] = std::make_shared<cv::Mat>(sizes, CV_16UC1, info.ptr);
+                    mat = std::make_shared<cv::Mat>(sizes, CV_16UC1);
                 } else if (info.format == py::format_descriptor<uint32_t>::format()) {
-                    results[pname] = std::make_shared<cv::Mat>(sizes, CV_32SC1, info.ptr);
+                    mat = std::make_shared<cv::Mat>(sizes, CV_32SC1);
                 }
+                // TODO: avoid copy via using imn.create_buffer() in python side
+                memcpy(mat->data, info.ptr, mat->elemSize() * mat->total());
+                results[pname] = mat;
             } else if (auto int_pin = std::dynamic_pointer_cast<IntPin>(pin)) {
                 results[pname] = rv[i].cast<int>();
                 SPDLOG_INFO("out int : {} {}", pname, rv[i].cast<int>());
