@@ -17,7 +17,7 @@ imn is a low code platform for image / volume processing. it is designed to prov
 
 ## Custom Node
 
-you can easily create your own node by adding a python script file to the `python/nodes` folder. The script file should contain a `run` function. imn will automatically register a node with input and output pins via inspecting the type hints of the `run()` function.
+you can easily create your own node by adding a python script file to the `python/nodes` folder. the script file should contain a `run` function. imn will automatically register a node with input and output pins via inspecting the type hints of the `run()` function.
 
 the following is an example of a custom node that transposes an image and then inverts its color. you can find this example in `python/nodes/demo.py`.
 
@@ -37,12 +37,12 @@ def run(image: np.ndarray) -> tuple[np.ndarray]:
 
 ## TODO
 
-- [ ] add more built-in nodes
+- [x] add more built-in nodes
 - [x] add support for i18n
-- [ ] add image interaction
-- [ ] add volume interaction
+- [x] add image interaction
+- [x] add volume interaction
 - [ ] add volume segmentation
-- [ ] add support for 4k screen
+- [x] add support for 4k screen
 - [x] add support for python node
 - [ ] batch node processing
 
