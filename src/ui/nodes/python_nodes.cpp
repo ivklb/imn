@@ -112,7 +112,13 @@ void PythonNode::_process() {
                 kwargs[fname.c_str()] = get_input<int>(pin->id);
             }
         }
+
+        // import the file
         py::module_ mod = py::module_::import(filename.c_str());
+        // reload the file in case it has been modified
+        py::module_ importlib = py::module_::import("importlib");
+        importlib.attr("reload")(mod);
+
         py::object function = mod.attr("run");
         py::tuple rv = function(**kwargs);
 
